@@ -322,7 +322,7 @@ namespace msGIS.ProApp_FiwareSummit
                 }
                 else
                 {
-                    await Settings_EntityTypes.AcquireSettingsEntityTypesAsync();
+                    // await Settings_EntityTypes.AcquireSettingsEntityTypesAsync();
 
                     if (m_STMapViewInitialized == null)
                         m_STMapViewInitialized = MapViewInitializedEvent.Subscribe(OnMapViewInitialized);

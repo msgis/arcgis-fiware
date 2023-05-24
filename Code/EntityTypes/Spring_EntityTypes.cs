@@ -192,6 +192,8 @@ namespace msGIS.ProApp_FiwareSummit
                     m_STMapMemberPropertiesChanged = MapMemberPropertiesChangedEvent.Subscribe(OnMapMemberPropertiesChanged);
                 }
 
+                // Get entity types from JSON.
+                await Settings_EntityTypes.AcquireSettingsEntityTypesAsync();
 
                 // Set activated.
                 await Fusion.m_Helper_Framework.SetPlugInStateAsync(Fusion.m_StateID_IsEnableEntityTypes, true);

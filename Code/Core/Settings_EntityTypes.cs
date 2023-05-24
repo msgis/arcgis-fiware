@@ -9,17 +9,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Security.Cryptography;
 
 namespace msGIS.ProApp_FiwareSummit
 {
     internal static class Settings_EntityTypes
     {
         private static readonly string m_ModuleName = "Settings_EntityTypes";
-
-        private const string m_Key_MainSettings = "msGIS_Settings_EntityTypes";
-
-        // Main Settings
-        private const string m_CfgKey_MapTag = "MapTag";
 
         internal static string SettingsPath
         {
@@ -43,10 +39,19 @@ namespace msGIS.ProApp_FiwareSummit
             try
             {
                 string settingsPath = SettingsPath;
+                bool writeSettingsOnEmpty = false;
+
                 if (!File.Exists(settingsPath))
-                    await WriteSettingsAsync(settingsPath);
+                {
+                    if (writeSettingsOnEmpty)
+                        await WriteSettingsAsync(settingsPath);
+                    else
+                        await Fusion.m_Messages.AlertAsyncMsg("JSON file doesn't exist!", settingsPath, "AcquireSettingsEntityTypesAsync");
+                }
                 else
+                {
                     await ReadSettingsAsync(settingsPath);
+                }
             }
             catch (Exception ex)
             {
@@ -60,15 +65,11 @@ namespace msGIS.ProApp_FiwareSummit
             {
                 JObject jObjectVals = new JObject
                 {
-                    { m_CfgKey_MapTag, JValue.CreateString(Fusion.m_MapTag) },
-
-                };
-                JObject jObjectSettings = new JObject
-                {
-                    { m_Key_MainSettings, jObjectVals }
+                    { "type", JValue.CreateString("EntityTypeList") },
+                    { "typeList", JValue.CreateString("...") },
                 };
 
-                string jsonStrSettings = jObjectSettings.ToString(Formatting.Indented);
+                string jsonStrSettings = jObjectVals.ToString(Formatting.Indented);
                 File.WriteAllText(settingsPath, jsonStrSettings);
             }
             catch (Exception ex)
@@ -83,7 +84,7 @@ namespace msGIS.ProApp_FiwareSummit
             {
                 if (cfgVal.Type != JTokenType.String)
                 {
-                    string msg = $"Key \"{m_Key_MainSettings}.{cfgKey}\" must be of type \"{JTokenType.String}\"!";
+                    string msg = $"Key \"{cfgKey}\" must be of type \"{JTokenType.String}\"!";
                     await Fusion.m_Messages.AlertAsyncMsg(msg, settingsPath, "Read Setting");
                     return "";
                 }
@@ -105,7 +106,7 @@ namespace msGIS.ProApp_FiwareSummit
             {
                 if (cfgVal.Type != JTokenType.Integer)
                 {
-                    string msg = $"Key \"{m_Key_MainSettings}.{cfgKey}\" must be of type \"{JTokenType.Integer}\"!";
+                    string msg = $"Key \"{cfgKey}\" must be of type \"{JTokenType.Integer}\"!";
                     await Fusion.m_Messages.AlertAsyncMsg(msg, settingsPath, "Read Setting");
                     return 0;
                 }
@@ -134,40 +135,52 @@ namespace msGIS.ProApp_FiwareSummit
                     await Fusion.m_Messages.AlertAsyncMsg("Empty settings!", settingsPath, "Read Settings");
                     return;
                 }
-                if (!oJObjectSettings.ContainsKey(m_Key_MainSettings))
+
+                string cfgKey = "type";
+                if (!oJObjectSettings.ContainsKey(cfgKey))
                 {
-                    msg = $"Key <{m_Key_MainSettings}> not found!";
+                    msg = $"Key <{cfgKey}> not found!";
                     await Fusion.m_Messages.AlertAsyncMsg(msg, settingsPath, "Read Settings");
                     return;
                 }
-                Boolean result = oJObjectSettings.TryGetValue(m_Key_MainSettings, out JToken oJTokenVals);
+                Boolean result = oJObjectSettings.TryGetValue(cfgKey, out JToken oJTokenVal);
                 if (!result)
                 {
-                    msg = $"Key <{m_Key_MainSettings}> could not be obtained!";
+                    msg = $"Key <{cfgKey}> could not be obtained!";
+                    await Fusion.m_Messages.AlertAsyncMsg(msg, settingsPath, "Read Settings");
+                    return;
+                }
+                string cfgVal = await ReadSettingStringAsync(settingsPath, cfgKey, oJTokenVal);
+                string expected = "EntityTypeList";
+                if (cfgVal != expected)
+                {
+                    msg = $"Key <{cfgKey}> has unexpected value {cfgVal} <> {expected}!";
                     await Fusion.m_Messages.AlertAsyncMsg(msg, settingsPath, "Read Settings");
                     return;
                 }
 
-                JObject oJObjectVals = oJTokenVals.ToObject<JObject>();
-                foreach (KeyValuePair<string, JToken> KeyValuePairData in oJObjectVals)
+                cfgKey = "typeList";
+                if (!oJObjectSettings.ContainsKey(cfgKey))
                 {
-                    string cfgKey = KeyValuePairData.Key;
-                    JToken cfgVal = KeyValuePairData.Value;
-                    if (cfgVal == null)
-                        continue;
-
-                    switch (cfgKey)
-                    {
-                        case m_CfgKey_MapTag:
-                            Fusion.m_MapTag = await ReadSettingStringAsync(settingsPath, cfgKey, cfgVal);
-                            break;
-
-                        default:
-                            msg = $"Key \"{m_Key_MainSettings}.{cfgKey}\" is not admissive!";
-                            await Fusion.m_Messages.AlertAsyncMsg(msg, settingsPath, "Read Settings");
-                            break;
-                    }
+                    msg = $"Key <{cfgKey}> not found!";
+                    await Fusion.m_Messages.AlertAsyncMsg(msg, settingsPath, "Read Settings");
+                    return;
                 }
+                result = oJObjectSettings.TryGetValue(cfgKey, out JToken oJTokenVals);
+                if (!result)
+                {
+                    msg = $"Key <{cfgKey}> could not be obtained!";
+                    await Fusion.m_Messages.AlertAsyncMsg(msg, settingsPath, "Read Settings");
+                    return;
+                }
+
+                // +++++ Populate combo wih entity types.
+                foreach (JToken jTokenVal in oJTokenVals)
+                {
+                    string arrVal = await ReadSettingStringAsync(settingsPath, cfgKey, jTokenVal);
+
+                }
+
             }
             catch (Exception ex)
             {
