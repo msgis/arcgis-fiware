@@ -1,0 +1,129 @@
+===================================================================================================
+FiwareSummit
+
+Project:
+https://app.asana.com/0/1204285422260806/1204530723943675/
+
+Chat:
+AF,GP,RT: Fiware Kickoff
+
+Author:
+mailto:roman.trojan@msgis.com
+
+Time:
+[0141] Fiware.Summit _ms.GIS.Intern
+
+APRX:
+
+===================================================================================================
+
+---------------------------------------------------------------------------------------------------
+History
+---------------------------------------------------------------------------------------------------
+
+...................................................................................................
+
+Hallo, Ich habe lange probiert und konnte bisher keinen neuen ArcPro Projekt erzeugen!
+Für die Version 3.0.3* kann ich keine passende SDK finden (entweder 2.9 oder 3.1)
+Nun versuche ich ArcPro 3.1 auf meinem Notebook zu installieren.
+
+Hallo, für ArcPro 3.0.3.36057 gibt es gar keine SDK (und so auch keine Unterstützung für neues Projekt).
+Entweder 3.1.41833, 3.0.0.36056 oder ältere Versionen.
+Oder unter einer anderen Version neues Projekt erstellen und modifizieren.
+Nun konnte ich so eines anlegen (mit 3.1 auf Notebook).
+
+ArcGIS new projekt/versions:
+https://github.com/Esri/arcgis-pro-sdk/tags
+
+...................................................................................................
+
+GeoJSON/JSON to Features:
+
+https://enterprise.arcgis.com/de/portal/latest/use/geojson.htm#:~:text=GeoJSON%20ist%20ein%20offenes%20Standardaustauschformat,Encodierung%20verschiedener%20Strukturen%20geographischer%20Daten.
+https://pro.arcgis.com/en/pro-app/latest/tool-reference/conversion/json-to-features.htm
+https://pro.arcgis.com/en/pro-app/latest/help/analysis/geoprocessing/basics/find-geoprocessing-tools.htm
+
+Für die Programmierung (c#) JSON-Feature gibt es folgende Funktion:
+GeometryEngine.Instance.JsonToGeometry(geometry.ToString())
+
+ArcGIS Pro Example c# for JSON To Features
+
+To use this example, you need to have ArcGIS Pro SDK installed and create a new ArcGIS Pro Add-In project in Visual Studio.
+Add the above code to a new class file in your project, and you can then call the ConvertJsonToFeatures method with the path to your JSON file and the desired feature class path.
+
+using System;
+using System.IO;
+using System.Threading.Tasks;
+using ArcGIS.Core.Data;
+using ArcGIS.Core.Data.Json;
+using ArcGIS.Desktop.Framework.Threading.Tasks;
+using ArcGIS.Desktop.Mapping;
+
+public class JsonToFeaturesExample
+{
+    public async Task<bool> ConvertJsonToFeatures(string jsonFilePath, string featureClassPath)
+    {
+        try
+        {
+            // Read the JSON file
+            string jsonContent = await QueuedTask.Run(() => File.ReadAllText(jsonFilePath));
+
+            // Create a new feature class
+            await QueuedTask.Run(() =>
+            {
+                var featureClassDefinition = new FeatureClassDefinition()
+                {
+                    // Set the path and name of the new feature class
+                    Path = featureClassPath,
+                    Name = "ConvertedFeatures"
+                };
+
+                var featureClass = FeatureClassFactory.Instance.CreateFeatureClass(featureClassDefinition);
+
+                // Parse the JSON content
+                var jsonObject = new JsonObject(jsonContent);
+
+                // Iterate over the JSON features
+                var jsonFeatures = jsonObject["features"].GetAsJsonArray();
+                foreach (var jsonFeature in jsonFeatures)
+                {
+                    var geometry = jsonFeature["geometry"].GetAsJsonObject();
+
+                    // Create a new feature
+                    var feature = featureClass.CreateRowBuffer();
+                    feature["SHAPE"] = GeometryEngine.Instance.JsonToGeometry(geometry.ToString());
+
+                    // Set other attribute values based on your JSON structure
+                    feature["Name"] = jsonFeature["properties"]["name"].GetString();
+                    feature["Value"] = jsonFeature["properties"]["value"].GetDouble();
+
+                    // Add the feature to the feature class
+                    featureClass.Insert(feature);
+                }
+
+                // Commit the changes
+                featureClass.Store();
+            });
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            // Handle any exceptions
+            Console.WriteLine("Error converting JSON to features: " + ex.Message);
+            return false;
+        }
+    }
+}
+
+...................................................................................................
+Ich werde vorerst EntityTypes holen...
+
+Alle EntityTypes holen: 
+https://fiwaredev.msgis.net/ngsi-ld/v1/types 
+
+{"id":"urn:ngsi-ld:EntityTypeList:c845e672-fa09-11ed-b9f9-0242ac120003","type":"EntityTypeList","typeList":["Hydrant","Schwimmbad","Trinkbrunnen"]}
+
+...................................................................................................
+
+---------------------------------------------------------------------------------------------------
