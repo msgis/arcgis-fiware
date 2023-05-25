@@ -9,13 +9,21 @@
 
     <!--d:DataContext="{Binding Path=msGIS.ProApp_FiwareSummit.Dockpane_SpringBoard}"-->
 
-    <Grid x:Name="Grid_EntityTypes" IsEnabled="False">
+    <Grid x:Name="Grid_EntityTypes" IsEnabled="False" Margin="0,12,0,0">
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-        <Label Content="Not implemented yet!" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Orange"/>
+        <Label Grid.Row="0" Grid.Column="0" Content="Entity type" Margin="6,6,0,0" Padding="2" VerticalAlignment="Center"/>
+        <ComboBox x:Name="ComboBox_EntityTypes"  Grid.Row="0" Grid.Column="1" Margin="6,6,0,0" VerticalAlignment="Center" IsReadOnly="True"/>
+
+        <Label Content="Not implemented yet!" Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Orange"/>
 
     </Grid>
 

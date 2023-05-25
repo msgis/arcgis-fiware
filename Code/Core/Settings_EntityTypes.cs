@@ -34,12 +34,13 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
-        internal static async Task AcquireSettingsEntityTypesAsync()
+        internal static async Task<List<object>> AcquireSettingsEntityTypesAsync()
         {
             try
             {
                 string settingsPath = SettingsPath;
                 bool writeSettingsOnEmpty = false;
+                List<object> listEntityTypes = new List<object>();
 
                 if (!File.Exists(settingsPath))
                 {
@@ -50,12 +51,15 @@ namespace msGIS.ProApp_FiwareSummit
                 }
                 else
                 {
-                    await ReadSettingsAsync(settingsPath);
+                    listEntityTypes = await ReadSettingsAsync(settingsPath);
                 }
+
+                return listEntityTypes;
             }
             catch (Exception ex)
             {
                 await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "AcquireSettingsEntityTypesAsync");
+                return null;
             }
         }
 
@@ -122,7 +126,7 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
-        private static async Task ReadSettingsAsync(string settingsPath)
+        private static async Task<List<object>> ReadSettingsAsync(string settingsPath)
         {
             try
             {
@@ -133,7 +137,7 @@ namespace msGIS.ProApp_FiwareSummit
                 if ((oJObjectSettings == null) || (oJObjectSettings.Count == 0))
                 {
                     await Fusion.m_Messages.AlertAsyncMsg("Empty settings!", settingsPath, "Read Settings");
-                    return;
+                    return null;
                 }
 
                 string cfgKey = "type";
@@ -141,14 +145,14 @@ namespace msGIS.ProApp_FiwareSummit
                 {
                     msg = $"Key <{cfgKey}> not found!";
                     await Fusion.m_Messages.AlertAsyncMsg(msg, settingsPath, "Read Settings");
-                    return;
+                    return null;
                 }
                 Boolean result = oJObjectSettings.TryGetValue(cfgKey, out JToken oJTokenVal);
                 if (!result)
                 {
                     msg = $"Key <{cfgKey}> could not be obtained!";
                     await Fusion.m_Messages.AlertAsyncMsg(msg, settingsPath, "Read Settings");
-                    return;
+                    return null;
                 }
                 string cfgVal = await ReadSettingStringAsync(settingsPath, cfgKey, oJTokenVal);
                 string expected = "EntityTypeList";
@@ -156,7 +160,7 @@ namespace msGIS.ProApp_FiwareSummit
                 {
                     msg = $"Key <{cfgKey}> has unexpected value {cfgVal} <> {expected}!";
                     await Fusion.m_Messages.AlertAsyncMsg(msg, settingsPath, "Read Settings");
-                    return;
+                    return null;
                 }
 
                 cfgKey = "typeList";
@@ -164,27 +168,30 @@ namespace msGIS.ProApp_FiwareSummit
                 {
                     msg = $"Key <{cfgKey}> not found!";
                     await Fusion.m_Messages.AlertAsyncMsg(msg, settingsPath, "Read Settings");
-                    return;
+                    return null;
                 }
                 result = oJObjectSettings.TryGetValue(cfgKey, out JToken oJTokenVals);
                 if (!result)
                 {
                     msg = $"Key <{cfgKey}> could not be obtained!";
                     await Fusion.m_Messages.AlertAsyncMsg(msg, settingsPath, "Read Settings");
-                    return;
+                    return null;
                 }
 
-                // +++++ Populate combo wih entity types.
+                // Populate list wih entity types.
+                List<object> listEntityTypes = new List<object>();
                 foreach (JToken jTokenVal in oJTokenVals)
                 {
                     string arrVal = await ReadSettingStringAsync(settingsPath, cfgKey, jTokenVal);
-
+                    listEntityTypes.Add(arrVal);
                 }
 
+                return listEntityTypes;
             }
             catch (Exception ex)
             {
                 await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "ReadSettingsAsync");
+                return null;
             }
         }
 

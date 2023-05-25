@@ -35,6 +35,7 @@ namespace msGIS.ProApp_FiwareSummit
         private readonly string m_ModuleName = "Spring_EntityTypes";
 
         private Grid Grid_EntityTypes;
+        private ComboBox ComboBox_EntityTypes;
 
         private SubscriptionToken m_STMapViewChanged = null;
         private SubscriptionToken m_STMapMemberPropertiesChanged = null;
@@ -46,7 +47,7 @@ namespace msGIS.ProApp_FiwareSummit
         // private bool m_SuspendSetLayersChk = false;
         private bool m_HasSpecialEvents_EntityTypes = false;
 
-        internal Spring_EntityTypes(Grid grid_EntityTypes)
+        internal Spring_EntityTypes(Grid grid_EntityTypes, ComboBox comboBox_EntityTypes)
         {
             Grid_EntityTypes = grid_EntityTypes;
             Grid_EntityTypes.IsEnabled = false;
@@ -58,6 +59,8 @@ namespace msGIS.ProApp_FiwareSummit
             {
                 _ = InitActive_EntityTypesAsync("Spring_EntityTypes");
             }
+
+            ComboBox_EntityTypes = comboBox_EntityTypes;
         }
 
         private async void OnMapViewChanged(ActiveMapViewChangedEventArgs args)
@@ -193,7 +196,10 @@ namespace msGIS.ProApp_FiwareSummit
                 }
 
                 // Get entity types from JSON.
-                await Settings_EntityTypes.AcquireSettingsEntityTypesAsync();
+                List<object> listEntityTypes = await Settings_EntityTypes.AcquireSettingsEntityTypesAsync();
+
+                // Populate combo wih entity types.
+                await PopulateEntityTypesAsync(listEntityTypes);
 
                 // Set activated.
                 await Fusion.m_Helper_Framework.SetPlugInStateAsync(Fusion.m_StateID_IsEnableEntityTypes, true);
@@ -223,7 +229,22 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
+        private async Task PopulateEntityTypesAsync(List<object> listEntityTypes)
+        {
+            try
+            {
+                ComboBox_EntityTypes.Items.Clear();
 
+                foreach (object entityType in listEntityTypes)
+                {
+                    ComboBox_EntityTypes.Items.Add(entityType);
+                }
+            }
+            catch (Exception ex)
+            {
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "PopulateEntityTypesAsync");
+            }
+        }
 
     }
 }

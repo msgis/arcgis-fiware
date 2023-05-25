@@ -23,6 +23,7 @@
     <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LC32.png" />
     <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LS16.png" />
     <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LS32.png" />
+    <None Remove="Info-FiwareSummit\Signatur ms.gis RT.txt" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config.daml" />

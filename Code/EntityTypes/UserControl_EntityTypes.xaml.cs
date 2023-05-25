@@ -53,7 +53,7 @@ namespace msGIS.ProApp_FiwareSummit
                 _ = InitImagesAsync();
 
                 // Spring code
-                m_Spring_EntityTypes = new Spring_EntityTypes(Grid_EntityTypes);
+                m_Spring_EntityTypes = new Spring_EntityTypes(Grid_EntityTypes, ComboBox_EntityTypes);
             }
             catch (Exception ex)
             {
