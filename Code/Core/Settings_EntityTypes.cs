@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Security.Cryptography;
+using System.Net.Http;
 
 namespace msGIS.ProApp_FiwareSummit
 {
@@ -51,7 +52,15 @@ namespace msGIS.ProApp_FiwareSummit
                 }
                 else
                 {
-                    listEntityTypes = await ReadSettingsAsync(settingsPath);
+                    bool readFromFile = false;
+                    if (readFromFile)
+                        listEntityTypes = await ReadSettingsFromJsonFileAsync(settingsPath);
+                    else
+                    {
+                        string apiUrl = "https://fiwaredev.msgis.net/ngsi-ld/v1/types";
+                        listEntityTypes = await ReadSettingsFromRestApiAsync(apiUrl);
+                    }
+                        
                 }
 
                 return listEntityTypes;
@@ -126,19 +135,52 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
-        private static async Task<List<object>> ReadSettingsAsync(string settingsPath)
+        private static async Task<List<object>> ReadSettingsFromJsonFileAsync(string settingsPath)
         {
             try
             {
                 string jsonStrSettings = File.ReadAllText(settingsPath);
-                string msg = "";
-
                 JObject oJObjectSettings = JObject.Parse(jsonStrSettings);
                 if ((oJObjectSettings == null) || (oJObjectSettings.Count == 0))
                 {
                     await Fusion.m_Messages.AlertAsyncMsg("Empty settings!", settingsPath, "Read Settings");
                     return null;
                 }
+
+                return await ReadSettingsFromJsonObjectAsync(oJObjectSettings, settingsPath);
+            }
+            catch (Exception ex)
+            {
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "ReadSettingsFromJsonFileAsync");
+                return null;
+            }
+        }
+
+        private static async Task<List<object>> ReadSettingsFromRestApiAsync(string apiUrl)
+        {
+            try
+            {
+                JObject oJObjectSettings = (JObject)await GetJsonFromRestApiAsync(apiUrl);
+                if ((oJObjectSettings == null) || (oJObjectSettings.Count == 0))
+                {
+                    await Fusion.m_Messages.AlertAsyncMsg("Empty settings!", apiUrl, "Read Settings");
+                    return null;
+                }
+
+                return await ReadSettingsFromJsonObjectAsync(oJObjectSettings, apiUrl);
+            }
+            catch (Exception ex)
+            {
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "ReadSettingsFromRestApiAsync");
+                return null;
+            }
+        }
+
+        private static async Task<List<object>> ReadSettingsFromJsonObjectAsync(JObject oJObjectSettings, string settingsPath)
+        {
+            try
+            {
+                string msg = "";
 
                 string cfgKey = "type";
                 if (!oJObjectSettings.ContainsKey(cfgKey))
@@ -190,10 +232,41 @@ namespace msGIS.ProApp_FiwareSummit
             }
             catch (Exception ex)
             {
-                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "ReadSettingsAsync");
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "ReadSettingsFromJsonObjectAsync");
                 return null;
             }
         }
 
+        private static async Task<object> GetJsonFromRestApiAsync(string apiUrl)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    // Make a GET request to the API endpoint
+                    HttpResponseMessage response = await client.GetAsync(apiUrl);
+
+                    // Ensure the response is successful
+                    response.EnsureSuccessStatusCode();
+
+                    // Read the response content as a string
+                    string responseContent = await response.Content.ReadAsStringAsync();
+
+                    // Deserialize the JSON string to an object
+                    object jsonObject = JsonConvert.DeserializeObject(responseContent);
+
+                    // Return the deserialized object
+                    return jsonObject;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions
+                Console.WriteLine("Error retrieving JSON from REST API: " + ex.Message);
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "GetJsonFromRestApiAsync");
+                return null;
+            }
+        }
     }
+
 }

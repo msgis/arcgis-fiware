@@ -22,15 +22,9 @@ https://app.asana.com/0/1204285422260806/1204530723943675/
 ---------------------------------------------------------------------------------------------------
 Settings
 ---------------------------------------------------------------------------------------------------
-JSON-File aus https://fiwaredev.msgis.net/ngsi-ld/v1/types manuell erstellen.
-z.B. mithilfe https://jsonlint.com/
-Als "msGIS_Settings_FiwareSummit.json" im APRX-Folder ablegen.
-z.B.
-{
-	"id": "urn:ngsi-ld:EntityTypeList:79576476-fa42-11ed-9e52-0242ac120003",
-	"type": "EntityTypeList",
-	"typeList": ["Hydrant", "Schwimmbad", "Trinkbrunnen"]
-}
+Die Daten werden als JSON-Objekt aus Rest-Api übernommen
+apiUrl = https://fiwaredev.msgis.net/ngsi-ld/v1/types
+Alternativ könnten die Daten über JSON-File transferiert werden.
 
 ---------------------------------------------------------------------------------------------------
 APRX
@@ -56,4 +50,4 @@ Button "Info FiwareSummit" ist nur informativ.
 Button "Entity Types" klicken, es müsste sich rechts eine Dockpane "FiwareSummit-Board" zeigen.
 Nun kann per ComboBox "Entity type" ausgewählt werden.
 
-(Stand 2023.05.25)
+(Stand 2023.05.25 Version 3.3.02)

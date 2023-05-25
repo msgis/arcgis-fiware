@@ -1,0 +1,5 @@
+{
+	"id": "urn:ngsi-ld:EntityTypeList:79576476-fa42-11ed-9e52-0242ac120003",
+	"type": "EntityTypeList",
+	"typeList": ["Hydrant", "Schwimmbad", "Trinkbrunnen"]
+}
