@@ -36,6 +36,7 @@ namespace msGIS.ProApp_FiwareSummit
 
         private Grid Grid_EntityTypes;
         private ComboBox ComboBox_EntityTypes;
+        private Button Button_EntityToLayer;
 
         private SubscriptionToken m_STMapViewChanged = null;
         private SubscriptionToken m_STMapMemberPropertiesChanged = null;
@@ -47,7 +48,7 @@ namespace msGIS.ProApp_FiwareSummit
         // private bool m_SuspendSetLayersChk = false;
         private bool m_HasSpecialEvents_EntityTypes = false;
 
-        internal Spring_EntityTypes(Grid grid_EntityTypes, ComboBox comboBox_EntityTypes)
+        internal Spring_EntityTypes(Grid grid_EntityTypes, ComboBox comboBox_EntityTypes, Button button_EntityToLayer)
         {
             Grid_EntityTypes = grid_EntityTypes;
             Grid_EntityTypes.IsEnabled = false;
@@ -61,6 +62,11 @@ namespace msGIS.ProApp_FiwareSummit
             }
 
             ComboBox_EntityTypes = comboBox_EntityTypes;
+            Button_EntityToLayer = button_EntityToLayer;
+            ComboBox_EntityTypes.DropDownClosed += ComboBox_EntityTypes_DropDownClosed;
+
+            Button_EntityToLayer.IsEnabled = false;
+            Button_EntityToLayer.Click += Button_EntityToLayer_Click;
         }
 
         private async void OnMapViewChanged(ActiveMapViewChangedEventArgs args)
@@ -229,11 +235,26 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
+        private async Task CleanEntitiesAsync()
+        {
+            try
+            {
+                Button_EntityToLayer.IsEnabled = false;
+
+                ComboBox_EntityTypes.Items.Clear();
+
+            }
+            catch (Exception ex)
+            {
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "CleanEntitiesAsync");
+            }
+        }
+
         private async Task PopulateEntityTypesAsync(List<object> listEntityTypes)
         {
             try
             {
-                ComboBox_EntityTypes.Items.Clear();
+                await CleanEntitiesAsync();
 
                 foreach (object entityType in listEntityTypes)
                 {
@@ -244,6 +265,43 @@ namespace msGIS.ProApp_FiwareSummit
             {
                 await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "PopulateEntityTypesAsync");
             }
+        }
+
+        private bool HasComboEntityTypeSelected
+        {
+            get
+            {
+                return ((ComboBox_EntityTypes != null) && (ComboBox_EntityTypes.Items.Count > 0) && (ComboBox_EntityTypes.SelectedIndex >= 0));
+            }
+        }
+
+
+        private async Task EntitiesToFeaturesAsync()
+        {
+            try
+            {
+                if (!HasComboEntityTypeSelected)
+                    throw new Exception("No entity type selected!");
+
+                string entityType = ComboBox_EntityTypes.SelectedItem.ToString();
+
+                // +++++ EntitiesToFeatures
+            }
+            catch (Exception ex)
+            {
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "EntitiesToFeaturesAsync");
+            }
+        }
+
+
+        private void ComboBox_EntityTypes_DropDownClosed(object sender, EventArgs e)
+        {
+            Button_EntityToLayer.IsEnabled = HasComboEntityTypeSelected;
+        }
+
+        private async void Button_EntityToLayer_Click(object sender, RoutedEventArgs e)
+        {
+            await EntitiesToFeaturesAsync();
         }
 
     }

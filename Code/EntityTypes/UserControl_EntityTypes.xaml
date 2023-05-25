@@ -5,13 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="msGIS.ProApp_FiwareSummit.UserControl_EntityTypes"
              mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="340">
+             d:DesignHeight="400" d:DesignWidth="240">
 
     <!--d:DataContext="{Binding Path=msGIS.ProApp_FiwareSummit.Dockpane_SpringBoard}"-->
 
     <Grid x:Name="Grid_EntityTypes" IsEnabled="False" Margin="0,12,0,0">
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -21,9 +22,15 @@
         </Grid.ColumnDefinitions>
 
         <Label Grid.Row="0" Grid.Column="0" Content="Entity type" Margin="6,6,0,0" Padding="2" VerticalAlignment="Center"/>
-        <ComboBox x:Name="ComboBox_EntityTypes"  Grid.Row="0" Grid.Column="1" Margin="6,6,0,0" VerticalAlignment="Center" IsReadOnly="True"/>
+        <ComboBox x:Name="ComboBox_EntityTypes" Grid.Row="0" Grid.Column="1" Margin="6,6,6,0" VerticalAlignment="Center" IsReadOnly="True"/>
 
-        <Label Content="Not implemented yet!" Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Orange"/>
+        <StackPanel Grid.Row="1" Grid.Column="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="Button_EntityToLayer" Grid.Row="1" Grid.Column="1" Content="Entity zeigen" ToolTip="Alle Entities zu diesem Typ in einem Layer zeigen" Margin="6,10,6,10" Padding="6"/>
+            </StackPanel>
+        </StackPanel>
+
+        <Label Content="Ask for more!" ToolTip="roman.trojan@msgis.com" Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Orange"/>
 
     </Grid>
 

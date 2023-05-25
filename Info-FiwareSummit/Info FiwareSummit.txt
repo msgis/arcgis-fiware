@@ -38,7 +38,8 @@ Beispiel: 20 Entities holen ab dem 1000sten Entity: 
 https://fiwaredev.msgis.net/ngsi-ld/v1/entities?type=Hydrant&offset=100&limit=20 
 Im Prinzip muss man einfach bei offset 0 starten und bei den nächsten Requests offset jeweils um limit erhöhen, solange bis ein leeres Array zurückkommt. 
 
-Die Benachrichtigungen über Änderungen eines Entities sind über Server Send Events implementiert, siehe https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events. 
+Die Benachrichtigungen über Änderungen eines Entities sind über Server Send Events implementiert,
+siehe https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events. 
 Das ist im Prinzip ein nicht Endender HTTP Request welcher die JSON Daten als Stream sendet. 
 Diese Schnittstelle muss ich allerdings noch konfigurieren/aufsetzen.
 
@@ -174,7 +175,8 @@ https://fiwaredev.msgis.net/ngsi-ld/v1/types 
 	"typeList": ["Hydrant", "Schwimmbad", "Trinkbrunnen"]
 }
 
-Stand: (Version 3.3.01)
+...................................................................................................
+Version 3.3.01
 P:\MS\link\roman\FiwareSummit
 "Entity type" kann per ComboBox ausgewählt werden.
 Siehe auch
@@ -221,11 +223,15 @@ while res.status_code == 200:
 layer.dataProvider().addFeatures(features)
 
 ...................................................................................................
-Stand: (Version 3.3.02)
+Version 3.3.02
 Nach einer Besprechung mit GP hole ich die EntityTypes direkt per REST-Api (wie bei QGIS).
 JSON-File wird nicht mehr benötigt, kann auf Wunsch erzeugt oder ausgewertet werden.
 "Entity type" kann per ComboBox ausgewählt werden.
 Siehe auch ReadMe FiwareSummit.txt
 P:\MS\link\roman\FiwareSummit
+
+...................................................................................................
+Version 3.3.03
+Entities zu einem Type holen und als Layer zeigen.
 
 ---------------------------------------------------------------------------------------------------
