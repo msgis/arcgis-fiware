@@ -20,10 +20,9 @@ https://app.asana.com/0/1204285422260806/1204530723943675/
 ===================================================================================================
 
 ---------------------------------------------------------------------------------------------------
-Settings
+Entity-Types
 ---------------------------------------------------------------------------------------------------
-Die Daten werden als JSON-Objekt aus Rest-Api übernommen
-apiUrl = https://fiwaredev.msgis.net/ngsi-ld/v1/types
+Die Daten werden als JSON-Objekt aus Rest-Api übernommen.
 Alternativ könnten die Daten über JSON-File transferiert werden.
 
 ---------------------------------------------------------------------------------------------------
@@ -48,6 +47,16 @@ Wenn alles korrekt abläuft müsste sich im Ribbon rechts eine Tab "FiwareSummit" 
 Tab "FiwareSummit" klicken, es müsste sich die Gruppe "FiwareSummit" mit weiteren Controls zeigen.
 Button "Info FiwareSummit" ist nur informativ.
 Button "Entity Types" klicken, es müsste sich rechts eine Dockpane "FiwareSummit-Board" zeigen.
-Nun kann per ComboBox "Entity type" ausgewählt werden.
 
-(Stand 2023.05.25 Version 3.3.02)
+Nun kann per ComboBox "Entity type" ausgewählt werden.
+Mit Klick auf Button "Entities zeigen" werden laut ausgewähltem Typ die Entities per REST-Api
+in ein JArray geladen und zu einem vordefinierten Layer hinzugefügt.
+Alle zuvor vorhandenen Objekte am Layer werden gelöscht.
+
+(Stand 2023.05.26 Version 3.3.03)
+
+Geplant:
+Layer Objekte mit Attribut "Typ" versehen, damit nur die entsprechenden Objekte gelöscht werden und auch später besser identifiziert werden können.
+Löschen der Objekte entsprechend "Typ".
+Löschen aller Objekte (Reset).
+Dynamischer Update anhand per REST-Api. 

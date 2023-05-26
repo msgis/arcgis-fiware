@@ -224,8 +224,16 @@ Entities zu einem Type holen und als Layer zeigen.
       ]
     }
 
-Layers/Tags:
-    GraphicsLayer_Entities
-    Entities_Points
+Die Entities werden laut ausgewähltem Typ direkt per REST-Api in ein JArray geladen und zu einem vordefinierten Layer hinzugefügt.
+Alle zuvor vorhandenen Objekte am Layer werden gelöscht.
+
+...................................................................................................
+Version 3.3.04
+
+Geplant:
+Layer Objekte mit Attribut "Typ" versehen, damit nur die entsprechenden Objekte gelöscht werden und auch später besser identifiziert werden können.
+Löschen der Objekte entsprechend "Typ".
+Löschen aller Objekte (Reset).
+Dynamischer Update anhand per REST-Api. 
 
 ---------------------------------------------------------------------------------------------------

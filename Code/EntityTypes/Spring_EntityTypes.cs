@@ -51,7 +51,7 @@ namespace msGIS.ProApp_FiwareSummit
 
         internal bool m_CanChangeBoard_EntityTypes = true;
         // private bool m_SuspendControlsEvents = false;
-        private bool m_SuspendSetLayersChk = false;
+        //private bool m_SuspendSetLayersChk = false;
         private bool m_HasSpecialEvents_EntityTypes = false;
 
         internal Spring_EntityTypes(Grid grid_EntityTypes, ComboBox comboBox_EntityTypes, Button button_EntityToLayer, Label label_Count)
@@ -188,12 +188,12 @@ namespace msGIS.ProApp_FiwareSummit
                 {
                     try
                     {
-                        m_SuspendSetLayersChk = true;
+                        //m_SuspendSetLayersChk = true;
                         await Fusion.m_Helper_Layer.SetLayerVisAsync(layer, true);
                     }
                     finally
                     {
-                        m_SuspendSetLayersChk = false;
+                        //m_SuspendSetLayersChk = false;
                     }
                 }
             }
@@ -375,13 +375,38 @@ namespace msGIS.ProApp_FiwareSummit
                     await Fusion.m_Messages.AlertAsyncMsg("No entities acquired!", "EntitiesToFeaturesAsync");
                 await ShowCountAsync(jArrayEntities.Count);
 
+                // Op - Prepare
+                string opName = $"BuildFeaturesFromJsonEntitiesAsync {entityType}";
+                bool selectNewFeatures = false;
+                EditOperation editOperation = await Fusion.m_Helper_Op.PrepareOpAsync(opName, selectNewFeatures);
+                if (editOperation == null)
+                    return;
+
+                string fieldId = $"{Fusion.m_FieldNameEntitiesPoints_OBJECTID}";
+                string subFields = $"{Fusion.m_FieldNameEntitiesPoints_OBJECTID}";
+                List<Object> listIds = await Fusion.m_Helper_Search.GetLayerFieldValuesAsync(m_LayerEntitiesPoints, fieldId, subFields);
+
+                List<long> listEntities = new List<long>();
+                foreach (System.Int32 entityId in listIds)
+                {
+                    listEntities.Add(entityId);
+                }
+                IEnumerable<long> oids = listEntities;
+                editOperation.Delete(m_LayerEntitiesPoints, oids);
+
                 // EntitiesToFeatures
                 m_Helper_Progress = new Helper_Progress(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework, isProgressCancelable);
                 await m_Helper_Progress.ShowProgressAsync("BuildFeaturesFromJsonEntitiesAsync", (uint)jArrayEntities.Count, true);
                 bool taskResult = await QueuedTask.Run(async () =>
                 {
-                    return await RestApi_Entities.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities);
+                    return await RestApi_Entities.BuildFeaturesFromJsonEntitiesAsync(m_LayerEntitiesPoints, editOperation, jArrayEntities);
                 }, m_Helper_Progress.ProgressAssistant);
+
+                if (taskResult)
+                {
+                    if (!await Fusion.m_Helper_Op.ExecOpAsync(editOperation))
+                        return;
+                }
             }
             catch (Exception ex)
             {

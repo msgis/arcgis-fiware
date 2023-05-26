@@ -21,6 +21,7 @@ using System.Net.Http;
 using ArcGIS.Core.Data.UtilityNetwork.Trace;
 using System.Windows.Interop;
 using ArcGIS.Core.Data.DDL;
+using ArcGIS.Desktop.Editing;
 
 namespace msGIS.ProApp_FiwareSummit
 {
@@ -248,7 +249,7 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
-        internal static async Task<bool> BuildFeaturesFromJsonEntitiesAsync(JArray jArrayEntities)
+        internal static async Task<bool> BuildFeaturesFromJsonEntitiesAsync(Layer layerEntitiesPoints, EditOperation editOperation, JArray jArrayEntities)
         {
             try
             {
@@ -346,7 +347,8 @@ namespace msGIS.ProApp_FiwareSummit
                             double x = Convert.ToDouble(jArray_Coordinates[0]);
                             double y = Convert.ToDouble(jArray_Coordinates[1]);
                             MapPoint mapPoint = MapPointBuilderEx.CreateMapPoint(x, y);
-                            
+
+                            editOperation.Create(layerEntitiesPoints, mapPoint);
                         }
 
                     }
