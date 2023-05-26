@@ -18,79 +18,6 @@ namespace msGIS.ProApp_FiwareSummit
     {
         private static readonly string m_ModuleName = "Settings_EntityTypes";
 
-        internal static string SettingsPath
-        {
-            get
-            {
-                try
-                {
-                    string dataPath = ArcGIS.Desktop.Core.Project.Current.HomeFolderPath;
-                    return Path.Combine(dataPath, Fusion.m_FileNameSettings);
-                }
-                catch (Exception ex)
-                {
-                    Fusion.m_Messages.PushEx(ex, m_ModuleName, "SettingsPath");
-                    return "";
-                }
-            }
-        }
-
-        internal static async Task<List<object>> AcquireSettingsEntityTypesAsync()
-        {
-            try
-            {
-                string settingsPath = SettingsPath;
-                bool writeSettingsOnEmpty = false;
-                List<object> listEntityTypes = new List<object>();
-
-                if (!File.Exists(settingsPath))
-                {
-                    if (writeSettingsOnEmpty)
-                        await WriteSettingsAsync(settingsPath);
-                    else
-                        await Fusion.m_Messages.AlertAsyncMsg("JSON file doesn't exist!", settingsPath, "AcquireSettingsEntityTypesAsync");
-                }
-                else
-                {
-                    bool readFromFile = false;
-                    if (readFromFile)
-                        listEntityTypes = await ReadSettingsFromJsonFileAsync(settingsPath);
-                    else
-                    {
-                        string apiUrl = "https://fiwaredev.msgis.net/ngsi-ld/v1/types";
-                        listEntityTypes = await ReadSettingsFromRestApiAsync(apiUrl);
-                    }
-                        
-                }
-
-                return listEntityTypes;
-            }
-            catch (Exception ex)
-            {
-                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "AcquireSettingsEntityTypesAsync");
-                return null;
-            }
-        }
-
-        private static async Task WriteSettingsAsync(string settingsPath)
-        {
-            try
-            {
-                JObject jObjectVals = new JObject
-                {
-                    { "type", JValue.CreateString("EntityTypeList") },
-                    { "typeList", JValue.CreateString("...") },
-                };
-
-                string jsonStrSettings = jObjectVals.ToString(Formatting.Indented);
-                File.WriteAllText(settingsPath, jsonStrSettings);
-            }
-            catch (Exception ex)
-            {
-                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "WriteSettingsAsync");
-            }
-        }
-
         private static async Task<string> ReadSettingStringAsync(string settingsPath, string cfgKey, JToken cfgVal)
         {
             try
@@ -156,7 +83,7 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
-        private static async Task<List<object>> ReadSettingsFromRestApiAsync(string apiUrl)
+        internal static async Task<List<object>> ReadSettingsFromRestApiAsync(string apiUrl)
         {
             try
             {
@@ -237,7 +164,7 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
-        private static async Task<object> GetJsonFromRestApiAsync(string apiUrl)
+        internal static async Task<object> GetJsonFromRestApiAsync(string apiUrl)
         {
             try
             {
@@ -265,6 +192,33 @@ namespace msGIS.ProApp_FiwareSummit
                 Console.WriteLine("Error retrieving JSON from REST API: " + ex.Message);
                 await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "GetJsonFromRestApiAsync");
                 return null;
+            }
+        }
+
+        internal static async Task RefreshRestApiAsync()
+        {
+            try
+            {
+                string apiUrl = "https://fiwaredev.msgis.net/ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3";
+
+                using (HttpClient client = new HttpClient())
+                {
+                    using (var stream = await client.GetStreamAsync(apiUrl))
+                    {
+                        using (var reader = new StreamReader(stream))
+                        {
+                            while (true)
+                            {
+                                Console.WriteLine(reader.ReadLine());
+                            }
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "RefreshRestApiAsync");
             }
         }
     }

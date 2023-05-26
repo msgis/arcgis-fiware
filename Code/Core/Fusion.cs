@@ -50,7 +50,7 @@ namespace msGIS.ProApp_FiwareSummit
         internal const string m_ProjectSubPhrase = "Summit";
 
         // Settings
-        internal const string m_FileNameSettings = "msGIS_Settings_FiwareSummit.json";
+        // internal const string m_FileNameSettings = "msGIS_Settings_FiwareSummit.json";
         internal static string m_MapTag = "Fiware_Summit";
 
         internal const string m_StateID_Main = "msGIS_FiwareSummit_StateID_Main";
@@ -90,9 +90,11 @@ namespace msGIS.ProApp_FiwareSummit
                 string prjInfo = await Fusion.m_General.GetProjectInfoAsync();
                 if (!string.IsNullOrEmpty(prjInfo))
                 {
+                    /*
                     string settingsPath = Settings_EntityTypes.SettingsPath;
                     if (!string.IsNullOrEmpty(settingsPath))
                         prjInfo += Environment.NewLine + $"Settings: {settingsPath}";
+                    */
 
                     /*
                     Layer layerLeitungL = await Fusion.GetLayerLeitungLAsync();

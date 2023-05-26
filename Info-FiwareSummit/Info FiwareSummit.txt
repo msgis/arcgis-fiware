@@ -71,6 +71,39 @@ In payload ist dann das geänderte Objekt als JSON String enthalten.
 Falls die Implementierung in QGIS/ArcPro zu schwierig ist, dann müssen wir und eine Alternative überlegen (zb. polling).
 
 ...................................................................................................
+Es gibt eine HTTP Schnittstelle über die Nachrichten reinkommen wenn Entities geändert wurden.
+Das geht dann über Server Send Events (auch EventSource genannt).
+Jeder Entity Type (Layer) hat eine eigene EventSource URL. Diese bekommt man auch über die API:
+https://fiwaredev.msgis.net/ngsi-ld/v1/entities?type=NgsiProxyConfig
+
+Also der Workflow wäre:
+User wählt Entity Type aus Combobox aus
+Abfrage der API damit man die EventSource URL zu dem ausgwähltem Typ bekommt:
+https://fiwaredev.msgis.net/ngsi-ld/v1/entities?type=NgsiProxyConfig
+Request auf die EventSource URL und ständig nach Änderungen lauschen.
+zb:
+using (var client = new HttpClient())
+{
+  using (var stream = await client.GetStreamAsync("https://fiwaredev.msgis.net/ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3"))
+  {    using (var reader = new StreamReader(stream))
+    {
+      while (true)
+      {
+        Console.WriteLine(reader.ReadLine());
+      }
+    }
+  }
+}
+
+AF:
+Der eventsource request sollte im Hintergrund die ganze Zeit laufen.
+Dort werden die geänderten entities übertragen.
+Aber wenn das Feature jetzt nicht implementiert ist macht es auch nichts. Wichtiger ist die Anzeige der entities.
+
+RT:
+"die ganze Zeit" macht für mich keinen Sinn, wenn dann vor/während einer UI-Interaktion (Combo-Auswahl, Button-Holen, etc.)
+
+...................................................................................................
 Hallo, Ich habe lange probiert und konnte bisher keinen neuen ArcPro Projekt erzeugen!
 Für die Version 3.0.3* kann ich keine passende SDK finden (entweder 2.9 oder 3.1)
 Nun versuche ich ArcPro 3.1 auf meinem Notebook zu installieren.
