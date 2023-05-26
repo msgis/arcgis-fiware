@@ -1,6 +1,9 @@
 ﻿using msGIS.ProApp_Common_MA31_GIS_3x;
 
+using Newtonsoft.Json.Linq;
+
 using ArcGIS.Core.Data;
+using ArcGIS.Core.Data.UtilityNetwork.Trace;
 using ArcGIS.Core.Events;
 using ArcGIS.Core.Geometry;
 using ArcGIS.Desktop.Core;
@@ -27,8 +30,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Globalization;
 using System.Windows.Input;
-using Newtonsoft.Json.Linq;
-using ArcGIS.Core.Data.UtilityNetwork.Trace;
 
 namespace msGIS.ProApp_FiwareSummit
 {
@@ -205,7 +206,7 @@ namespace msGIS.ProApp_FiwareSummit
 
                 // Get entity types from JSON.
                 string apiUrl = "https://fiwaredev.msgis.net/ngsi-ld/v1/types";
-                List<object> listEntityTypes = await Settings_EntityTypes.ReadSettingsFromRestApiAsync(apiUrl);
+                List<object> listEntityTypes = await RestApi_Entities.ReadSettingsFromRestApiAsync(apiUrl);
 
                 // Populate combo wih entity types.
                 await PopulateEntityTypesAsync(listEntityTypes);
@@ -279,49 +280,6 @@ namespace msGIS.ProApp_FiwareSummit
         }
 
 
-        private async Task<JArray> GetEntitiesAsync(string entityType)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(entityType))
-                    throw new Exception("Empty entity type!");
-
-                JArray jArrayEntities = new JArray();
-
-                int limit = 60;                     // Limit max 2000
-                int offset = 0;                     // Start from 0
-                bool hasEntities = false;
-                do
-                {
-                    // Read as long entities comming.
-                    string apiUrl = $"https://fiwaredev.msgis.net/ngsi-ld/v1/entities?type={entityType}&offset={offset}&limit={limit}";
-                    JArray jArrayPart = await Settings_EntityTypes.GetJsonFromRestApiAsync(apiUrl) as JArray;
-                    if (jArrayPart == null)
-                        hasEntities = false;
-                    else
-                    {
-                        hasEntities = (jArrayPart.Count > 0);
-                        offset += jArrayPart.Count;
-
-                        if (hasEntities)
-                        {
-                            foreach (JToken element in jArrayPart)
-                            {
-                                jArrayEntities.Add(element);
-                            }
-                        }
-                    }
-                } while (hasEntities);
-
-                return jArrayEntities;
-            }
-            catch (Exception ex)
-            {
-                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "GetEntitiesAsync");
-                return null;
-            }
-        }
-
         private async Task EntitiesToFeaturesAsync()
         {
             Helper_Progress m_Helper_Progress = null;
@@ -335,14 +293,20 @@ namespace msGIS.ProApp_FiwareSummit
                 bool isProgressCancelable = false;
                 m_Helper_Progress = new Helper_Progress(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework, isProgressCancelable);
                 await m_Helper_Progress.ShowProgressAsync("EntitiesToFeaturesAsync", 900000, false);
-                JArray jArrayEntities = await ArcGIS.Desktop.Framework.Threading.Tasks.QueuedTask.Run(async () =>
+                JArray jArrayEntities = await QueuedTask.Run(async () =>
                 {
-                    return await GetEntitiesAsync(entityType);
+                    return await RestApi_Entities.GetEntitiesFromRestApiAsync(entityType);
                 }, m_Helper_Progress.ProgressAssistant);
+
+                if (jArrayEntities == null)
+                    return;
+                if (jArrayEntities.Count == 0)
+                    await Fusion.m_Messages.AlertAsyncMsg("No entities acquired!", "EntitiesToFeaturesAsync");
 
 
                 // +++++ EntitiesToFeatures
-
+                // LabelEntitiesCount 
+                bool result = await RestApi_Entities.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities);
 
             }
             catch (Exception ex)

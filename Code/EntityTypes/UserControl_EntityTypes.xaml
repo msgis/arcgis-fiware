@@ -26,7 +26,7 @@
 
         <StackPanel Grid.Row="1" Grid.Column="1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button x:Name="Button_EntityToLayer" Grid.Row="1" Grid.Column="1" Content="Entity zeigen" ToolTip="Alle Entities zu diesem Typ in einem Layer zeigen" Margin="6,10,6,10" Padding="6"/>
+                <Button x:Name="Button_EntityToLayer" Grid.Row="1" Grid.Column="1" Content="Entities zeigen" ToolTip="Alle Entities zu diesem Typ in einem Layer zeigen" Margin="6,10,6,10" Padding="6"/>
             </StackPanel>
         </StackPanel>
 

@@ -103,6 +103,15 @@ Aber wenn das Feature jetzt nicht implementiert ist macht es auch nichts. Wichti
 RT:
 "die ganze Zeit" macht für mich keinen Sinn, wenn dann vor/während einer UI-Interaktion (Combo-Auswahl, Button-Holen, etc.)
 
+AF:
+Hier ein Beispiel mit CURL:
+
+zuerst den Request zur EventSource URL (hier für die Hydranten), dieser bleibt offen:
+curl -N "https://fiwaredev.msgis.net/ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3"
+und dann ein Attribut eines Hydranten in einem anderen Command Window oder über Postman ändern:
+curl --location --request PATCH 'https://fiwaredev.msgis.net/ngsi-ld/v1/entities/urn:ngsi-ld:Hydrant:HYDRANTOGD.36612499/attrs/OBJECTID' --header 'Content-Type: application/json' --data '{"value": 36612499,"type": "Property"}'
+In der Ausgabe des ersten Commands sollte dann ein neues Event gesendet werden mit einem "data" Anteil. Dort ist die id des geänderten Objektes (etwas verschachtelt).
+
 ...................................................................................................
 Hallo, Ich habe lange probiert und konnte bisher keinen neuen ArcPro Projekt erzeugen!
 Für die Version 3.0.3* kann ich keine passende SDK finden (entweder 2.9 oder 3.1)
@@ -125,76 +134,6 @@ https://pro.arcgis.com/en/pro-app/latest/help/analysis/geoprocessing/basics/find
 
 Für die Programmierung (c#) JSON-Feature gibt es folgende Funktion:
 GeometryEngine.Instance.JsonToGeometry(geometry.ToString())
-
-ArcGIS Pro Example c# for JSON To Features
-
-To use this example, you need to have ArcGIS Pro SDK installed and create a new ArcGIS Pro Add-In project in Visual Studio.
-Add the above code to a new class file in your project, and you can then call the ConvertJsonToFeatures method with the path to your JSON file and the desired feature class path.
-
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using ArcGIS.Core.Data;
-using ArcGIS.Core.Data.Json;
-using ArcGIS.Desktop.Framework.Threading.Tasks;
-using ArcGIS.Desktop.Mapping;
-
-public class JsonToFeaturesExample
-{
-    public async Task<bool> ConvertJsonToFeatures(string jsonFilePath, string featureClassPath)
-    {
-        try
-        {
-            // Read the JSON file
-            string jsonContent = await QueuedTask.Run(() => File.ReadAllText(jsonFilePath));
-
-            // Create a new feature class
-            await QueuedTask.Run(() =>
-            {
-                var featureClassDefinition = new FeatureClassDefinition()
-                {
-                    // Set the path and name of the new feature class
-                    Path = featureClassPath,
-                    Name = "ConvertedFeatures"
-                };
-
-                var featureClass = FeatureClassFactory.Instance.CreateFeatureClass(featureClassDefinition);
-
-                // Parse the JSON content
-                var jsonObject = new JsonObject(jsonContent);
-
-                // Iterate over the JSON features
-                var jsonFeatures = jsonObject["features"].GetAsJsonArray();
-                foreach (var jsonFeature in jsonFeatures)
-                {
-                    var geometry = jsonFeature["geometry"].GetAsJsonObject();
-
-                    // Create a new feature
-                    var feature = featureClass.CreateRowBuffer();
-                    feature["SHAPE"] = GeometryEngine.Instance.JsonToGeometry(geometry.ToString());
-
-                    // Set other attribute values based on your JSON structure
-                    feature["Name"] = jsonFeature["properties"]["name"].GetString();
-                    feature["Value"] = jsonFeature["properties"]["value"].GetDouble();
-
-                    // Add the feature to the feature class
-                    featureClass.Insert(feature);
-                }
-
-                // Commit the changes
-                featureClass.Store();
-            });
-
-            return true;
-        }
-        catch (Exception ex)
-        {
-            // Handle any exceptions
-            Console.WriteLine("Error converting JSON to features: " + ex.Message);
-            return false;
-        }
-    }
-}
 
 ...................................................................................................
 Ich werde vorerst EntityTypes holen...
@@ -266,5 +205,27 @@ P:\MS\link\roman\FiwareSummit
 ...................................................................................................
 Version 3.3.03
 Entities zu einem Type holen und als Layer zeigen.
+
+  "value": {
+    "type": "Point",
+    "coordinates": [
+      16.264293,
+      48.20284
+    ]
+  }
+
+  "location": {
+    "type": "GeoProperty",
+    "value": {
+      "type": "Point",
+      "coordinates": [
+        16.429548,
+        48.163505
+      ]
+    }
+
+Layers/Tags:
+    GraphicsLayer_Entities
+    Entities_Points
 
 ---------------------------------------------------------------------------------------------------
