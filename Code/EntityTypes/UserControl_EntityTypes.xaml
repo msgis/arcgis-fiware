@@ -25,8 +25,9 @@
         <ComboBox x:Name="ComboBox_EntityTypes" Grid.Row="0" Grid.Column="1" Margin="6,6,6,0" VerticalAlignment="Center" IsReadOnly="True"/>
 
         <StackPanel Grid.Row="1" Grid.Column="1">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button x:Name="Button_EntityToLayer" Grid.Row="1" Grid.Column="1" Content="Entities zeigen" ToolTip="Alle Entities zu diesem Typ in einem Layer zeigen" Margin="6,10,6,10" Padding="6"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <Button x:Name="Button_EntityToLayer" Content="Entities zeigen" ToolTip="Alle Entities zu diesem Typ in einem Layer zeigen" Margin="6,10,6,10" Padding="6"/>
+                <Label x:Name="Label_Count" Content="Anzahl:" Margin="6,6,6,6" VerticalContentAlignment="Center"/>
             </StackPanel>
         </StackPanel>
 

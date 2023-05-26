@@ -40,6 +40,9 @@ namespace msGIS.ProApp_FiwareSummit
         private Grid Grid_EntityTypes;
         private ComboBox ComboBox_EntityTypes;
         private Button Button_EntityToLayer;
+        private Label Label_Count;
+
+        private Layer m_LayerEntitiesPoints = null;
 
         private SubscriptionToken m_STMapViewChanged = null;
         private SubscriptionToken m_STMapMemberPropertiesChanged = null;
@@ -48,10 +51,10 @@ namespace msGIS.ProApp_FiwareSummit
 
         internal bool m_CanChangeBoard_EntityTypes = true;
         // private bool m_SuspendControlsEvents = false;
-        // private bool m_SuspendSetLayersChk = false;
+        private bool m_SuspendSetLayersChk = false;
         private bool m_HasSpecialEvents_EntityTypes = false;
 
-        internal Spring_EntityTypes(Grid grid_EntityTypes, ComboBox comboBox_EntityTypes, Button button_EntityToLayer)
+        internal Spring_EntityTypes(Grid grid_EntityTypes, ComboBox comboBox_EntityTypes, Button button_EntityToLayer, Label label_Count)
         {
             Grid_EntityTypes = grid_EntityTypes;
             Grid_EntityTypes.IsEnabled = false;
@@ -70,6 +73,9 @@ namespace msGIS.ProApp_FiwareSummit
 
             Button_EntityToLayer.IsEnabled = false;
             Button_EntityToLayer.Click += Button_EntityToLayer_Click;
+
+            Label_Count = label_Count;
+            _ = CleanEntitiesCountAsync(false);
         }
 
         private async void OnMapViewChanged(ActiveMapViewChangedEventArgs args)
@@ -174,6 +180,29 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
+        private async Task SetDependentVisibilitiesAsync(Layer layer)
+        {
+            try
+            {
+                if (!layer.IsVisible)
+                {
+                    try
+                    {
+                        m_SuspendSetLayersChk = true;
+                        await Fusion.m_Helper_Layer.SetLayerVisAsync(layer, true);
+                    }
+                    finally
+                    {
+                        m_SuspendSetLayersChk = false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "SetDependentVisibilitiesAsync");
+            }
+        }
+
         private string m_InitActiveOnStage_EntityTypes = "";
         private async Task InitActive_EntityTypesAsync(string callingRoutine)
         {
@@ -189,6 +218,17 @@ namespace msGIS.ProApp_FiwareSummit
 
                 if (!await Fusion.GetOneTimeRefsEntityTypesAsync())
                     return;
+
+                m_LayerEntitiesPoints = await Fusion.GetLayerEntitiesPointsAsync();
+                if (m_LayerEntitiesPoints == null)
+                    return;
+                if (!await Fusion.m_Helper_Layer.HasLayerFieldAsync(m_LayerEntitiesPoints, Fusion.m_FieldNameEntitiesPoints_OBJECTID, FieldType.OID))
+                    return;
+                if (!await Fusion.m_Helper_Layer.HasLayerFieldAsync(m_LayerEntitiesPoints, Fusion.m_FieldNameEntitiesPoints_SHAPE, FieldType.Geometry))
+                    return;
+
+                // Sichtbarkeit für die verwendeten Layers setzen.
+                await SetDependentVisibilitiesAsync(m_LayerEntitiesPoints);
 
                 // m_SuspendControlsEvents = true;
 
@@ -239,14 +279,41 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
+        private async Task CleanEntitiesCountAsync(bool isWorking)
+        {
+            try
+            {
+                Label_Count.Content = (isWorking) ? "Anzahl = ..." : " ";
+                Label_Count.Visibility = (isWorking) ? Visibility.Visible : Visibility.Hidden;
+            }
+            catch (Exception ex)
+            {
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "CleanEntitiesCountAsync");
+            }
+        }
+
+        private async Task ShowCountAsync(int entitiesCount)
+        {
+            // Fusion.m_UserControl_EntityTypes
+            try
+            {
+                Label_Count.Content = $"Anzahl = {entitiesCount}";
+                Label_Count.Visibility = Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "ShowCountAsync");
+            }
+        }
+
         private async Task CleanEntitiesAsync()
         {
             try
             {
-                Button_EntityToLayer.IsEnabled = false;
-
                 ComboBox_EntityTypes.Items.Clear();
 
+                Button_EntityToLayer.IsEnabled = false;
+                await CleanEntitiesCountAsync(false);
             }
             catch (Exception ex)
             {
@@ -285,14 +352,18 @@ namespace msGIS.ProApp_FiwareSummit
             Helper_Progress m_Helper_Progress = null;
             try
             {
+                await CleanEntitiesCountAsync(true);
+
                 if (!HasComboEntityTypeSelected)
                     throw new Exception("No entity type selected!");
+                if (m_LayerEntitiesPoints == null)
+                    throw new Exception($"Layer {Fusion.m_LayerTagEntitiesPoints} is not acquired!");
 
                 string entityType = ComboBox_EntityTypes.SelectedItem.ToString();
 
                 bool isProgressCancelable = false;
                 m_Helper_Progress = new Helper_Progress(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework, isProgressCancelable);
-                await m_Helper_Progress.ShowProgressAsync("EntitiesToFeaturesAsync", 900000, false);
+                await m_Helper_Progress.ShowProgressAsync("GetEntitiesFromRestApiAsync", 900000, false);
                 JArray jArrayEntities = await QueuedTask.Run(async () =>
                 {
                     return await RestApi_Entities.GetEntitiesFromRestApiAsync(entityType);
@@ -302,12 +373,15 @@ namespace msGIS.ProApp_FiwareSummit
                     return;
                 if (jArrayEntities.Count == 0)
                     await Fusion.m_Messages.AlertAsyncMsg("No entities acquired!", "EntitiesToFeaturesAsync");
+                await ShowCountAsync(jArrayEntities.Count);
 
-
-                // +++++ EntitiesToFeatures
-                // LabelEntitiesCount 
-                bool result = await RestApi_Entities.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities);
-
+                // EntitiesToFeatures
+                m_Helper_Progress = new Helper_Progress(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework, isProgressCancelable);
+                await m_Helper_Progress.ShowProgressAsync("BuildFeaturesFromJsonEntitiesAsync", (uint)jArrayEntities.Count, true);
+                bool taskResult = await QueuedTask.Run(async () =>
+                {
+                    return await RestApi_Entities.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities);
+                }, m_Helper_Progress.ProgressAssistant);
             }
             catch (Exception ex)
             {
@@ -324,8 +398,9 @@ namespace msGIS.ProApp_FiwareSummit
         }
 
 
-        private void ComboBox_EntityTypes_DropDownClosed(object sender, EventArgs e)
+        private async void ComboBox_EntityTypes_DropDownClosed(object sender, EventArgs e)
         {
+            await CleanEntitiesCountAsync(false);
             Button_EntityToLayer.IsEnabled = HasComboEntityTypeSelected;
         }
 

@@ -234,6 +234,7 @@ namespace msGIS.ProApp_FiwareSummit
                             {
                                 jArrayEntities.Add(element);
                             }
+                            // await Fusion.m_UserControl_EntityTypes.ShowCountAsync(jArrayEntities.Count);
                         }
                     }
                 } while (hasEntities);

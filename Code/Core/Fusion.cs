@@ -74,10 +74,11 @@ namespace msGIS.ProApp_FiwareSummit
 
         #region Data
 
-        // select * from nis.leitung_l
-        // private static Layer m_LayerLeitungL = null;
-        // internal static string m_LayerTagLeitungL = "LEITUNG_L";
-        // internal static string m_LayerNameLeitungL = "LEITUNG_L";
+        private static Layer m_LayerEntitiesPoints = null;
+        internal static string m_LayerTagEntitiesPoints = "Entities_Points";
+        //internal static string m_LayerNameEntitiesPoints = "Entities_Points";
+        internal static string m_FieldNameEntitiesPoints_OBJECTID = "OBJECTID";                      // OID
+        internal static string m_FieldNameEntitiesPoints_SHAPE = "SHAPE";                            // Geometry
 
         #endregion Data
 
@@ -96,14 +97,12 @@ namespace msGIS.ProApp_FiwareSummit
                         prjInfo += Environment.NewLine + $"Settings: {settingsPath}";
                     */
 
-                    /*
-                    Layer layerLeitungL = await Fusion.GetLayerLeitungLAsync();
-                    if (layerLeitungL == null)
+                    Layer layerEntitiesPoints = await Fusion.GetLayerEntitiesPointsAsync();
+                    if (layerEntitiesPoints == null)
                         return;
-                    string connInfo = await Fusion.m_General.GetConnectionInfoAsync(layerLeitungL);
+                    string connInfo = await Fusion.m_General.GetConnectionInfoAsync(layerEntitiesPoints);
                     if (!string.IsNullOrEmpty(connInfo))
                         prjInfo += Environment.NewLine + Environment.NewLine + connInfo;
-                    */
 
                     await Fusion.m_Messages.AlertAsyncMsg(prjInfo, "Project Info");
                 }
@@ -118,34 +117,31 @@ namespace msGIS.ProApp_FiwareSummit
 
         #region One-time reference
 
-        /*
-        internal static async Task<Layer> GetLayerLeitungLAsync() => await GetLayerLeitungLAsync(true);
-        internal static async Task<Layer> GetLayerLeitungLAsync(bool queueNewTask)
+        internal static async Task<Layer> GetLayerEntitiesPointsAsync() => await GetLayerEntitiesPointsAsync(true);
+        internal static async Task<Layer> GetLayerEntitiesPointsAsync(bool queueNewTask)
         {
             try
             {
-                if (m_LayerLeitungL == null)
-                    m_LayerLeitungL = await Fusion.m_Helper_Layer.GetLayerByTagAsync(m_LayerTagLeitungL, queueNewTask);    // Fusion.m_Helper_Layer.GetLayerByNameAsync(m_LayerNameLeitungL);
-                return m_LayerLeitungL;
+                if (m_LayerEntitiesPoints == null)
+                    m_LayerEntitiesPoints = await Fusion.m_Helper_Layer.GetLayerByTagAsync(m_LayerTagEntitiesPoints, queueNewTask);    // Fusion.m_Helper_Layer.GetLayerByNameAsync(m_LayerNameEntitiesPoints);
+                return m_LayerEntitiesPoints;
             }
             catch (Exception ex)
             {
-                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "GetLayerLeitungLAsync");
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "GetLayerEntitiesPointsAsync");
                 return null;
             }
         }
-        */
 
         private static bool m_HasOneTimeRefsEntityTypes = false;
         internal static async Task CleanOneTimeRefsAsync()
         {
             try
             {
-                // m_LayerLeitungL = null;
+                m_LayerEntitiesPoints = null;
 
                 m_HasOneTimeRefsEntityTypes = false;
 
-                // 3.3.20/20230127/msGIS_ProApp_Common_rt_033: Get Layers/SaTables Tags.
                 await m_Helper_Layer.CleanOneTimeRefs();
             }
             catch (Exception ex)
@@ -160,11 +156,11 @@ namespace msGIS.ProApp_FiwareSummit
             {
                 int progressCount = 0;
 
-                //progressCount++;
-                //await helper_Progress.NotifyProgressAsync(Fusion.m_LayerLeitungL);
-                //m_LayerLeitungL = await Fusion.GetLayerLeitungLAsync(queueNewTask);
-                ////if (m_LayerLeitungL == null)
-                ////    return false;
+                progressCount++;
+                await helper_Progress.NotifyProgressAsync(m_LayerTagEntitiesPoints);
+                m_LayerEntitiesPoints = await Fusion.GetLayerEntitiesPointsAsync(queueNewTask);
+                //if (m_LayerEntitiesPoints == null)
+                //    return false;
 
                 if (progressCount != maxRange)
                     throw new Exception($"Progress count={progressCount} <> maxRange={maxRange}!");
@@ -191,7 +187,7 @@ namespace msGIS.ProApp_FiwareSummit
                     await helper_Working.ShowDelayedWorkingAsync("EntityTypes - Vorbereitung der Anzeige");
                 }
 
-                uint maxRange = 0;
+                uint maxRange = 1;
                 Helper_Progress helper_Progress = null;
                 bool queueNewTask = false;
                 // Task with progress
