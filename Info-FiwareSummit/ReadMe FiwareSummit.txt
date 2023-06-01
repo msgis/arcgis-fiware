@@ -3,20 +3,15 @@ FiwareSummit
 
 Install:
 P:\MS\link\roman\FiwareSummit
-C:\Users\[user]\Documents\ArcGIS\AddIns\ArcGISPro
 
 Project:
 https://app.asana.com/0/1204285422260806/1204530723943675/
+https://github.com/msgis/arcgis-fiware.git
 
 Author:
 mailto:roman.trojan@msgis.com
 Time:
 [0141] Fiware.Summit _ms.GIS.Intern PRJ.Fiware_Summit
-
-AddinX:
-https://bitbucket.org/msgis/fiwaresummit-arcgispro/src/master/
-https://app.asana.com/0/1204285422260806/1204530723943675/
-
 ===================================================================================================
 
 ---------------------------------------------------------------------------------------------------
@@ -30,13 +25,18 @@ APRX
 ---------------------------------------------------------------------------------------------------
 APRX muss "Fiware" und "Summit" im Dateinamen beinhalten.
 z.B. "RT Wien Fiware_Summit.aprx"
-Map in APRX muss den Tag "Fiware_Summit" beinhalten.
+Map muss den Tag "Fiware_Summit" beinhalten.
+Map muss einen Layer mit Tag "Entities_Points" und Typ Point beinhalten.
 
 ---------------------------------------------------------------------------------------------------
 AddInX
 ---------------------------------------------------------------------------------------------------
 AddInX "msGIS.ProApp_FiwareSummit.esriAddinX" installieren.
 (doppelklicken, aus ArcPro oder per GUID)
+Sollte in folgendem Ordner ersichtlich sein:
+C:\Users\[user]\Documents\ArcGIS\AddIns\ArcGISPro
+Nach einem Start in ArcPro sollten die Komponenten ersichtlich werden:
+C:\Users\[user]\AppData\Local\ESRI\ArcGISPro\AssemblyCache
 
 ---------------------------------------------------------------------------------------------------
 ArcPro
@@ -55,7 +55,7 @@ Alle zuvor vorhandenen Objekte am Layer werden gelöscht.
 
 (Stand 2023.05.26 Version 3.3.03)
 
-Geplant:
+Wünschenswert:
 Layer Objekte mit Attribut "Typ" versehen, damit nur die entsprechenden Objekte gelöscht werden und auch später besser identifiziert werden können.
 Löschen der Objekte entsprechend "Typ".
 Löschen aller Objekte (Reset).
