@@ -33,7 +33,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ProApp-Common\msGIS.ProApp_Common_MA31_GIS.csproj" />
+    <ProjectReference Include="..\..\ProApp-Common\msGIS.ProApp_Common_FIWARE.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ArcGIS.Desktop.Framework">

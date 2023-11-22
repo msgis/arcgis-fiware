@@ -230,6 +230,9 @@ Alle zuvor vorhandenen Objekte am Layer werden gelöscht.
 ...................................................................................................
 Version 3.3.04
 
+3.3.30/20231122/msGIS_ProApp_Common_rt_054: New Project/Namespace FIWARE.
+
+
 Geplant:
 Layer Objekte mit Attribut "Typ" versehen, damit nur die entsprechenden Objekte gelöscht werden und auch später besser identifiziert werden können.
 Löschen der Objekte entsprechend "Typ".
