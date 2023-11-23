@@ -327,9 +327,12 @@ namespace msGIS.ProApp_FiwareSummit
             {
                 await CleanEntitiesAsync();
 
-                foreach (object entityType in listEntityTypes)
+                if (listEntityTypes != null)
                 {
-                    ComboBox_EntityTypes.Items.Add(entityType);
+                    foreach (object entityType in listEntityTypes)
+                    {
+                        ComboBox_EntityTypes.Items.Add(entityType);
+                    }
                 }
             }
             catch (Exception ex)

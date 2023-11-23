@@ -227,8 +227,10 @@ Entities zu einem Type holen und als Layer zeigen.
 Die Entities werden laut ausgewähltem Typ direkt per REST-Api in ein JArray geladen und zu einem vordefinierten Layer hinzugefügt.
 Alle zuvor vorhandenen Objekte am Layer werden gelöscht.
 
+
 ...................................................................................................
-Version 3.3.04
+3.3.04/2023mmdd/rt: New Version.
+InstVer=ArcPro_3.0.3.36057 AddInX_3.3.04 Common_3.3.30 MSI_
 
 3.3.30/20231122/msGIS_ProApp_Common_rt_054: New Project/Namespace FIWARE.
 
@@ -239,4 +241,8 @@ Löschen der Objekte entsprechend "Typ".
 Löschen aller Objekte (Reset).
 Dynamischer Update anhand per REST-Api. 
 
+
+---------------------------------------------------------------------------------------------------
+rt: Next 3.3.04/2023mmdd/msGIS_FIWARE_rt_001: Xxx
+To build an AddInX look for instructions at common folder.
 ---------------------------------------------------------------------------------------------------

@@ -9,8 +9,14 @@
     <NoWarn>CA1416</NoWarn>
     <AssemblyVersion>3.3.01.0</AssemblyVersion>
     <FileVersion>3.3.01.0</FileVersion>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>msgis.snk</AssemblyOriginatorKeyFile>
+    <Nullable>warnings</Nullable>
+    <AssemblyName>msGIS.ProApp_FiwareSummit</AssemblyName>
+    <RootNamespace>msGIS.ProApp_FiwareSummit</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Delete obj_bin.cmd" />
     <None Remove="Images_Resource\ButtonID_ProjectInfo_DS16.png" />
     <None Remove="Images_Resource\ButtonID_ProjectInfo_DS32.png" />
     <None Remove="Images_Resource\ButtonID_ProjectInfo_LS16.png" />
@@ -23,7 +29,10 @@
     <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LC32.png" />
     <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LS16.png" />
     <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LS32.png" />
-    <None Remove="Info-FiwareSummit\Signatur ms.gis RT.txt" />
+    <None Remove="Info FIWARE\ArcPro - Shortcut.lnk" />
+    <None Remove="Info FIWARE\msGIS_Settings_FiwareSummit.json" />
+    <None Remove="Info FIWARE\Signatur ms.gis RT.txt" />
+    <None Remove="LICENSE" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config.daml" />
@@ -33,7 +42,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ProApp-Common\msGIS.ProApp_Common_FIWARE.csproj" />
+    <ProjectReference Include="..\..\ProApp-Common\msGIS.ProApp_Common_FIWARE_3x.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ArcGIS.Desktop.Framework">

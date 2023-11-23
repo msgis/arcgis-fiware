@@ -160,10 +160,13 @@ namespace msGIS.ProApp_FiwareSummit
 
                 // Populate list wih entity types.
                 List<object> listEntityTypes = new List<object>();
-                foreach (JToken jTokenVal in oJTokenVals)
+                if (oJTokenVals != null)
                 {
-                    string arrVal = await ReadSettingStringAsync(settingsPath, cfgKey, jTokenVal);
-                    listEntityTypes.Add(arrVal);
+                    foreach (JToken jTokenVal in oJTokenVals)
+                    {
+                        string arrVal = await ReadSettingStringAsync(settingsPath, cfgKey, jTokenVal);
+                        listEntityTypes.Add(arrVal);
+                    }
                 }
 
                 return listEntityTypes;
@@ -267,6 +270,8 @@ namespace msGIS.ProApp_FiwareSummit
                             JObject keyValuePairs = jToken_Entity.ToObject<JObject>();
 
                             string cfgKey = "location";
+                            if (keyValuePairs == null)
+                                continue;
                             if (!keyValuePairs.ContainsKey(cfgKey))
                             {
                                 msg = $"Key <{cfgKey}> not found!";
@@ -281,8 +286,13 @@ namespace msGIS.ProApp_FiwareSummit
                                 return false;
                             }
 
+                            if (jToken_Location == null)
+                                continue;
                             keyValuePairs = jToken_Location.ToObject<JObject>();
+
                             cfgKey = "value";
+                            if (keyValuePairs == null)
+                                continue;
                             if (!keyValuePairs.ContainsKey(cfgKey))
                             {
                                 msg = $"Key <{cfgKey}> not found!";
@@ -297,8 +307,13 @@ namespace msGIS.ProApp_FiwareSummit
                                 return false;
                             }
 
+                            if (jToken_Value == null)
+                                continue;
                             keyValuePairs = jToken_Value.ToObject<JObject>();
+
                             cfgKey = "type";
+                            if (keyValuePairs == null)
+                                continue;
                             if (!keyValuePairs.ContainsKey(cfgKey))
                             {
                                 msg = $"Key <{cfgKey}> not found!";
@@ -312,6 +327,9 @@ namespace msGIS.ProApp_FiwareSummit
                                 await Fusion.m_Messages.AlertAsyncMsg(msg, "Read Entity");
                                 return false;
                             }
+
+                            if (jToken_Type == null)
+                                continue;
                             if (jToken_Type.ToString() != "Point")
                             {
                                 msg = $"Key <{cfgKey}> type not expected <> Point!";
@@ -336,6 +354,8 @@ namespace msGIS.ProApp_FiwareSummit
 
                             //string jStringPoint = jToken_Coordinates.ToString();
                             //MapPoint mapPointFromJson = MapPointBuilderEx.FromJson(jStringPoint);
+                            if (jToken_Coordinates == null)
+                                continue;
                             if (jToken_Coordinates.Type != JTokenType.Array)
                             {
                                 msg = $"Key <{cfgKey}> type not expected <> Array!";
