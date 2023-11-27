@@ -1,10 +1,6 @@
 ===================================================================================================
 FiwareSummit
 
-Install:
-P:\MS\link\roman\FiwareSummit
-C:\Users\[user]\Documents\ArcGIS\AddIns\ArcGISPro
-
 Project:
 https://app.asana.com/0/1204285422260806/1204530723943675/
 
@@ -149,12 +145,8 @@ https://fiwaredev.msgis.net/ngsi-ld/v1/types 
 
 ...................................................................................................
 Version 3.3.01
-P:\MS\link\roman\FiwareSummit
 "Entity type" kann per ComboBox ausgewählt werden.
-Siehe auch
-P:\MS\link\roman\FiwareSummit\3.0.3.36057_3.3.01\ReadMe FiwareSummit.txt
 
-...................................................................................................
 QGIS
 P:\MS\TESTHOUSE\gto-qgis3\gto
 QGIS-OSGeo4W-3.28.4-3.msi
@@ -200,7 +192,6 @@ Nach einer Besprechung mit GP hole ich die EntityTypes direkt per REST-Api (wie 
 JSON-File wird nicht mehr benötigt, kann auf Wunsch erzeugt oder ausgewertet werden.
 "Entity type" kann per ComboBox ausgewählt werden.
 Siehe auch ReadMe FiwareSummit.txt
-P:\MS\link\roman\FiwareSummit
 
 ...................................................................................................
 Version 3.3.03
@@ -229,11 +220,15 @@ Alle zuvor vorhandenen Objekte am Layer werden gelöscht.
 
 
 ...................................................................................................
-3.3.04/2023mmdd/rt: New Version.
+3.3.04/20231127/rt: New Version.
 InstVer=ArcPro_3.0.3.36057 AddInX_3.3.04 Common_3.3.31 MSI_
 
 3.3.30/20231122/msGIS_ProApp_Common_rt_054: New Project/Namespace FIWARE.
 3.3.31/20231123/msGIS_ProApp_Common_rt_055: Projects "_3x".
+
+...................................................................................................
+3.3.05/2023mmdd/rt: New Version.
+InstVer=ArcPro_3.0.3.36057 AddInX_3.3.04 Common_3.3.31 MSI_
 
 
 Geplant:
@@ -244,6 +239,6 @@ Dynamischer Update anhand per REST-Api.
 
 
 ---------------------------------------------------------------------------------------------------
-rt: Next 3.3.04/2023mmdd/msGIS_FIWARE_rt_001: Xxx
+rt: Next 3.3.05/2023mmdd/msGIS_FIWARE_rt_001: Xxx
 To build an AddInX look for instructions at common folder.
 ---------------------------------------------------------------------------------------------------

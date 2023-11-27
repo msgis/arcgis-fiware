@@ -1,9 +1,6 @@
 ===================================================================================================
 FiwareSummit
 
-Install:
-P:\MS\link\roman\FiwareSummit
-
 Project:
 https://app.asana.com/0/1204285422260806/1204530723943675/
 https://github.com/msgis/arcgis-fiware.git
@@ -12,6 +9,7 @@ Author:
 mailto:roman.trojan@msgis.com
 Time:
 [0141] Fiware.Summit _ms.GIS.Intern PRJ.Fiware_Summit
+
 ===================================================================================================
 
 ---------------------------------------------------------------------------------------------------
