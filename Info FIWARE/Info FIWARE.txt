@@ -230,9 +230,10 @@ Alle zuvor vorhandenen Objekte am Layer werden gelöscht.
 
 ...................................................................................................
 3.3.04/2023mmdd/rt: New Version.
-InstVer=ArcPro_3.0.3.36057 AddInX_3.3.04 Common_3.3.30 MSI_
+InstVer=ArcPro_3.0.3.36057 AddInX_3.3.04 Common_3.3.31 MSI_
 
 3.3.30/20231122/msGIS_ProApp_Common_rt_054: New Project/Namespace FIWARE.
+3.3.31/20231123/msGIS_ProApp_Common_rt_055: Projects "_3x".
 
 
 Geplant:

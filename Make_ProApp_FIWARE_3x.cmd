@@ -37,7 +37,7 @@ cd %MyDir%
 cd ..\..\ProApp-Common
 git pull
 if "%BuildCommon%" == 1 (
-	MsBuild.exe msGIS.ProApp_Common_FIWARE.csproj -t:Clean -p:Configuration=Release >> %MakeInfo%
+	MsBuild.exe msGIS.ProApp_Common_FIWARE_3x.csproj -t:Clean -p:Configuration=Release >> %MakeInfo%
 	MSBuild.exe ProApp_Common_FIWARE_3x.sln -m -t:restore -property:Configuration=Release >> %MakeInfo%
 	MSBuild.exe ProApp_Common_FIWARE_3x.sln -m -t:rebuild -property:Configuration=Release >> %MakeInfo%
 )
@@ -47,7 +47,7 @@ rem ----------------------------------------------------------------------------
 REM ProApp_FIWARE_3x
 rem -----------------------------------------------------------------------------------------------------
 git pull
-MsBuild.exe msGIS.ProApp_FIWARE.csproj -t:Clean >> %MakeInfo%
+MsBuild.exe msGIS.ProApp_FIWARE_3x.csproj -t:Clean >> %MakeInfo%
 rem devenv.exe ProApp_FIWARE_3x.sln /rebuild Release /out %MakeInfo%
 MSBuild.exe ProApp_FIWARE_3x.sln -m -t:restore -property:Configuration=Release >> %MakeInfo%
 MSBuild.exe ProApp_FIWARE_3x.sln -m -t:rebuild -property:Configuration=Release >> %MakeInfo%
