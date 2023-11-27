@@ -178,7 +178,7 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
-        internal static async Task<object> GetJsonFromRestApiAsync(string apiUrl)
+        private static async Task<object> GetJsonFromRestApiAsync(string apiUrl)
         {
             try
             {
@@ -386,7 +386,7 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
-        internal static async Task RefreshRestApiAsync()
+        private static async Task RefreshRestApiAsync()
         {
             try
             {
@@ -412,6 +412,46 @@ namespace msGIS.ProApp_FiwareSummit
                 await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "RefreshRestApiAsync");
             }
         }
+
+        private static bool m_IsUpdateOnStage = false;
+        internal static async Task StopUpdateAsync()
+        {
+            try
+            {
+                m_IsUpdateOnStage = false;
+            }
+            catch (Exception ex)
+            {
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "StopUpdateAsync");
+            }
+        }
+        internal static async Task StartUpdateAsync(string entityType)
+        {
+            try
+            {
+                switch (entityType)
+                {
+                    case "":
+                        break;
+
+                    default:
+                        break;
+                }
+
+                // DateTime startTime = DateTime.Now;
+                m_IsUpdateOnStage = false;
+                while (m_IsUpdateOnStage)
+                {
+                    await Task.Delay(800);
+                    // long timeoutSec = (DateTime.Now.Ticks - startTime.Ticks) / TimeSpan.TicksPerSecond;
+                }
+            }
+            catch (Exception ex)
+            {
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "StartUpdateAsync");
+            }
+        }
+
     }
 
 }

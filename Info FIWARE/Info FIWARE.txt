@@ -238,6 +238,29 @@ Löschen aller Objekte (Reset).
 Dynamischer Update anhand per REST-Api. 
 
 
+20231127: Daten nicht per RestApi, sondern über eigenen Data Provider PlugIn (read only).
+
+Connection in ArcPro integrieren
+Framework anmelden
+FIREWARE Connection
+Templates
+Test-Driver
+Show data on graphics overlay!
+
+Data.PlugIn.Datasource
+PlugIn DataSource Template Class
+Read only
+
+ProConcepts-Plugin-Datasources
+https://github.com/esri/arcgis-pro-sdk/wiki/ProConcepts-Plugin-Datasources
+
+PluginDatasourceTemplate Class
+https://pro.arcgis.com/en/pro-app/latest/sdk/api-reference/topic21975.html
+
+Plugin Datasources
+https://mediaspace.esri.com/media/t/1_gpsfiskh
+
+
 ---------------------------------------------------------------------------------------------------
 rt: Next 3.3.05/2023mmdd/msGIS_FIWARE_rt_001: Xxx
 To build an AddInX look for instructions at common folder.

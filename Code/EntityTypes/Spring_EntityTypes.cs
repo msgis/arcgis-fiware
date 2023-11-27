@@ -362,6 +362,7 @@ namespace msGIS.ProApp_FiwareSummit
                 if (m_LayerEntitiesPoints == null)
                     throw new Exception($"Layer {Fusion.m_LayerTagEntitiesPoints} is not acquired!");
 
+                await RestApi_Entities.StopUpdateAsync();
                 string entityType = ComboBox_EntityTypes.SelectedItem.ToString();
 
                 bool isProgressCancelable = false;
@@ -409,6 +410,8 @@ namespace msGIS.ProApp_FiwareSummit
                 {
                     if (!await Fusion.m_Helper_Op.ExecOpAsync(editOperation))
                         return;
+
+                    await RestApi_Entities.StartUpdateAsync(entityType);
                 }
             }
             catch (Exception ex)
