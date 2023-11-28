@@ -218,6 +218,11 @@ Entities zu einem Type holen und als Layer zeigen.
 Die Entities werden laut ausgewähltem Typ direkt per REST-Api in ein JArray geladen und zu einem vordefinierten Layer hinzugefügt.
 Alle zuvor vorhandenen Objekte am Layer werden gelöscht.
 
+Geplant:
+Layer Objekte mit Attribut "Typ" versehen, damit nur die entsprechenden Objekte gelöscht werden und auch später besser identifiziert werden können.
+Löschen der Objekte entsprechend "Typ".
+Löschen aller Objekte (Reset).
+Dynamischer Update anhand per REST-Api. 
 
 ...................................................................................................
 3.3.04/20231127/rt: New Version.
@@ -230,15 +235,23 @@ InstVer=ArcPro_3.0.3.36057 AddInX_3.3.04 Common_3.3.31 MSI_
 3.3.05/2023mmdd/rt: New Version.
 InstVer=ArcPro_3.0.3.36057 AddInX_3.3.04 Common_3.3.31 MSI_
 
-
-Geplant:
-Layer Objekte mit Attribut "Typ" versehen, damit nur die entsprechenden Objekte gelöscht werden und auch später besser identifiziert werden können.
-Löschen der Objekte entsprechend "Typ".
-Löschen aller Objekte (Reset).
-Dynamischer Update anhand per REST-Api. 
+3.3.05/20231128/msGIS_FIWARE_rt_001: [FIWARE] Integration ArcGIS PRO.
+https://app.asana.com/0/1203876411184345/1205999834711034/
+Daten nicht per RestApi, sondern über eigenen Data Provider PlugIn (read only).
 
 
-20231127: Daten nicht per RestApi, sondern über eigenen Data Provider PlugIn (read only).
+NuGet NGSIBaseModel
+This is a multi-purpose parser for the NGSI10 standard.
+The NGSI10 standard is a the default standard used by ORION the main Componnent of the FIWARE project.
+This parser is able to simply convert the Json objects received in the NGSI format (both standard and keyValues) to C# Models.
+And also convert Java classes to the equivalent and compliant NGSI10 entities.
+
+FIWARE.Orion.Client
+A portable .NET library for the FIWARE Orion Context Broker
+
+ERGON.OwinOAuth2.FiWareAuth
+The Owin OAuth2 Implimentation for FiWarelab
+
 
 Connection in ArcPro integrieren
 Framework anmelden
@@ -251,17 +264,33 @@ Data.PlugIn.Datasource
 PlugIn DataSource Template Class
 Read only
 
+
+ArcGIS.Core.Data.PluginDatastore Namespace
+https://pro.arcgis.com/en/pro-app/latest/sdk/api-reference/topic21958.html
+
 ProConcepts-Plugin-Datasources
 https://github.com/esri/arcgis-pro-sdk/wiki/ProConcepts-Plugin-Datasources
-
-PluginDatasourceTemplate Class
+Implementing the Datastore
+There are three classes that must be created by the developer to implement a Plugin Datasource.
+1. PluginDatasourceTemplate Class.
 https://pro.arcgis.com/en/pro-app/latest/sdk/api-reference/topic21975.html
+2. PluginTableTemplate Class.
+https://pro.arcgis.com/en/pro-app/latest/sdk/api-reference/topic22017.html
+3. PluginCursorTemplate Class.
+https://pro.arcgis.com/en/pro-app/latest/sdk/api-reference/topic21960.html
 
-Plugin Datasources
+
+Plugin Datasources (18:00 - 30:00)
 https://mediaspace.esri.com/media/t/1_gpsfiskh
+24:40 'ArcGIS Pro PlugIn' Project Template
+18:00 DAML Integration.
+<PluginDatasources>
+  <PluginDatasource id="XxxPluginDatasourceXxx" class="xxx" ...
+19:30 PluginDatasourceConnectionPath object, which inherits from the Connector base class
+20:45 New PluginDatastore(conSql), GetTableNames(), OpenTable(tableName), LayerFactory.Instance.CreateFeatureLayer
 
 
 ---------------------------------------------------------------------------------------------------
-rt: Next 3.3.05/2023mmdd/msGIS_FIWARE_rt_001: Xxx
+rt: Next 3.3.05/2023mmdd/msGIS_FIWARE_rt_002: Xxx
 To build an AddInX look for instructions at common folder.
 ---------------------------------------------------------------------------------------------------

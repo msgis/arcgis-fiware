@@ -244,6 +244,10 @@ namespace msGIS.ProApp_FiwareSummit
                     m_STMapMemberPropertiesChanged = MapMemberPropertiesChangedEvent.Subscribe(OnMapMemberPropertiesChanged);
                 }
 
+                // 3.3.05/20231128/msGIS_FIWARE_rt_001: [FIWARE] Integration ArcGIS PRO.
+                if (!await InitPluginDatastoreAsync())
+                    return;
+
                 // Get entity types from JSON.
                 string apiUrl = "https://fiwaredev.msgis.net/ngsi-ld/v1/types";
                 List<object> listEntityTypes = await RestApi_Entities.ReadSettingsFromRestApiAsync(apiUrl);
@@ -350,20 +354,54 @@ namespace msGIS.ProApp_FiwareSummit
         }
 
 
+        private async Task<bool> InitPluginDatastoreAsync()
+        {
+            try
+            {
+                // 3.3.05/20231128/msGIS_FIWARE_rt_001: [FIWARE] Integration ArcGIS PRO.
+                bool evalPlugInDatastore = false;
+                if (!evalPlugInDatastore)
+                    return true;
+
+                PluginDatasourceTemplate_Fiware pluginDatasourceTemplate_Fiware = new PluginDatasourceTemplate_Fiware();
+
+                // Tables
+                // https://fiwaredev.msgis.net/ngsi-ld/v1/types
+
+                // Records
+                // https://fiwaredev.msgis.net/ngsi-ld/v1/entities?type={entityType}
+
+                string apiUrl = "https://fiwaredev.msgis.net/ngsi-ld/v1";
+                Uri uriFiware = new Uri(apiUrl);
+                bool canOpenFiware = pluginDatasourceTemplate_Fiware.CanOpen(uriFiware);
+                if (!canOpenFiware)
+                    throw new Exception($"FIWARE is not comprised!");
+
+                pluginDatasourceTemplate_Fiware.Open(uriFiware);
+
+                return canOpenFiware;
+            }
+            catch (Exception ex)
+            {
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "InitPluginDatastoreAsync");
+                return false;
+            }
+        }
+
         private async Task EntitiesToFeaturesAsync()
         {
             Helper_Progress m_Helper_Progress = null;
             try
             {
-                await CleanEntitiesCountAsync(true);
-
                 if (!HasComboEntityTypeSelected)
                     throw new Exception("No entity type selected!");
                 if (m_LayerEntitiesPoints == null)
                     throw new Exception($"Layer {Fusion.m_LayerTagEntitiesPoints} is not acquired!");
+                string entityType = ComboBox_EntityTypes.SelectedItem.ToString();
+
+                await CleanEntitiesCountAsync(true);
 
                 await RestApi_Entities.StopUpdateAsync();
-                string entityType = ComboBox_EntityTypes.SelectedItem.ToString();
 
                 bool isProgressCancelable = false;
                 m_Helper_Progress = new Helper_Progress(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework, isProgressCancelable);

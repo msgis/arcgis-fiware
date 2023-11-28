@@ -106,6 +106,7 @@ namespace msGIS.ProApp_FiwareSummit
 
                     await Fusion.m_Messages.AlertAsyncMsg(prjInfo, "Project Info");
                 }
+
             }
             catch (Exception ex)
             {
