@@ -272,11 +272,11 @@ ProConcepts-Plugin-Datasources
 https://github.com/esri/arcgis-pro-sdk/wiki/ProConcepts-Plugin-Datasources
 Implementing the Datastore
 There are three classes that must be created by the developer to implement a Plugin Datasource.
-1. PluginDatasourceTemplate Class.
+1. Pro Plugin Datasource Template Class.
 https://pro.arcgis.com/en/pro-app/latest/sdk/api-reference/topic21975.html
-2. PluginTableTemplate Class.
+2. Pro Plugin Table Template Class.
 https://pro.arcgis.com/en/pro-app/latest/sdk/api-reference/topic22017.html
-3. PluginCursorTemplate Class.
+3. Pro Plugin Cursor Template Class.
 https://pro.arcgis.com/en/pro-app/latest/sdk/api-reference/topic21960.html
 
 

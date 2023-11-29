@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ProApp-Common\msGIS.ProApp_Common_FIWARE_3x.csproj" />
+    <ProjectReference Include="..\ProPluginDatasource_FIWARE\msGIS.ProPluginDatasource_FIWARE_3x.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ArcGIS.Desktop.Framework">

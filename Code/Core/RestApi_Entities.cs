@@ -91,10 +91,12 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
-        internal static async Task<List<object>> ReadSettingsFromRestApiAsync(string apiUrl)
+        internal static async Task<List<object>> ReadSettingsFromRestApiAsync()
         {
             try
             {
+                string apiUrl = "https://fiwaredev.msgis.net/ngsi-ld/v1/types";
+
                 JObject oJObjectSettings = (JObject)await GetJsonFromRestApiAsync(apiUrl);
                 if ((oJObjectSettings == null) || (oJObjectSettings.Count == 0))
                 {
