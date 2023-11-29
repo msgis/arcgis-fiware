@@ -34,7 +34,7 @@ REM ProApp_Common_FIWARE_3x
 rem -----------------------------------------------------------------------------------------------------
 set MyDir=%CD%
 cd %MyDir%
-cd ..\..\ProApp-Common
+cd ..\..\..\ProApp-Common
 git pull
 if "%BuildCommon%" == 1 (
 	MsBuild.exe msGIS.ProApp_Common_FIWARE_3x.csproj -t:Clean -p:Configuration=Release >> %MakeInfo%

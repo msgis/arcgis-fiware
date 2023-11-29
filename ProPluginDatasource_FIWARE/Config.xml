@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ESRI.Configuration xmlns="http://schemas.esri.com/DADF/Registry" 
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
+  <Name>msGIS.ProPluginDatasource_FIWARE</Name>
+  <AddInID>{0d10cbaf-86da-4952-90d8-618a573119c7}</AddInID>
+  <Description>msGIS.ProPluginDatasource_FIWARE description</Description>
+  <Version>3.3.01</Version>
+  <Author>roman.trojan@msgis.com</Author>
+  <Company>ms.GIS</Company>
+  <Date>29.11.2023 08:50:00</Date>
+  <Targets>
+    <Target name="ArcGISPro" version="3.0" />
+  </Targets>
+  <!-- CLR should be set to the target framework set in the .csproj -->
+  <AddIn language="CLR:PluginDS" library="msGIS.ProPluginDatasource_FIWARE.dll" namespace="msGIS.ProPluginDatasource_FIWARE">
+    <ArcGISPro>
+      <PluginDatasources>
+        <PluginDatasource id="msGIS_FIWARE_ProPluginDatasourceID" class="ProPluginDatasourceTemplate_Fiware"/>
+      </PluginDatasources>
+    </ArcGISPro>
+  </AddIn>
+</ESRI.Configuration>

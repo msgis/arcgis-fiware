@@ -29,6 +29,8 @@
     <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LC32.png" />
     <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LS16.png" />
     <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LS32.png" />
+    <None Remove="Info FIWARE\APRX Agent - Shortcut.lnk" />
+    <None Remove="Info FIWARE\APRX Testhouse - Shortcut.lnk" />
     <None Remove="Info FIWARE\ArcPro - Shortcut.lnk" />
     <None Remove="Info FIWARE\msGIS_Settings_FiwareSummit.json" />
     <None Remove="Info FIWARE\Signatur ms.gis RT.txt" />
@@ -42,7 +44,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ProApp-Common\msGIS.ProApp_Common_FIWARE_3x.csproj" />
+    <ProjectReference Include="..\..\..\ProApp-Common\msGIS.ProApp_Common_FIWARE_3x.csproj" />
     <ProjectReference Include="..\ProPluginDatasource_FIWARE\msGIS.ProPluginDatasource_FIWARE_3x.csproj" />
   </ItemGroup>
   <ItemGroup>
