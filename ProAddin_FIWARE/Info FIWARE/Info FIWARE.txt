@@ -267,9 +267,11 @@ Read only
 
 ArcGIS.Core.Data.PluginDatastore Namespace
 https://pro.arcgis.com/en/pro-app/latest/sdk/api-reference/topic21958.html
-
-ProConcepts-Plugin-Datasources
+ProConcepts Plugin Datasources
 https://github.com/esri/arcgis-pro-sdk/wiki/ProConcepts-Plugin-Datasources
+ProGuide Plugin Datasources
+https://github.com/esri/arcgis-pro-sdk/wiki/ProGuide-Plugin-Datasources
+
 Implementing the Datastore
 There are three classes that must be created by the developer to implement a Plugin Datasource.
 1. Pro Plugin Datasource Template Class.
