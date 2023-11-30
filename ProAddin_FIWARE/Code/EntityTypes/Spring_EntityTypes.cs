@@ -3,6 +3,7 @@
 using Newtonsoft.Json.Linq;
 
 using ArcGIS.Core.Data;
+using ArcGIS.Core.Data.PluginDatastore;
 using ArcGIS.Core.Data.UtilityNetwork.Trace;
 using ArcGIS.Core.Events;
 using ArcGIS.Core.Geometry;
@@ -40,6 +41,7 @@ namespace msGIS.ProApp_FiwareSummit
         private Grid Grid_EntityTypes;
         private ComboBox ComboBox_EntityTypes;
         private Button Button_EntityToLayer;
+        private Button Button_Datasource;
         private Label Label_Count;
 
         private Layer m_LayerEntitiesPoints = null;
@@ -55,7 +57,7 @@ namespace msGIS.ProApp_FiwareSummit
         //private bool m_SuspendSetLayersChk = false;
         private bool m_HasSpecialEvents_EntityTypes = false;
 
-        internal Spring_EntityTypes(Grid grid_EntityTypes, ComboBox comboBox_EntityTypes, Button button_EntityToLayer, Label label_Count)
+        internal Spring_EntityTypes(Grid grid_EntityTypes, ComboBox comboBox_EntityTypes, Button button_EntityToLayer, Button button_Datasource, Label label_Count)
         {
             Grid_EntityTypes = grid_EntityTypes;
             Grid_EntityTypes.IsEnabled = false;
@@ -70,10 +72,14 @@ namespace msGIS.ProApp_FiwareSummit
 
             ComboBox_EntityTypes = comboBox_EntityTypes;
             Button_EntityToLayer = button_EntityToLayer;
+            Button_Datasource = button_Datasource;
             ComboBox_EntityTypes.DropDownClosed += ComboBox_EntityTypes_DropDownClosed;
 
             Button_EntityToLayer.IsEnabled = false;
             Button_EntityToLayer.Click += Button_EntityToLayer_Click;
+
+            Button_Datasource.IsEnabled = true;
+            Button_Datasource.Click += Button_Datasource_Click;
 
             Label_Count = label_Count;
             _ = CleanEntitiesCountAsync(false);
@@ -245,10 +251,6 @@ namespace msGIS.ProApp_FiwareSummit
                     m_STMapMemberPropertiesChanged = MapMemberPropertiesChangedEvent.Subscribe(OnMapMemberPropertiesChanged);
                 }
 
-                // 3.3.05/20231128/msGIS_FIWARE_rt_001: [FIWARE] Integration ArcGIS PRO.
-                if (!await InitPluginDatastoreAsync())
-                    return;
-
                 // Get entity types from JSON.
                 List<object> listEntityTypes = await RestApi_Entities.ReadSettingsFromRestApiAsync();
 
@@ -354,27 +356,6 @@ namespace msGIS.ProApp_FiwareSummit
         }
 
 
-        private async Task<bool> InitPluginDatastoreAsync()
-        {
-            try
-            {
-                // 3.3.05/20231128/msGIS_FIWARE_rt_001: [FIWARE] Integration ArcGIS PRO.
-                bool evalPlugInDatastore = false;
-                if ((!evalPlugInDatastore) || (m_IsInitialized_ProPluginDatasource))
-                    return true;
-
-
-                m_IsInitialized_ProPluginDatasource = true;
-
-                return m_IsInitialized_ProPluginDatasource;
-            }
-            catch (Exception ex)
-            {
-                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "InitPluginDatastoreAsync");
-                return false;
-            }
-        }
-
         private async Task EntitiesToFeaturesAsync()
         {
             Helper_Progress m_Helper_Progress = null;
@@ -465,6 +446,52 @@ namespace msGIS.ProApp_FiwareSummit
         private async void Button_EntityToLayer_Click(object sender, RoutedEventArgs e)
         {
             await EntitiesToFeaturesAsync();
+        }
+
+        private async void Button_Datasource_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // 3.3.05/20231128/msGIS_FIWARE_rt_001: [FIWARE] Integration ArcGIS PRO.
+                bool evalPlugInDatastore = false;
+                if ((!evalPlugInDatastore) || (m_IsInitialized_ProPluginDatasource))
+                    return;
+
+                string linkTypes = "https://fiwaredev.msgis.net/ngsi-ld/v1/types";
+                Uri uriTypes = new Uri(linkTypes);
+
+                await QueuedTask.Run(() =>
+                {
+                    // Plugin identifier is corresponding to ProPluginDatasource Config.xml PluginDatasource ID
+                    using (PluginDatastore pluginDatastore = new PluginDatastore(
+                     new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_Entities, uriTypes)))
+                    {
+                        foreach (var table_name in pluginDatastore.GetTableNames())
+                        {
+                            System.Diagnostics.Debug.Write($"Table: {table_name}\r\n");
+                            //open each table....use the returned table name
+                            //or just pass in the name of a csv file in the workspace folder
+                            using (var table = pluginDatastore.OpenTable(table_name))
+                            {
+                                //get information about the table
+                                using (var def = table.GetDefinition() as FeatureClassDefinition)
+                                {
+
+                                }
+                            }
+                        }
+                    }
+                });
+
+                m_IsInitialized_ProPluginDatasource = true;
+
+                return;
+            }
+            catch (Exception ex)
+            {
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "Button_Datasource_Click");
+                return;
+            }
         }
 
     }

@@ -16,7 +16,7 @@
   <AddIn language="CLR:PluginDS" library="msGIS.ProPluginDatasource_FIWARE.dll" namespace="msGIS.ProPluginDatasource_FIWARE">
     <ArcGISPro>
       <PluginDatasources>
-        <PluginDatasource id="msGIS_FIWARE_ProPluginDatasourceID" class="ProPluginDatasourceTemplate_Fiware"/>
+        <PluginDatasource id="msGIS_FIWARE_ProPluginDatasourceID_Entities" class="ProPluginDatasourceTemplate_Fiware"/>
       </PluginDatasources>
     </ArcGISPro>
   </AddIn>

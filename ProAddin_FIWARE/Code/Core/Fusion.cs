@@ -61,6 +61,8 @@ namespace msGIS.ProApp_FiwareSummit
         internal const string m_StateID_CanChangeEntityTypes = "msGIS_FiwareSummit_StateID_CanChangeEntityTypes";
         internal const string m_StateID_IsEnableEntityTypes = "msGIS_FiwareSummit_StateID_IsEnableEntityTypes";
 
+        internal const string m_ProPluginDatasourceID_Entities = "msGIS_FIWARE_ProPluginDatasourceID_Entities";                 // corresponding to ProPluginDatasource Config.xml PluginDatasource ID
+
         #endregion Def
 
         #region UI

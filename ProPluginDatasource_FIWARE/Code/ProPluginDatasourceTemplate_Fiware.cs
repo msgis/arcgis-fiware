@@ -31,6 +31,9 @@ namespace msGIS.ProPluginDatasource_FIWARE
             //Category = "My Category";
         }
 
+        private string m_LinkTypes = "";
+        private Dictionary<string, PluginTableTemplate> m_DicTypeTables;
+
         // Summary:
         //     Formally opens the Plugin Datasource in order for the new data format to be integrated
         //     into ArcGIS Pro.
@@ -69,7 +72,10 @@ namespace msGIS.ProPluginDatasource_FIWARE
 
             //TODO Initialize your plugin instance. Individual instances
             //of your plugin may be initialized on different threads
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
+
+            m_LinkTypes = connectionPath.LocalPath;
+            m_DicTypeTables = new Dictionary<string, PluginTableTemplate>();
         }
 
         // Summary:
@@ -87,7 +93,14 @@ namespace msGIS.ProPluginDatasource_FIWARE
         {
             //TODO Cleanup required to close the plugin 
             //data source instance
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
+
+            //Dispose of any cached table instances here
+            foreach (var table in m_DicTypeTables.Values)
+            {
+                // ((ProPluginTableTemplate_Fiware)table).Dispose();
+            }
+            m_DicTypeTables.Clear();
         }
 
         // Summary:

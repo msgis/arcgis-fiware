@@ -60,6 +60,7 @@
 			<group id="msGIS_FiwareSummit_GroupID_Main" keytip="G-FiwareSummit-Main" caption="FiwareSummit" appearsOnAddInTab="false" condition="msGIS_FiwareSummit_ConditionID_Menu">
 				<button refID="msGIS_FiwareSummit_ButtonID_ProjectInfo" size="large" />
 				<button refID="msGIS_FiwareSummit_ButtonID_TS_EntityTypes" size="large" />
+				<!--<button refID="msGIS_FiwareSummit_ButtonID_Datasource" size="large" />-->
 			</group>
 		</groups>
 
@@ -78,6 +79,9 @@
 			<button id="msGIS_FiwareSummit_ButtonID_TS_EntityTypes" keytip="B-EntityTypes" caption="Entity Types" className="msGIS_FiwareSummit_ModuleID_Main:OnCustomButtonClick_TS_EntityTypes" loadOnClick="true" condition="msGIS_FiwareSummit_ConditionID_Map">
 				<tooltip heading="FiwareSummit">EntityTypes.<disabledText /></tooltip>
 			</button>
+			<!--<button id="msGIS_FiwareSummit_ButtonID_Datasource" keytip="B-Datasource" caption="Datasource" className="msGIS_FiwareSummit_ModuleID_Main:OnCustomButtonClick_Datasource" loadOnClick="true" condition="msGIS_FiwareSummit_ConditionID_Map">
+				<tooltip heading="Fiware">Datasource.<disabledText /></tooltip>
+			</button>-->
 		</controls>
 
 	</insertModule>

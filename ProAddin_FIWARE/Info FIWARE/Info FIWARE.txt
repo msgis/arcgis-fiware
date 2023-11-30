@@ -267,9 +267,11 @@ Read only
 
 ArcGIS.Core.Data.PluginDatastore Namespace
 https://pro.arcgis.com/en/pro-app/latest/sdk/api-reference/topic21958.html
+Plugin Datasources
+https://github.com/esri/arcgis-pro-sdk/wiki/ProSnippets
 ProConcepts Plugin Datasources
 https://github.com/esri/arcgis-pro-sdk/wiki/ProConcepts-Plugin-Datasources
-ProGuide Plugin Datasources
+ProGuide Plugin Datasources (SimplePointPlugin)
 https://github.com/esri/arcgis-pro-sdk/wiki/ProGuide-Plugin-Datasources
 
 Implementing the Datastore
@@ -282,7 +284,7 @@ https://pro.arcgis.com/en/pro-app/latest/sdk/api-reference/topic22017.html
 https://pro.arcgis.com/en/pro-app/latest/sdk/api-reference/topic21960.html
 
 
-Plugin Datasources (18:00 - 30:00)
+Plugin Datasources (ProSqlExpressPluginDatasource 18:00 - 30:00)
 https://mediaspace.esri.com/media/t/1_gpsfiskh
 24:40 'ArcGIS Pro PlugIn' Project Template
 18:00 DAML Integration.

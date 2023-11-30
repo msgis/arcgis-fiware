@@ -141,7 +141,7 @@ namespace msGIS.ProApp_FiwareSummit
                 await Fusion.m_Helper_Framework.SetPlugInIconAsync(Fusion.m_ButtonID_ProjectInfo);
 
                 // await Fusion.m_Helper_Framework.SetPlugInIconAsync(Fusion.m_ButtonID_TS_*Board);             // already done on Main - SetButtonToggleStateFromDockpaneAsync
-                // await Fusion.m_Helper_Framework.SetPlugInIconAsync(Fusion.m_ButtonID_TS_EntityTypesBoard);  // already done on Main - SetButtonToggleStateFromDockpaneAsync
+                // await Fusion.m_Helper_Framework.SetPlugInIconAsync(Fusion.m_ButtonID_TS_EntityTypesBoard);   // already done on Main - SetButtonToggleStateFromDockpaneAsync
             }
             catch (Exception ex)
             {
@@ -591,6 +591,20 @@ namespace msGIS.ProApp_FiwareSummit
                 await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "OnCustomButtonClick_ProjectInfo");
             }
         }
+
+        /*
+        internal async void OnCustomButtonClick_Datasource()
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "OnCustomButtonClick_Datasource");
+            }
+        }
+        */
 
         #endregion Commands
 
