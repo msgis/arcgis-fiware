@@ -16,6 +16,9 @@
     <RootNamespace>msGIS.ProApp_FiwareSummit</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Code\Core\RestApi_Entities %28old%29.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Delete obj_bin.cmd" />
     <None Remove="Images_Resource\ButtonID_ProjectInfo_DS16.png" />
     <None Remove="Images_Resource\ButtonID_ProjectInfo_DS32.png" />

@@ -31,6 +31,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Globalization;
 using System.Windows.Input;
+using msGIS.ProPluginDatasource_FIWARE;
 
 namespace msGIS.ProApp_FiwareSummit
 {
@@ -252,7 +253,7 @@ namespace msGIS.ProApp_FiwareSummit
                 }
 
                 // Get entity types from JSON.
-                List<object> listEntityTypes = await RestApi_Entities.ReadSettingsFromRestApiAsync(Fusion.m_DatasourcePath);
+                List<string> listEntityTypes = await RestApi_Fiware.ReadEntityTypesFromRestApiAsync(Fusion.m_DatasourcePath);
 
                 // Populate combo wih entity types.
                 await PopulateEntityTypesAsync(listEntityTypes);
@@ -327,7 +328,7 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
-        private async Task PopulateEntityTypesAsync(List<object> listEntityTypes)
+        private async Task PopulateEntityTypesAsync(List<string> listEntityTypes)
         {
             try
             {
@@ -371,14 +372,14 @@ namespace msGIS.ProApp_FiwareSummit
 
                 await CleanEntitiesCountAsync(true);
 
-                await RestApi_Entities.StopUpdateAsync();
+                await RestApi_Fiware.StopUpdateAsync();
 
                 bool isProgressCancelable = false;
                 m_Helper_Progress = new Helper_Progress(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework, isProgressCancelable);
                 await m_Helper_Progress.ShowProgressAsync("GetEntitiesFromRestApiAsync", 900000, false);
                 JArray jArrayEntities = await QueuedTask.Run(async () =>
                 {
-                    return await RestApi_Entities.GetEntitiesFromRestApiAsync(Fusion.m_DatasourcePath, entityType);
+                    return await RestApi_Fiware.GetEntitiesFromRestApiAsync(Fusion.m_DatasourcePath, entityType);
                 }, m_Helper_Progress.ProgressAssistant);
 
                 if (jArrayEntities == null)
@@ -411,7 +412,7 @@ namespace msGIS.ProApp_FiwareSummit
                 await m_Helper_Progress.ShowProgressAsync("BuildFeaturesFromJsonEntitiesAsync", (uint)jArrayEntities.Count, true);
                 bool taskResult = await QueuedTask.Run(async () =>
                 {
-                    return await RestApi_Entities.BuildFeaturesFromJsonEntitiesAsync(m_LayerEntitiesPoints, editOperation, jArrayEntities);
+                    return await RestApi_Fiware.BuildFeaturesFromJsonEntitiesAsync(m_LayerEntitiesPoints, editOperation, jArrayEntities);
                 }, m_Helper_Progress.ProgressAssistant);
 
                 if (taskResult)
@@ -419,7 +420,7 @@ namespace msGIS.ProApp_FiwareSummit
                     if (!await Fusion.m_Helper_Op.ExecOpAsync(editOperation))
                         return;
 
-                    await RestApi_Entities.StartUpdateAsync(entityType);
+                    await RestApi_Fiware.StartUpdateAsync(entityType);
                 }
             }
             catch (Exception ex)
@@ -457,7 +458,7 @@ namespace msGIS.ProApp_FiwareSummit
                 if ((!evalPlugInDatastore) || (m_IsInitialized_ProPluginDatasource))
                     return;
 
-                await ProPluginDatasource_FIWARE.Fusion.InitAsync(Fusion.m_DatasourcePath);
+                await ProPluginDatasource_FIWARE.Fusion.InitAsync();
 
                 // Types: /ngsi-ld/v1/types
                 // Entities: /ngsi-ld/v1/entities?type={entityType}&offset={offset}&limit={limit}
@@ -470,17 +471,24 @@ namespace msGIS.ProApp_FiwareSummit
                     using (PluginDatastore pluginDatastore = new PluginDatastore(
                      new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_Entities, uriDatasourcePath)))
                     {
-                        foreach (var table_name in pluginDatastore.GetTableNames())
+                        if (pluginDatastore != null)
                         {
-                            System.Diagnostics.Debug.Write($"Table: {table_name}\r\n");
-                            //open each table....use the returned table name
-                            //or just pass in the name of a csv file in the workspace folder
-                            using (var table = pluginDatastore.OpenTable(table_name))
+                            IReadOnlyList<string> tableNames = pluginDatastore.GetTableNames();
+                            if (tableNames != null)
                             {
-                                //get information about the table
-                                using (var def = table.GetDefinition() as FeatureClassDefinition)
+                                foreach (var table_name in tableNames)
                                 {
+                                    System.Diagnostics.Debug.Write($"Table: {table_name}\r\n");
+                                    //open each table....use the returned table name
+                                    //or just pass in the name of a csv file in the workspace folder
+                                    using (var table = pluginDatastore.OpenTable(table_name))
+                                    {
+                                        //get information about the table
+                                        using (var def = table.GetDefinition() as FeatureClassDefinition)
+                                        {
 
+                                        }
+                                    }
                                 }
                             }
                         }

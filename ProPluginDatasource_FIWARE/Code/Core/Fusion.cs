@@ -13,7 +13,6 @@ namespace msGIS.ProPluginDatasource_FIWARE
         private static readonly string m_ModuleName = "Fusion";
 
         internal static bool m_IsInitialized { get; set; }
-        internal static string m_DatasourcePath { get; set; }
 
         #region Common
 
@@ -22,7 +21,7 @@ namespace msGIS.ProPluginDatasource_FIWARE
 
         #endregion Common
 
-        public static async Task InitAsync(string datasourcePath)
+        public static async Task InitAsync()
         {
             try
             {
@@ -30,8 +29,6 @@ namespace msGIS.ProPluginDatasource_FIWARE
                 {
                     Fusion.m_Global = new Global();
                     Fusion.m_Messages = new Messages(Fusion.m_Global);
-
-                    m_DatasourcePath = datasourcePath;
 
                     m_IsInitialized = true;
                 }

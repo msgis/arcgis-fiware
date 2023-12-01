@@ -1,6 +1,7 @@
 ﻿using ArcGIS.Core.Data;
 using ArcGIS.Core.Data.PluginDatastore;
 using ArcGIS.Core.Geometry;
+using ArcGIS.Desktop.Framework.Threading.Tasks;
 
 using System;
 using System.Collections.Generic;
@@ -31,8 +32,9 @@ namespace msGIS.ProPluginDatasource_FIWARE
             //Category = "My Category";
         }
 
-        private string m_LinkTypes = "";
-        private Dictionary<string, PluginTableTemplate> m_DicTypeTables;
+        private string m_DatasourcePath = "";
+        // private Dictionary<string, PluginTableTemplate> m_DicTypeTables;
+        private IReadOnlyList<string> m_TableNames = null;
 
         // Summary:
         //     Formally opens the Plugin Datasource in order for the new data format to be integrated
@@ -74,8 +76,21 @@ namespace msGIS.ProPluginDatasource_FIWARE
             //of your plugin may be initialized on different threads
             // throw new NotImplementedException();
 
-            m_LinkTypes = connectionPath.LocalPath;
-            m_DicTypeTables = new Dictionary<string, PluginTableTemplate>();
+            m_DatasourcePath = connectionPath.ToString();
+
+            // asyncTask.Wait();
+            // Use a separate thread to wait for the task to complete
+            Task.Run(async () =>
+            {
+                Task<List<string>> asyncTask = RestApi_Fiware.ReadEntityTypesFromRestApiAsync(m_DatasourcePath);
+                await asyncTask.ConfigureAwait(false);
+
+                // Continue with the rest of the code after the task has completed
+                List<string> listEntityTypes = asyncTask.Result;
+                if ((asyncTask.IsCompleted) && (listEntityTypes != null))
+                    m_TableNames = listEntityTypes;
+            }).GetAwaiter().GetResult();
+
         }
 
         // Summary:
@@ -96,11 +111,13 @@ namespace msGIS.ProPluginDatasource_FIWARE
             // throw new NotImplementedException();
 
             //Dispose of any cached table instances here
+            /*
             foreach (var table in m_DicTypeTables.Values)
             {
                 // ((ProPluginTableTemplate_Fiware)table).Dispose();
             }
             m_DicTypeTables.Clear();
+            */
         }
 
         // Summary:
@@ -166,7 +183,29 @@ namespace msGIS.ProPluginDatasource_FIWARE
         // The format of the strings returned is up to the developer; the only stipulation is that the strings returned by GetTableNames can be used in calls to OpenTable.
         public override IReadOnlyList<string> GetTableNames()
         {
-            var tableNames = new List<string>();
+            // var tableNames = new List<string>();
+            IReadOnlyList<string> tableNames = m_TableNames;        // new List<string>();
+
+            // asyncTask.Wait();
+            // Use a separate thread to wait for the task to complete
+            Task.Run(async () =>
+            {
+                Task<List<string>> asyncTask = RestApi_Fiware.ReadEntityTypesFromRestApiAsync(m_DatasourcePath);
+                await asyncTask.ConfigureAwait(false);
+
+                // Continue with the rest of the code after the task has completed
+                List<string> listEntityTypes = asyncTask.Result;
+                if ((asyncTask.IsCompleted) && (listEntityTypes != null))
+                    m_TableNames = listEntityTypes;
+            }).GetAwaiter().GetResult();
+
+            /*
+            m_DicTypeTables = new Dictionary<string, PluginTableTemplate>();
+            foreach (var table in tableNames)
+            {
+                m_DicTypeTables.Add(table, new PluginTableTemplate());
+            }
+            */
 
             //TODO Return the names of all tables in the plugin
             //data source

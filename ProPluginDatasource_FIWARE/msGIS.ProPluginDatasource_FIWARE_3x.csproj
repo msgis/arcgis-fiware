@@ -19,9 +19,27 @@
       <CopyLocal>False</CopyLocal>
       <Private>False</Private>
     </Reference>
+	  <Reference Include="ArcGIS.Desktop.Editing">
+		  <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Editing\ArcGIS.Desktop.Editing.dll</HintPath>
+		  <CopyLocal>False</CopyLocal>
+		  <Private>False</Private>
+	  </Reference>
+	  <Reference Include="ArcGIS.Desktop.Framework">
+		  <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Framework.dll</HintPath>
+		  <CopyLocal>False</CopyLocal>
+		  <Private>False</Private>
+	  </Reference>
+	  <Reference Include="ArcGIS.Desktop.Mapping">
+		  <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Mapping\ArcGIS.Desktop.Mapping.dll</HintPath>
+		  <CopyLocal>False</CopyLocal>
+		  <Private>False</Private>
+	  </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\ProApp-Common\msGIS.ProApp_Common_FIWARE_3x.csproj" />
