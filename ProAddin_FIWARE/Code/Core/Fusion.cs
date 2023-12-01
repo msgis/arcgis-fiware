@@ -64,6 +64,8 @@ namespace msGIS.ProApp_FiwareSummit
         // 3.3.05/20231128/msGIS_FIWARE_rt_001: [FIWARE] Integration ArcGIS PRO.
         // Plugin identifier is corresponding to ProPluginDatasource Config.xml PluginDatasource ID
         internal const string m_ProPluginDatasourceID_Entities = "msGIS_FIWARE_ProPluginDatasourceID_Entities";
+        internal const string m_DatasourcePath = "https://fiwaredev.msgis.net";
+
 
         #endregion Def
 

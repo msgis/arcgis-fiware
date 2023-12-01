@@ -91,11 +91,11 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
-        internal static async Task<List<object>> ReadSettingsFromRestApiAsync()
+        internal static async Task<List<object>> ReadSettingsFromRestApiAsync(string datasourcePath)
         {
             try
             {
-                string apiUrl = "https://fiwaredev.msgis.net/ngsi-ld/v1/types";
+                string apiUrl = $"{datasourcePath}/ngsi-ld/v1/types";
 
                 JObject oJObjectSettings = (JObject)await GetJsonFromRestApiAsync(apiUrl);
                 if ((oJObjectSettings == null) || (oJObjectSettings.Count == 0))
@@ -207,7 +207,7 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
-        internal static async Task<JArray> GetEntitiesFromRestApiAsync(string entityType)
+        internal static async Task<JArray> GetEntitiesFromRestApiAsync(string datasourcePath, string entityType)
         {
             try
             {
@@ -222,7 +222,7 @@ namespace msGIS.ProApp_FiwareSummit
                 do
                 {
                     // Read as long entities comming.
-                    string apiUrl = $"https://fiwaredev.msgis.net/ngsi-ld/v1/entities?type={entityType}&offset={offset}&limit={limit}";
+                    string apiUrl = $"{datasourcePath}/ngsi-ld/v1/entities?type={entityType}&offset={offset}&limit={limit}";
                     JArray jArrayPart = await GetJsonFromRestApiAsync(apiUrl) as JArray;
                     if (jArrayPart == null)
                         hasEntities = false;
@@ -385,11 +385,11 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
-        private static async Task RefreshRestApiAsync()
+        private static async Task RefreshRestApiAsync(string datasourcePath)
         {
             try
             {
-                string apiUrl = "https://fiwaredev.msgis.net/ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3";
+                string apiUrl = $"{datasourcePath}/ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3";
 
                 using (HttpClient client = new HttpClient())
                 {

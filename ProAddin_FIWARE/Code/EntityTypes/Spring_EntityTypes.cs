@@ -252,7 +252,7 @@ namespace msGIS.ProApp_FiwareSummit
                 }
 
                 // Get entity types from JSON.
-                List<object> listEntityTypes = await RestApi_Entities.ReadSettingsFromRestApiAsync();
+                List<object> listEntityTypes = await RestApi_Entities.ReadSettingsFromRestApiAsync(Fusion.m_DatasourcePath);
 
                 // Populate combo wih entity types.
                 await PopulateEntityTypesAsync(listEntityTypes);
@@ -378,7 +378,7 @@ namespace msGIS.ProApp_FiwareSummit
                 await m_Helper_Progress.ShowProgressAsync("GetEntitiesFromRestApiAsync", 900000, false);
                 JArray jArrayEntities = await QueuedTask.Run(async () =>
                 {
-                    return await RestApi_Entities.GetEntitiesFromRestApiAsync(entityType);
+                    return await RestApi_Entities.GetEntitiesFromRestApiAsync(Fusion.m_DatasourcePath, entityType);
                 }, m_Helper_Progress.ProgressAssistant);
 
                 if (jArrayEntities == null)
@@ -457,14 +457,18 @@ namespace msGIS.ProApp_FiwareSummit
                 if ((!evalPlugInDatastore) || (m_IsInitialized_ProPluginDatasource))
                     return;
 
-                string linkTypes = "https://fiwaredev.msgis.net/ngsi-ld/v1/types";
-                Uri uriTypes = new Uri(linkTypes);
+                await ProPluginDatasource_FIWARE.Fusion.InitAsync(Fusion.m_DatasourcePath);
+
+                // Types: /ngsi-ld/v1/types
+                // Entities: /ngsi-ld/v1/entities?type={entityType}&offset={offset}&limit={limit}
+                // Refresh: /ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3
+                Uri uriDatasourcePath = new Uri(Fusion.m_DatasourcePath);
 
                 await QueuedTask.Run(() =>
                 {
                     // Plugin identifier is corresponding to ProPluginDatasource Config.xml PluginDatasource ID
                     using (PluginDatastore pluginDatastore = new PluginDatastore(
-                     new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_Entities, uriTypes)))
+                     new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_Entities, uriDatasourcePath)))
                     {
                         foreach (var table_name in pluginDatastore.GetTableNames())
                         {
