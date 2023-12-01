@@ -61,7 +61,9 @@ namespace msGIS.ProApp_FiwareSummit
         internal const string m_StateID_CanChangeEntityTypes = "msGIS_FiwareSummit_StateID_CanChangeEntityTypes";
         internal const string m_StateID_IsEnableEntityTypes = "msGIS_FiwareSummit_StateID_IsEnableEntityTypes";
 
-        internal const string m_ProPluginDatasourceID_Entities = "msGIS_FIWARE_ProPluginDatasourceID_Entities";                 // corresponding to ProPluginDatasource Config.xml PluginDatasource ID
+        // 3.3.05/20231128/msGIS_FIWARE_rt_001: [FIWARE] Integration ArcGIS PRO.
+        // Plugin identifier is corresponding to ProPluginDatasource Config.xml PluginDatasource ID
+        internal const string m_ProPluginDatasourceID_Entities = "msGIS_FIWARE_ProPluginDatasourceID_Entities";
 
         #endregion Def
 
