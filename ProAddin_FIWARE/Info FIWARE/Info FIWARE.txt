@@ -295,8 +295,8 @@ https://mediaspace.esri.com/media/t/1_gpsfiskh
 
 Ich versuche die Integration entsprechend allen Hinweisen zu implementieren.
 Leider ergibt sich eine für mich bisher nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
-Vielleicht könnte sich das jemand gemeinsam mit mir anschauen?
-Anbei meine Anfragen an AI (noch keine Lösung in Sicht).
+Ich werde daher auf anderen Wegen auf die Inhalte von FIWARE zugreifen müssen als direkt in den abstrakten Klassen.
+Anbei meine Anfragen an AI.
 https://chat.openai.com/share/a04629a6-ae7a-43ab-9987-107028365489
 
 ---------------------------------------------------------------------------------------------------
