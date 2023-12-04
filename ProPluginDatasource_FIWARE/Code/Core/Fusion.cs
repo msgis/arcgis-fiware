@@ -10,9 +10,8 @@ namespace msGIS.ProPluginDatasource_FIWARE
 {
     public static class Fusion
     {
+        // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
         private static readonly string m_ModuleName = "Fusion";
-
-        internal static bool m_IsInitialized { get; set; }
 
         #region Common
 
@@ -21,15 +20,27 @@ namespace msGIS.ProPluginDatasource_FIWARE
 
         #endregion Common
 
-        public static async Task InitAsync()
+        public static bool m_IsInitialized { get; set; }
+        internal static string m_DatasourcePath { get; set; }
+        internal static List<string> m_ListEntityTypes { get; set; }
+
+        public static async Task InitAsync(string datasourcePath)
         {
             try
             {
-                if (!m_IsInitialized)
-                {
-                    Fusion.m_Global = new Global();
-                    Fusion.m_Messages = new Messages(Fusion.m_Global);
+                // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
+                if (m_IsInitialized)
+                    throw new Exception("The ProPluginDatasource_FIWARE is initialized already!");
 
+                Fusion.m_Global = new Global();
+                Fusion.m_Messages = new Messages(Fusion.m_Global);
+
+                // Get entity types from JSON.
+                // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
+                m_ListEntityTypes = await RestApi_Fiware.ReadEntityTypesFromRestApiAsync(datasourcePath);
+                if (m_ListEntityTypes != null)
+                {
+                    m_DatasourcePath = datasourcePath;
                     m_IsInitialized = true;
                 }
             }

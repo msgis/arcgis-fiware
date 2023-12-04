@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace msGIS.ProPluginDatasource_FIWARE
 {
-    // 3.3.05/20231128/msGIS_FIWARE_rt_001: [FIWARE] Integration ArcGIS PRO.
+    // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
 
     // Summary:
     //     This abstract class serves as one of the key extensibility points that comprise
@@ -28,11 +28,14 @@ namespace msGIS.ProPluginDatasource_FIWARE
     // This class is used for both tables and feature classes and must inherit from the ArcGIS.Core.Data.PluginDatastore.PluginTableTemplate base class.
     public class ProPluginTableTemplate_Fiware : PluginTableTemplate
     {
+        private string m_TableName = "";
+
         // Summary:
         //     Initializes a new instance of the ArcGIS.Core.Data.PluginDatastore.PluginTableTemplate
         //     class.
-        public ProPluginTableTemplate_Fiware() : base()
+        public ProPluginTableTemplate_Fiware(string tableName) : base()
         {
+            m_TableName = tableName;
         }
 
         // Summary:
@@ -54,7 +57,8 @@ namespace msGIS.ProPluginDatasource_FIWARE
         public override string GetName()
         {
             //TODO Get the name of this currently opened plugin table/object
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
+            return m_TableName;
         }
 
         // Summary:

@@ -235,7 +235,7 @@ InstVer=ArcPro_3.0.3.36057 AddInX_3.3.04 Common_3.3.31 MSI_
 3.3.05/2023mmdd/rt: New Version.
 InstVer=ArcPro_3.0.3.36057 AddInX_3.3.04 Common_3.3.31 MSI_
 
-3.3.05/20231128/msGIS_FIWARE_rt_001: [FIWARE] Integration ArcGIS PRO.
+3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
 https://app.asana.com/0/1203876411184345/1205999834711034/
 Daten nicht per RestApi, sondern über eigenen Data Provider PlugIn (read only).
 
@@ -293,6 +293,7 @@ https://mediaspace.esri.com/media/t/1_gpsfiskh
 19:30 PluginDatasourceConnectionPath object, which inherits from the Connector base class
 20:45 New PluginDatastore(conSql), GetTableNames(), OpenTable(tableName), LayerFactory.Instance.CreateFeatureLayer
 
+3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
 Ich versuche die Integration entsprechend allen Hinweisen zu implementieren.
 Leider ergibt sich eine für mich bisher nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
 Ich werde daher auf anderen Wegen auf die Inhalte von FIWARE zugreifen müssen als direkt in den abstrakten Klassen.
@@ -300,6 +301,6 @@ Anbei meine Anfragen an AI.
 https://chat.openai.com/share/a04629a6-ae7a-43ab-9987-107028365489
 
 ---------------------------------------------------------------------------------------------------
-rt: Next 3.3.05/2023mmdd/msGIS_FIWARE_rt_002: Xxx
+rt: Next 3.3.05/2023mmdd/msGIS_FIWARE_rt_003: Xxx
 To build an AddInX look for instructions at common folder.
 ---------------------------------------------------------------------------------------------------

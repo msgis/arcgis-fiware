@@ -51,7 +51,6 @@ namespace msGIS.ProApp_FiwareSummit
         private SubscriptionToken m_STMapMemberPropertiesChanged = null;
 
         private bool m_IsActivated_EntityTypes = false;
-        private bool m_IsInitialized_ProPluginDatasource = false;
 
         internal bool m_CanChangeBoard_EntityTypes = true;
         // private bool m_SuspendControlsEvents = false;
@@ -453,12 +452,15 @@ namespace msGIS.ProApp_FiwareSummit
         {
             try
             {
-                // 3.3.05/20231128/msGIS_FIWARE_rt_001: [FIWARE] Integration ArcGIS PRO.
-                bool evalPlugInDatastore = false;
-                if ((!evalPlugInDatastore) || (m_IsInitialized_ProPluginDatasource))
+                // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
+                bool evalPlugInDatastore = true;
+                if (!evalPlugInDatastore)
                     return;
+                else
+                    ProPluginDatasource_FIWARE.Fusion.m_IsInitialized = false;
 
-                await ProPluginDatasource_FIWARE.Fusion.InitAsync();
+                // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
+                await ProPluginDatasource_FIWARE.Fusion.InitAsync(Fusion.m_DatasourcePath);
 
                 // Types: /ngsi-ld/v1/types
                 // Entities: /ngsi-ld/v1/entities?type={entityType}&offset={offset}&limit={limit}
@@ -494,8 +496,6 @@ namespace msGIS.ProApp_FiwareSummit
                         }
                     }
                 });
-
-                m_IsInitialized_ProPluginDatasource = true;
 
                 return;
             }

@@ -184,6 +184,7 @@ namespace msGIS.ProPluginDatasource_FIWARE
                 using (HttpClient client = new HttpClient())
                 {
                     // Make a GET request to the API endpoint
+                    // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
                     HttpResponseMessage response = await client.GetAsync(apiUrl);
 
                     if (response.IsSuccessStatusCode)

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace msGIS.ProPluginDatasource_FIWARE
 {
-    // 3.3.05/20231128/msGIS_FIWARE_rt_001: [FIWARE] Integration ArcGIS PRO.
+    // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
 
     public class ProPluginCursorTemplate_Fiware : PluginCursorTemplate
     {

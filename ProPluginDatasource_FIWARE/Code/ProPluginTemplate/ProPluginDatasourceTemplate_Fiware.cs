@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace msGIS.ProPluginDatasource_FIWARE
 {
-    // 3.3.05/20231128/msGIS_FIWARE_rt_001: [FIWARE] Integration ArcGIS PRO.
+    // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
 
     // Summary:
     //     This abstract class serves as one of the key extensibility points that comprise
@@ -33,7 +33,7 @@ namespace msGIS.ProPluginDatasource_FIWARE
         }
 
         private string m_DatasourcePath = "";
-        // private Dictionary<string, PluginTableTemplate> m_DicTypeTables;
+        private Dictionary<string, PluginTableTemplate> m_DicTypeTables;
         private IReadOnlyList<string> m_TableNames = null;
 
         // Summary:
@@ -76,21 +76,17 @@ namespace msGIS.ProPluginDatasource_FIWARE
             //of your plugin may be initialized on different threads
             // throw new NotImplementedException();
 
+            // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
             m_DatasourcePath = connectionPath.ToString();
+            m_TableNames = Fusion.m_ListEntityTypes;
 
-            // asyncTask.Wait();
-            // Use a separate thread to wait for the task to complete
-            Task.Run(async () =>
+            m_DicTypeTables = new Dictionary<string, PluginTableTemplate>();
+            /*
+            foreach (var tabName in GetTableNames())
             {
-                Task<List<string>> asyncTask = RestApi_Fiware.ReadEntityTypesFromRestApiAsync(m_DatasourcePath);
-                await asyncTask.ConfigureAwait(false);
-
-                // Continue with the rest of the code after the task has completed
-                List<string> listEntityTypes = asyncTask.Result;
-                if ((asyncTask.IsCompleted) && (listEntityTypes != null))
-                    m_TableNames = listEntityTypes;
-            }).GetAwaiter().GetResult();
-
+                m_DicTypeTables.Add(tabName, new ProPluginTableTemplate_Fiware(tabName));
+            }
+            */
         }
 
         // Summary:
@@ -110,14 +106,30 @@ namespace msGIS.ProPluginDatasource_FIWARE
             //data source instance
             // throw new NotImplementedException();
 
-            //Dispose of any cached table instances here
-            /*
-            foreach (var table in m_DicTypeTables.Values)
+            m_DatasourcePath = "";
+            if (m_TableNames != null)
             {
-                // ((ProPluginTableTemplate_Fiware)table).Dispose();
+                if (Fusion.m_ListEntityTypes != null)
+                {
+                    Fusion.m_ListEntityTypes.Clear();
+                    Fusion.m_ListEntityTypes = null;
+                }
+                m_TableNames = null;
             }
-            m_DicTypeTables.Clear();
-            */
+
+            //Dispose of any cached table instances here
+            if (m_DicTypeTables != null)
+            {
+                /*
+                foreach (var table in m_DicTypeTables.Values)
+                {
+                    // ((ProPluginTableTemplate_Fiware)table).Dispose();
+                }
+                */
+                m_DicTypeTables.Clear();
+                m_DicTypeTables = null;
+            }
+
         }
 
         // Summary:
@@ -146,15 +158,18 @@ namespace msGIS.ProPluginDatasource_FIWARE
         // The developer should create and return a plug-in table, which is a class that inherits from PluginTableTemplate.
         // Conceptually, a .NET client calls the PluginDatastore.OpenTable() method which calls this routine,
         // wraps up the returned PluginTableTemplate concrete instance as a ArcGIS.Core.Data.Table or ArcGIS.Core.Data.FeatureClass.
-        public override PluginTableTemplate OpenTable(string name)
+        public override PluginTableTemplate OpenTable(string tableName)
         {
+            //TODO Open the given table/object in the plugin data source
             // throw new NotImplementedException();
-            //ProPluginTableTemplate_Fiware proPluginTableTemplate_Fiware = new ProPluginTableTemplate_Fiware();
-            //return proPluginTableTemplate_Fiware;
+            if (!this.GetTableNames().Contains(tableName))
+                throw new Exception($"The table {tableName} was not found!");
 
-            //TODO Open the given table/object in the plugin
-            //data source
-            throw new NotImplementedException();
+            ProPluginTableTemplate_Fiware proPluginTableTemplate_Fiware = new ProPluginTableTemplate_Fiware(tableName);
+            if (m_DicTypeTables.ContainsKey(tableName))
+                throw new Exception($"The table {tableName} is ambiguous!");
+            m_DicTypeTables.Add(tableName, proPluginTableTemplate_Fiware);
+            return proPluginTableTemplate_Fiware;
         }
 
         // Summary:
@@ -183,9 +198,11 @@ namespace msGIS.ProPluginDatasource_FIWARE
         // The format of the strings returned is up to the developer; the only stipulation is that the strings returned by GetTableNames can be used in calls to OpenTable.
         public override IReadOnlyList<string> GetTableNames()
         {
+            // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
             // var tableNames = new List<string>();
             IReadOnlyList<string> tableNames = m_TableNames;        // new List<string>();
 
+            /*
             // asyncTask.Wait();
             // Use a separate thread to wait for the task to complete
             Task.Run(async () =>
@@ -198,13 +215,6 @@ namespace msGIS.ProPluginDatasource_FIWARE
                 if ((asyncTask.IsCompleted) && (listEntityTypes != null))
                     m_TableNames = listEntityTypes;
             }).GetAwaiter().GetResult();
-
-            /*
-            m_DicTypeTables = new Dictionary<string, PluginTableTemplate>();
-            foreach (var table in tableNames)
-            {
-                m_DicTypeTables.Add(table, new PluginTableTemplate());
-            }
             */
 
             //TODO Return the names of all tables in the plugin
