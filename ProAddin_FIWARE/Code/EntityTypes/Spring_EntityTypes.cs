@@ -456,11 +456,10 @@ namespace msGIS.ProApp_FiwareSummit
                 bool evalPlugInDatastore = true;
                 if (!evalPlugInDatastore)
                     return;
-                else
-                    ProPluginDatasource_FIWARE.Fusion.m_IsInitialized = false;
 
                 // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
-                await ProPluginDatasource_FIWARE.Fusion.InitAsync(Fusion.m_DatasourcePath);
+                if (!await ProPluginDatasource_FIWARE.Fusion.InitAsync(Fusion.m_DatasourcePath))
+                    return;
 
                 // Types: /ngsi-ld/v1/types
                 // Entities: /ngsi-ld/v1/entities?type={entityType}&offset={offset}&limit={limit}

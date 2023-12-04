@@ -87,6 +87,30 @@ namespace msGIS.ProPluginDatasource_FIWARE
             var pluginFields = new List<PluginField>();
             //TODO Get the list of PluginFields for this currently opened 
             //plugin table/object
+
+            //special handling for OBJECTID and SHAPE
+            string fieldName = "OBJECTID";
+            string fieldAlias = "OID";
+            FieldType fieldType = FieldType.OID;        // e.g. Geometry, String, Double, Integer, Date, etc.
+
+            pluginFields.Add(new PluginField()
+            {
+                Name = fieldName,
+                AliasName = fieldAlias,
+                FieldType = fieldType
+            });
+
+            fieldName = "SHAPE";
+            fieldAlias = "Geometry";
+            fieldType = FieldType.Geometry;
+
+            pluginFields.Add(new PluginField()
+            {
+                Name = fieldName,
+                AliasName = fieldAlias,
+                FieldType = fieldType
+            });
+
             return pluginFields;
         }
 
