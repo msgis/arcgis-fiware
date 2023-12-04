@@ -468,6 +468,7 @@ namespace msGIS.ProApp_FiwareSummit
 
                 await QueuedTask.Run(() =>
                 {
+                    // PluginDatasourceConnectionPath : Connector
                     // Plugin identifier is corresponding to ProPluginDatasource Config.xml PluginDatasource ID
                     using (PluginDatastore pluginDatastore = new PluginDatastore(
                      new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_Entities, uriDatasourcePath)))

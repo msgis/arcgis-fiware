@@ -274,6 +274,10 @@ https://github.com/esri/arcgis-pro-sdk/wiki/ProConcepts-Plugin-Datasources
 ProGuide Plugin Datasources (SimplePointPlugin)
 https://github.com/esri/arcgis-pro-sdk/wiki/ProGuide-Plugin-Datasources
 
+The Plugin Datasource framework allows developers to make custom datasources available for use in Pro.
+ArcGIS Pro treats these data sources as read-only tables or feature classes.
+Pro can use these data sources to execute queries, perform analysis, and display features on a map.
+
 Implementing the Datastore
 There are three classes that must be created by the developer to implement a Plugin Datasource.
 1. Pro Plugin Datasource Template Class.
@@ -299,6 +303,7 @@ Leider ergibt sich eine für mich bisher nicht überwindbare Komplikation auf Ht
 Ich werde daher auf anderen Wegen auf die Inhalte von FIWARE zugreifen müssen als direkt in den abstrakten Klassen.
 Anbei meine Anfragen an AI.
 https://chat.openai.com/share/a04629a6-ae7a-43ab-9987-107028365489
+
 
 ---------------------------------------------------------------------------------------------------
 rt: Next 3.3.05/2023mmdd/msGIS_FIWARE_rt_003: Xxx
