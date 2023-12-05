@@ -413,9 +413,10 @@ namespace msGIS.ProApp_FiwareSummit
                 string subFields = $"{Fusion.m_FieldNameEntitiesPoints_OBJECTID}";
                 List<Object> listIds = await Fusion.m_Helper_Search.GetLayerFieldValuesAsync(m_LayerEntitiesPoints, fieldId, subFields);
                 List<long> listIdsLong = new List<long>();
-                foreach (System.Int32 entityId in listIds)
+                foreach (object id in listIds)
                 {
-                    listIdsLong.Add(entityId);
+                    long idLong = (long)id;
+                    listIdsLong.Add(idLong);
                 }
                 IEnumerable<long> oids = listIdsLong;
                 editOperation.Delete(m_LayerEntitiesPoints, oids);
