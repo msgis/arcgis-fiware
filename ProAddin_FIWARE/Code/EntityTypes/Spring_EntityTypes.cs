@@ -23,6 +23,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,9 +42,10 @@ namespace msGIS.ProApp_FiwareSummit
 
         private Grid Grid_EntityTypes;
         private ComboBox ComboBox_EntityTypes;
-        private Button Button_EntityToLayer;
-        private Button Button_Datasource;
         private Label Label_Count;
+        private Button Button_EntityToLayer;
+        private Button Button_EntityToCSV;
+        private Button Button_Datasource;
 
         private Layer m_LayerEntitiesPoints = null;
 
@@ -57,7 +59,7 @@ namespace msGIS.ProApp_FiwareSummit
         //private bool m_SuspendSetLayersChk = false;
         private bool m_HasSpecialEvents_EntityTypes = false;
 
-        internal Spring_EntityTypes(Grid grid_EntityTypes, ComboBox comboBox_EntityTypes, Button button_EntityToLayer, Button button_Datasource, Label label_Count)
+        internal Spring_EntityTypes(Grid grid_EntityTypes, ComboBox comboBox_EntityTypes, Label label_Count, Button button_EntityToLayer, Button button_EntityToCSV, Button button_Datasource)
         {
             Grid_EntityTypes = grid_EntityTypes;
             Grid_EntityTypes.IsEnabled = false;
@@ -71,17 +73,21 @@ namespace msGIS.ProApp_FiwareSummit
             }
 
             ComboBox_EntityTypes = comboBox_EntityTypes;
-            Button_EntityToLayer = button_EntityToLayer;
-            Button_Datasource = button_Datasource;
             ComboBox_EntityTypes.DropDownClosed += ComboBox_EntityTypes_DropDownClosed;
+            Label_Count = label_Count;
 
+            Button_EntityToLayer = button_EntityToLayer;
             Button_EntityToLayer.IsEnabled = false;
             Button_EntityToLayer.Click += Button_EntityToLayer_Click;
 
+            Button_EntityToCSV = button_EntityToCSV;
+            Button_EntityToCSV.IsEnabled = false;
+            Button_EntityToCSV.Click += Button_EntityToCSV_Click;
+
+            Button_Datasource = button_Datasource;
             Button_Datasource.IsEnabled = true;
             Button_Datasource.Click += Button_Datasource_Click;
 
-            Label_Count = label_Count;
             _ = CleanEntitiesCountAsync(false);
         }
 
@@ -289,7 +295,7 @@ namespace msGIS.ProApp_FiwareSummit
         {
             try
             {
-                Label_Count.Content = (isWorking) ? "Anzahl = ..." : " ";
+                Label_Count.Content = (isWorking) ? "..." : " ";
                 Label_Count.Visibility = (isWorking) ? Visibility.Visible : Visibility.Hidden;
             }
             catch (Exception ex)
@@ -303,7 +309,7 @@ namespace msGIS.ProApp_FiwareSummit
             // Fusion.m_UserControl_EntityTypes
             try
             {
-                Label_Count.Content = $"Anzahl = {entitiesCount}";
+                Label_Count.Content = $"{entitiesCount}";
                 Label_Count.Visibility = Visibility.Visible;
             }
             catch (Exception ex)
@@ -319,6 +325,7 @@ namespace msGIS.ProApp_FiwareSummit
                 ComboBox_EntityTypes.Items.Clear();
 
                 Button_EntityToLayer.IsEnabled = false;
+                Button_EntityToCSV.IsEnabled = false;
                 await CleanEntitiesCountAsync(false);
             }
             catch (Exception ex)
@@ -371,8 +378,6 @@ namespace msGIS.ProApp_FiwareSummit
 
                 await CleanEntitiesCountAsync(true);
 
-                await RestApi_Fiware.StopUpdateAsync();
-
                 bool isProgressCancelable = false;
                 m_Helper_Progress = new Helper_Progress(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework, isProgressCancelable);
                 await m_Helper_Progress.ShowProgressAsync("GetEntitiesFromRestApiAsync", 900000, false);
@@ -387,6 +392,16 @@ namespace msGIS.ProApp_FiwareSummit
                     await Fusion.m_Messages.AlertAsyncMsg("No entities acquired!", "EntitiesToFeaturesAsync");
                 await ShowCountAsync(jArrayEntities.Count);
 
+                m_Helper_Progress = new Helper_Progress(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework, isProgressCancelable);
+                await m_Helper_Progress.ShowProgressAsync("BuildFeaturesFromJsonEntitiesAsync", (uint)jArrayEntities.Count, true);
+                List<MapPoint> listFeatures = await QueuedTask.Run(async () =>
+                {
+                    return await RestApi_Fiware.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities);
+                }, m_Helper_Progress.ProgressAssistant);
+                if (listFeatures == null)
+                    return;
+
+
                 // Op - Prepare
                 string opName = $"BuildFeaturesFromJsonEntitiesAsync {entityType}";
                 bool selectNewFeatures = false;
@@ -397,30 +412,22 @@ namespace msGIS.ProApp_FiwareSummit
                 string fieldId = $"{Fusion.m_FieldNameEntitiesPoints_OBJECTID}";
                 string subFields = $"{Fusion.m_FieldNameEntitiesPoints_OBJECTID}";
                 List<Object> listIds = await Fusion.m_Helper_Search.GetLayerFieldValuesAsync(m_LayerEntitiesPoints, fieldId, subFields);
-
-                List<long> listEntities = new List<long>();
+                List<long> listIdsLong = new List<long>();
                 foreach (System.Int32 entityId in listIds)
                 {
-                    listEntities.Add(entityId);
+                    listIdsLong.Add(entityId);
                 }
-                IEnumerable<long> oids = listEntities;
+                IEnumerable<long> oids = listIdsLong;
                 editOperation.Delete(m_LayerEntitiesPoints, oids);
 
                 // EntitiesToFeatures
-                m_Helper_Progress = new Helper_Progress(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework, isProgressCancelable);
-                await m_Helper_Progress.ShowProgressAsync("BuildFeaturesFromJsonEntitiesAsync", (uint)jArrayEntities.Count, true);
-                bool taskResult = await QueuedTask.Run(async () =>
+                foreach (MapPoint mapPoint in listFeatures)
                 {
-                    return await RestApi_Fiware.BuildFeaturesFromJsonEntitiesAsync(m_LayerEntitiesPoints, editOperation, jArrayEntities);
-                }, m_Helper_Progress.ProgressAssistant);
-
-                if (taskResult)
-                {
-                    if (!await Fusion.m_Helper_Op.ExecOpAsync(editOperation))
-                        return;
-
-                    await RestApi_Fiware.StartUpdateAsync(entityType);
+                    editOperation.Create(m_LayerEntitiesPoints, mapPoint);
                 }
+
+                if (!await Fusion.m_Helper_Op.ExecOpAsync(editOperation))
+                    return;
             }
             catch (Exception ex)
             {
@@ -436,16 +443,94 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
+        private async Task EntitiesToCsvAsync()
+        {
+            Helper_Progress m_Helper_Progress = null;
+            try
+            {
+                if (!HasComboEntityTypeSelected)
+                    throw new Exception("No entity type selected!");
+                if (m_LayerEntitiesPoints == null)
+                    throw new Exception($"Layer {Fusion.m_LayerTagEntitiesPoints} is not acquired!");
+                string entityType = ComboBox_EntityTypes.SelectedItem.ToString();
+                if (string.IsNullOrEmpty(entityType))
+                    throw new Exception("Empty entity type!");
+
+                await CleanEntitiesCountAsync(true);
+
+                bool isProgressCancelable = false;
+                m_Helper_Progress = new Helper_Progress(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework, isProgressCancelable);
+                await m_Helper_Progress.ShowProgressAsync("GetEntitiesFromRestApiAsync", 900000, false);
+                JArray jArrayEntities = await QueuedTask.Run(async () =>
+                {
+                    return await RestApi_Fiware.GetEntitiesFromRestApiAsync(Fusion.m_DatasourcePath, entityType);
+                }, m_Helper_Progress.ProgressAssistant);
+
+                if (jArrayEntities == null)
+                    return;
+                if (jArrayEntities.Count == 0)
+                    await Fusion.m_Messages.AlertAsyncMsg("No entities acquired!", "EntitiesToCsvAsync");
+                await ShowCountAsync(jArrayEntities.Count);
+
+                m_Helper_Progress = new Helper_Progress(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework, isProgressCancelable);
+                await m_Helper_Progress.ShowProgressAsync("BuildFeaturesFromJsonEntitiesAsync", (uint)jArrayEntities.Count, true);
+                List<MapPoint> listFeatures = await QueuedTask.Run(async () =>
+                {
+                    return await RestApi_Fiware.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities);
+                }, m_Helper_Progress.ProgressAssistant);
+                if (listFeatures == null)
+                    return;
+
+                string pathEntities = "P:\\MS\\link\\roman\\FiwareSummit\\ArcPro\\Entities";
+                string filePathCsv = Path.Combine(pathEntities, $"{entityType}.csv");
+                if (File.Exists(filePathCsv))
+                    File.Delete(filePathCsv);
+                // FileStream fileStreamCsv = File.Create(filePathCsv);
+
+                using (StreamWriter writer = new StreamWriter(filePathCsv))
+                {
+                    // Write headers
+                    writer.WriteLine("POINT_X,POINT_Y,NAME");
+
+                    // Write data entries
+                    int ind = 0;
+                    foreach (MapPoint mapPoint in listFeatures)
+                    {
+                        writer.WriteLine($"{mapPoint.X},{mapPoint.Y},{ind}");
+                        ind++;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "EntitiesToCsvAsync");
+            }
+            finally
+            {
+                if (m_Helper_Progress != null)
+                {
+                    await m_Helper_Progress.FinishProgressAsync();
+                    m_Helper_Progress = null;
+                }
+            }
+        }
 
         private async void ComboBox_EntityTypes_DropDownClosed(object sender, EventArgs e)
         {
             await CleanEntitiesCountAsync(false);
             Button_EntityToLayer.IsEnabled = HasComboEntityTypeSelected;
+            Button_EntityToCSV.IsEnabled = HasComboEntityTypeSelected;
         }
 
         private async void Button_EntityToLayer_Click(object sender, RoutedEventArgs e)
         {
             await EntitiesToFeaturesAsync();
+        }
+
+        private async void Button_EntityToCSV_Click(object sender, RoutedEventArgs e)
+        {
+            await EntitiesToCsvAsync();
         }
 
         private async void Button_Datasource_Click(object sender, RoutedEventArgs e)
@@ -497,12 +582,10 @@ namespace msGIS.ProApp_FiwareSummit
                     }
                 });
 
-                return;
             }
             catch (Exception ex)
             {
                 await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "Button_Datasource_Click");
-                return;
             }
         }
 

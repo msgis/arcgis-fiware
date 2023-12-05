@@ -260,137 +260,132 @@ namespace msGIS.ProPluginDatasource_FIWARE
             }
         }
 
-        public static async Task<bool> BuildFeaturesFromJsonEntitiesAsync(Layer layerEntitiesPoints, EditOperation editOperation, JArray jArrayEntities)
+        public static async Task<List<MapPoint>> BuildFeaturesFromJsonEntitiesAsync(JArray jArrayEntities)
         {
             try
             {
-                // Create a new feature class
-                bool result = await QueuedTask.Run(async () =>
+                List<MapPoint> listFeatures = new List<MapPoint>();
+
+                // Iterate over the JSON features
+                // ld:Hydrant:HYDRANTOGD.36612504","type":"Hydrant","OBJECTID":{"type":"Property","value":36612504},"location":{"type":"GeoProperty","value":{"type":"Point","coordinates":[16.292543,48.191422,199]}}},{"id":"urn:ngsi-
+                foreach (JToken jToken_Entity in jArrayEntities)
                 {
-                    // Iterate over the JSON features
-                    // ld:Hydrant:HYDRANTOGD.36612504","type":"Hydrant","OBJECTID":{"type":"Property","value":36612504},"location":{"type":"GeoProperty","value":{"type":"Point","coordinates":[16.292543,48.191422,199]}}},{"id":"urn:ngsi-
-                    foreach (JToken jToken_Entity in jArrayEntities)
+                    string msg;
+                    if ((jToken_Entity != null) && (jToken_Entity.Type == JTokenType.Object))
                     {
-                        string msg;
-                        if ((jToken_Entity != null) && (jToken_Entity.Type == JTokenType.Object))
+                        // Dictionary<string, object> test = jToken_Entity["location"].ToObject<Dictionary<string, object>>();
+                        JObject keyValuePairs = jToken_Entity.ToObject<JObject>();
+
+                        string cfgKey = "location";
+                        if (keyValuePairs == null)
+                            continue;
+                        if (!keyValuePairs.ContainsKey(cfgKey))
                         {
-                            // Dictionary<string, object> test = jToken_Entity["location"].ToObject<Dictionary<string, object>>();
-                            JObject keyValuePairs = jToken_Entity.ToObject<JObject>();
-
-                            string cfgKey = "location";
-                            if (keyValuePairs == null)
-                                continue;
-                            if (!keyValuePairs.ContainsKey(cfgKey))
-                            {
-                                msg = $"Key <{cfgKey}> not found!";
-                                await Fusion.m_Messages.AlertAsyncMsg(msg, "Read Entity");
-                                return false;
-                            }
-                            bool result = keyValuePairs.TryGetValue(cfgKey, out JToken jToken_Location);
-                            if (!result)
-                            {
-                                msg = $"Key <{cfgKey}> could not be obtained!";
-                                await Fusion.m_Messages.AlertAsyncMsg(msg, "Read Entity");
-                                return false;
-                            }
-
-                            if (jToken_Location == null)
-                                continue;
-                            keyValuePairs = jToken_Location.ToObject<JObject>();
-
-                            cfgKey = "value";
-                            if (keyValuePairs == null)
-                                continue;
-                            if (!keyValuePairs.ContainsKey(cfgKey))
-                            {
-                                msg = $"Key <{cfgKey}> not found!";
-                                await Fusion.m_Messages.AlertAsyncMsg(msg, "Read Entity");
-                                return false;
-                            }
-                            result = keyValuePairs.TryGetValue(cfgKey, out JToken jToken_Value);
-                            if (!result)
-                            {
-                                msg = $"Key <{cfgKey}> could not be obtained!";
-                                await Fusion.m_Messages.AlertAsyncMsg(msg, "Read Entity");
-                                return false;
-                            }
-
-                            if (jToken_Value == null)
-                                continue;
-                            keyValuePairs = jToken_Value.ToObject<JObject>();
-
-                            cfgKey = "type";
-                            if (keyValuePairs == null)
-                                continue;
-                            if (!keyValuePairs.ContainsKey(cfgKey))
-                            {
-                                msg = $"Key <{cfgKey}> not found!";
-                                await Fusion.m_Messages.AlertAsyncMsg(msg, "Read Entity");
-                                return false;
-                            }
-                            result = keyValuePairs.TryGetValue(cfgKey, out JToken jToken_Type);
-                            if (!result)
-                            {
-                                msg = $"Key <{cfgKey}> could not be obtained!";
-                                await Fusion.m_Messages.AlertAsyncMsg(msg, "Read Entity");
-                                return false;
-                            }
-
-                            if (jToken_Type == null)
-                                continue;
-                            if (jToken_Type.ToString() != "Point")
-                            {
-                                msg = $"Key <{cfgKey}> type not expected <> Point!";
-                                await Fusion.m_Messages.AlertAsyncMsg(msg, "Read Entity");
-                                return false;
-                            }
-
-                            cfgKey = "coordinates";
-                            if (!keyValuePairs.ContainsKey(cfgKey))
-                            {
-                                msg = $"Key <{cfgKey}> not found!";
-                                await Fusion.m_Messages.AlertAsyncMsg(msg, "Read Entity");
-                                return false;
-                            }
-                            result = keyValuePairs.TryGetValue(cfgKey, out JToken jToken_Coordinates);
-                            if (!result)
-                            {
-                                msg = $"Key <{cfgKey}> could not be obtained!";
-                                await Fusion.m_Messages.AlertAsyncMsg(msg, "Read Entity");
-                                return false;
-                            }
-
-                            //string jStringPoint = jToken_Coordinates.ToString();
-                            //MapPoint mapPointFromJson = MapPointBuilderEx.FromJson(jStringPoint);
-                            if (jToken_Coordinates == null)
-                                continue;
-                            if (jToken_Coordinates.Type != JTokenType.Array)
-                            {
-                                msg = $"Key <{cfgKey}> type not expected <> Array!";
-                                await Fusion.m_Messages.AlertAsyncMsg(msg, "Read Entity");
-                                return false;
-                            }
-                            JArray jArray_Coordinates = (JArray)jToken_Coordinates;
-
-                            double x = Convert.ToDouble(jArray_Coordinates[0]);
-                            double y = Convert.ToDouble(jArray_Coordinates[1]);
-                            MapPoint mapPoint = MapPointBuilderEx.CreateMapPoint(x, y);
-
-                            editOperation.Create(layerEntitiesPoints, mapPoint);
+                            msg = $"Key <{cfgKey}> not found!";
+                            await Fusion.m_Messages.AlertAsyncMsg(msg, "Read Entity");
+                            return null;
+                        }
+                        bool result = keyValuePairs.TryGetValue(cfgKey, out JToken jToken_Location);
+                        if (!result)
+                        {
+                            msg = $"Key <{cfgKey}> could not be obtained!";
+                            await Fusion.m_Messages.AlertAsyncMsg(msg, "Read Entity");
+                            return null;
                         }
 
+                        if (jToken_Location == null)
+                            continue;
+                        keyValuePairs = jToken_Location.ToObject<JObject>();
+
+                        cfgKey = "value";
+                        if (keyValuePairs == null)
+                            continue;
+                        if (!keyValuePairs.ContainsKey(cfgKey))
+                        {
+                            msg = $"Key <{cfgKey}> not found!";
+                            await Fusion.m_Messages.AlertAsyncMsg(msg, "Read Entity");
+                            return null;
+                        }
+                        result = keyValuePairs.TryGetValue(cfgKey, out JToken jToken_Value);
+                        if (!result)
+                        {
+                            msg = $"Key <{cfgKey}> could not be obtained!";
+                            await Fusion.m_Messages.AlertAsyncMsg(msg, "Read Entity");
+                            return null;
+                        }
+
+                        if (jToken_Value == null)
+                            continue;
+                        keyValuePairs = jToken_Value.ToObject<JObject>();
+
+                        cfgKey = "type";
+                        if (keyValuePairs == null)
+                            continue;
+                        if (!keyValuePairs.ContainsKey(cfgKey))
+                        {
+                            msg = $"Key <{cfgKey}> not found!";
+                            await Fusion.m_Messages.AlertAsyncMsg(msg, "Read Entity");
+                            return null;
+                        }
+                        result = keyValuePairs.TryGetValue(cfgKey, out JToken jToken_Type);
+                        if (!result)
+                        {
+                            msg = $"Key <{cfgKey}> could not be obtained!";
+                            await Fusion.m_Messages.AlertAsyncMsg(msg, "Read Entity");
+                            return null;
+                        }
+
+                        if (jToken_Type == null)
+                            continue;
+                        if (jToken_Type.ToString() != "Point")
+                        {
+                            msg = $"Key <{cfgKey}> type not expected <> Point!";
+                            await Fusion.m_Messages.AlertAsyncMsg(msg, "Read Entity");
+                            return null;
+                        }
+
+                        cfgKey = "coordinates";
+                        if (!keyValuePairs.ContainsKey(cfgKey))
+                        {
+                            msg = $"Key <{cfgKey}> not found!";
+                            await Fusion.m_Messages.AlertAsyncMsg(msg, "Read Entity");
+                            return null;
+                        }
+                        result = keyValuePairs.TryGetValue(cfgKey, out JToken jToken_Coordinates);
+                        if (!result)
+                        {
+                            msg = $"Key <{cfgKey}> could not be obtained!";
+                            await Fusion.m_Messages.AlertAsyncMsg(msg, "Read Entity");
+                            return null;
+                        }
+
+                        //string jStringPoint = jToken_Coordinates.ToString();
+                        //MapPoint mapPointFromJson = MapPointBuilderEx.FromJson(jStringPoint);
+                        if (jToken_Coordinates == null)
+                            continue;
+                        if (jToken_Coordinates.Type != JTokenType.Array)
+                        {
+                            msg = $"Key <{cfgKey}> type not expected <> Array!";
+                            await Fusion.m_Messages.AlertAsyncMsg(msg, "Read Entity");
+                            return null;
+                        }
+                        JArray jArray_Coordinates = (JArray)jToken_Coordinates;
+
+                        double x = Convert.ToDouble(jArray_Coordinates[0]);
+                        double y = Convert.ToDouble(jArray_Coordinates[1]);
+                        MapPoint mapPoint = MapPointBuilderEx.CreateMapPoint(x, y);
+
+                        listFeatures.Add(mapPoint);
                     }
+                }
 
-                    return true;
-                });
-
-                return true;
+                return listFeatures;
             }
             catch (Exception ex)
             {
                 // Console.WriteLine("Error converting JSON to features: " + ex.Message);
                 await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "BuildFeaturesFromJsonEntitiesAsync");
-                return false;
+                return null;
             }
         }
 
