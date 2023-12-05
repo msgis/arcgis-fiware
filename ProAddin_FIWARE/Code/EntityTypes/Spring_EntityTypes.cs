@@ -496,7 +496,7 @@ namespace msGIS.ProApp_FiwareSummit
                     int ind = 0;
                     foreach (MapPoint mapPoint in listFeatures)
                     {
-                        writer.WriteLine($"{mapPoint.X},{mapPoint.Y},{ind}");
+                        writer.WriteLine($"{Convert.ToString(mapPoint.X, CultureInfo.InvariantCulture)},{Convert.ToString(mapPoint.Y, CultureInfo.InvariantCulture)},{ind}");
                         ind++;
                     }
                 }
