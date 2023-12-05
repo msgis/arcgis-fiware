@@ -481,8 +481,8 @@ namespace msGIS.ProApp_FiwareSummit
                 if (listFeatures == null)
                     return;
 
-                string pathEntities = "P:\\MS\\link\\roman\\FiwareSummit\\ArcPro\\Entities";
-                string filePathCsv = Path.Combine(pathEntities, $"{entityType}.csv");
+                // 3.3.05/20231205/msGIS_FIWARE_rt_003: EntitiesToCsv for use with SimplePointPlugin.
+                string filePathCsv = Path.Combine(Fusion.m_PathCsvEntities, $"{entityType}.csv");
                 if (File.Exists(filePathCsv))
                     File.Delete(filePathCsv);
                 // FileStream fileStreamCsv = File.Create(filePathCsv);

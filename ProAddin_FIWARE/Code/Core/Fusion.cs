@@ -66,6 +66,9 @@ namespace msGIS.ProApp_FiwareSummit
         internal const string m_ProPluginDatasourceID_Entities = "msGIS_FIWARE_ProPluginDatasourceID_Entities";
         internal const string m_DatasourcePath = "https://fiwaredev.msgis.net";
 
+        // 3.3.05/20231205/msGIS_FIWARE_rt_003: EntitiesToCsv for use with SimplePointPlugin.
+        internal const string m_PathCsvEntities = "P:\\MS\\link\\roman\\FiwareSummit\\ArcPro\\Entities";
+
 
         #endregion Def
 
