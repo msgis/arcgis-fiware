@@ -31,8 +31,8 @@
         <!--<TextBlock Grid.Row="1" Grid.Column="1" Text="0" Margin="6" VerticalAlignment="Center"/>-->
         <Label Grid.Row="1" Grid.Column="1" x:Name="Label_Count" Content="Count" Margin="6,0,6,0" VerticalContentAlignment="Center"/>
 
-        <Label Grid.Row="2" Grid.Column="0" Content="Insert" Margin="6,0,6,0" VerticalAlignment="Center"/>
-        <Button x:Name="Button_EntityToLayer" Grid.Row="2" Grid.Column="1" Content="Entities --> Layer" ToolTip="Create layer of this entity type" Margin="6"/>
+        <Label Grid.Row="2" Grid.Column="0" Content="Layer" Margin="6,0,6,0" VerticalAlignment="Center"/>
+        <Button x:Name="Button_EntityToLayer" Grid.Row="2" Grid.Column="1" Content="Entities --> Layer" ToolTip="Create layer features of this entity type" Margin="6"/>
 
         <Label Grid.Row="3" Grid.Column="0" Content="CSV" Margin="6,0,6,0" VerticalAlignment="Center"/>
         <Button x:Name="Button_EntityToCSV" Grid.Row="3" Grid.Column="1" Content="Entities --> CSV" ToolTip="Write entities of this type to CSV file for use with SimplePointPlugin" Margin="6"/>

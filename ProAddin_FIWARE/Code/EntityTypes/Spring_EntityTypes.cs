@@ -415,8 +415,11 @@ namespace msGIS.ProApp_FiwareSummit
                 List<long> listIdsLong = new List<long>();
                 foreach (object id in listIds)
                 {
-                    long idLong = (long)id;
-                    listIdsLong.Add(idLong);
+                    if (id != null)
+                    {
+                        long idLong = Convert.ToInt64(id);
+                        listIdsLong.Add(idLong);
+                    }
                 }
                 IEnumerable<long> oids = listIdsLong;
                 editOperation.Delete(m_LayerEntitiesPoints, oids);
@@ -429,6 +432,8 @@ namespace msGIS.ProApp_FiwareSummit
 
                 if (!await Fusion.m_Helper_Op.ExecOpAsync(editOperation))
                     return;
+
+                await Fusion.m_Messages.AlertAsyncMsg($"{entityType} was exported to Layer.", m_LayerEntitiesPoints.Name, "Entities --> Layer Features");
             }
             catch (Exception ex)
             {
@@ -485,7 +490,11 @@ namespace msGIS.ProApp_FiwareSummit
                 // 3.3.05/20231205/msGIS_FIWARE_rt_003: EntitiesToCsv for use with SimplePointPlugin.
                 string filePathCsv = Path.Combine(Fusion.m_PathCsvEntities, $"{entityType}.csv");
                 if (File.Exists(filePathCsv))
+                {
+                    if (!await Fusion.m_Messages.MsAskAsync($"File already exists!{Environment.NewLine}{filePathCsv}{Environment.NewLine}Overwrite CSV?", "Entities --> CSV"))
+                        return;
                     File.Delete(filePathCsv);
+                }
                 // FileStream fileStreamCsv = File.Create(filePathCsv);
 
                 using (StreamWriter writer = new StreamWriter(filePathCsv))
@@ -502,6 +511,7 @@ namespace msGIS.ProApp_FiwareSummit
                     }
                 }
 
+                await Fusion.m_Messages.AlertAsyncMsg($"{entityType} was exported to CSV.", filePathCsv, "Entities --> CSV");
             }
             catch (Exception ex)
             {
@@ -539,11 +549,18 @@ namespace msGIS.ProApp_FiwareSummit
             try
             {
                 // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
-                bool evalPlugInDatastore = true;
-                if (!evalPlugInDatastore)
-                    return;
-
                 // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
+                // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
+                // 3.3.05/20231206/msGIS_FIWARE_rt_004: Expertise FIWARE Integration ArcGIS PRO.
+                bool evalPlugInDatastore = false;
+                if (!evalPlugInDatastore)
+                {
+                    await Fusion.m_Messages.AlertAsyncMsg("Use SimplePointPlugin to evaluate CSV Datastore!", "Pro Datasource");
+                    return;
+                }
+
+                await Fusion.m_Messages.MsNotImplementedAsync();
+
                 if (!await ProPluginDatasource_FIWARE.Fusion.InitAsync(Fusion.m_DatasourcePath))
                     return;
 

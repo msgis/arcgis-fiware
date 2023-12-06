@@ -306,8 +306,20 @@ https://chat.openai.com/share/a04629a6-ae7a-43ab-9987-107028365489
 
 3.3.05/20231205/msGIS_FIWARE_rt_003: EntitiesToCsv for use with SimplePointPlugin.
 
+3.3.05/20231206/msGIS_FIWARE_rt_004: Expertise FIWARE Integration ArcGIS PRO.
+Die FIWARE Daten werden mittels REST API async Task HttpClient.GetAsync(string? requestUri) - Json - EntityTypes bzw. Entities(Type) geladen.
+Für die Darstellung habe ich folgende Möglichkeiten evaluiert.
+1.
+Die Datensätze werden zu einem zuvor angelegten Layer mittels EditOperation.Delete/Create hinzugefügt.
+Der Layer könnte auch programmatisch erzeugt werden.
+2.
+Mittels Pro PluginDatastore kann ein beliebiges Datenformat per URI definiert werden (Connection Properties oder File).
+Ich habe URI per CSV Formatierung evaluiert ("POINT_X,POINT_Y,NAME").
+Nach der erfolgten Registrierung der spezifischen Datastore (per AddInx mit Plugin) können die Daten dierekt in ArcGIS Pro hinzugefügt werden.
+Die Daten im definierten Format können auch programmatisch angesprochen werden (z.B. Layer erzeugen).
+
 
 ---------------------------------------------------------------------------------------------------
-rt: Next 3.3.05/2023mmdd/msGIS_FIWARE_rt_004: Xxx
+rt: Next 3.3.05/2023mmdd/msGIS_FIWARE_rt_005: Xxx
 To build an AddInX look for instructions at common folder.
 ---------------------------------------------------------------------------------------------------
