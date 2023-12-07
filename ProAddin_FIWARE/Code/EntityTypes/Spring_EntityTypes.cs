@@ -46,6 +46,7 @@ namespace msGIS.ProApp_FiwareSummit
         private Button Button_EntityToLayer;
         private Button Button_EntityToCSV;
         private Button Button_Datasource;
+        private Button Button_CsvToLayer;
 
         private Layer m_LayerEntitiesPoints = null;
 
@@ -59,7 +60,7 @@ namespace msGIS.ProApp_FiwareSummit
         //private bool m_SuspendSetLayersChk = false;
         private bool m_HasSpecialEvents_EntityTypes = false;
 
-        internal Spring_EntityTypes(Grid grid_EntityTypes, ComboBox comboBox_EntityTypes, Label label_Count, Button button_EntityToLayer, Button button_EntityToCSV, Button button_Datasource)
+        internal Spring_EntityTypes(Grid grid_EntityTypes, ComboBox comboBox_EntityTypes, Label label_Count, Button button_EntityToLayer, Button button_EntityToCSV, Button button_Datasource, Button button_CsvToLayer)
         {
             Grid_EntityTypes = grid_EntityTypes;
             Grid_EntityTypes.IsEnabled = false;
@@ -88,7 +89,12 @@ namespace msGIS.ProApp_FiwareSummit
             Button_Datasource.IsEnabled = true;
             Button_Datasource.Click += Button_Datasource_Click;
 
+            Button_CsvToLayer = button_CsvToLayer;
+            Button_CsvToLayer.IsEnabled = false;
+            Button_CsvToLayer.Click += Button_CsvToLayer_Click;
+
             _ = CleanEntitiesCountAsync(false);
+            Button_CsvToLayer = button_CsvToLayer;
         }
 
         private async void OnMapViewChanged(ActiveMapViewChangedEventArgs args)
@@ -326,6 +332,7 @@ namespace msGIS.ProApp_FiwareSummit
 
                 Button_EntityToLayer.IsEnabled = false;
                 Button_EntityToCSV.IsEnabled = false;
+                Button_CsvToLayer.IsEnabled = false;
                 await CleanEntitiesCountAsync(false);
             }
             catch (Exception ex)
@@ -532,6 +539,7 @@ namespace msGIS.ProApp_FiwareSummit
             await CleanEntitiesCountAsync(false);
             Button_EntityToLayer.IsEnabled = HasComboEntityTypeSelected;
             Button_EntityToCSV.IsEnabled = HasComboEntityTypeSelected;
+            Button_CsvToLayer.IsEnabled = HasComboEntityTypeSelected;
         }
 
         private async void Button_EntityToLayer_Click(object sender, RoutedEventArgs e)
@@ -542,6 +550,11 @@ namespace msGIS.ProApp_FiwareSummit
         private async void Button_EntityToCSV_Click(object sender, RoutedEventArgs e)
         {
             await EntitiesToCsvAsync();
+        }
+
+        private async void Button_CsvToLayer_Click(object sender, RoutedEventArgs e)
+        {
+            await CsvToLayerAsync();
         }
 
         private async void Button_Datasource_Click(object sender, RoutedEventArgs e)
@@ -667,11 +680,67 @@ namespace msGIS.ProApp_FiwareSummit
 
                     });
 
+                    await Fusion.m_Messages.AlertAsyncMsg($"ArcGIS Pro Datasource Framework has been prepared to support CSV type.", $"{Fusion.m_ProPluginDatasourceID_Entities}{Environment.NewLine}{csv_path}", "Plugin Datasource CSV");
                 }
             }
             catch (Exception ex)
             {
                 await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "Button_Datasource_Click");
+            }
+        }
+
+        private async Task CsvToLayerAsync()
+        {
+            try
+            {
+                if (!HasComboEntityTypeSelected)
+                    throw new Exception("No entity type selected!");
+                if (m_LayerEntitiesPoints == null)
+                    throw new Exception($"Layer {Fusion.m_LayerTagEntitiesPoints} is not acquired!");
+                string entityType = ComboBox_EntityTypes.SelectedItem.ToString();
+                if (string.IsNullOrEmpty(entityType))
+                    throw new Exception("Empty entity type!");
+
+                // 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource integration for SimplePoint CSV.
+                string csv_path = Fusion.m_PathCsvEntities;
+
+                await QueuedTask.Run(async() =>
+                {
+                    using (PluginDatastore pluginws = new PluginDatastore(
+                         new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_Entities,
+                               new Uri(csv_path, UriKind.Absolute))))
+                    {
+                        //open each table....use the returned table name
+                        /*
+                        System.Diagnostics.Debug.Write("==========================\r\n");
+                        foreach (string table_name in pluginws.GetTableNames())
+                        {
+                        }
+                        */
+
+                        //or just pass in the name of a csv file in the workspace folder
+                        string table_name = $"{entityType}.csv";
+                        if (!File.Exists(table_name))
+                        {
+                            await Fusion.m_Messages.AlertAsyncMsg($"Entity data not found!", table_name, "CSV-Layer");
+                        }
+                        else
+                        {
+                            using (var table = pluginws.OpenTable(table_name))
+                            {
+                                //Add as a layer to the active map or scene
+                                LayerFactory.Instance.CreateLayer<FeatureLayer>(new FeatureLayerCreationParams((FeatureClass)table), MapView.Active.Map);
+                            }
+                        }
+                    }
+
+                });
+
+
+            }
+            catch (Exception ex)
+            {
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "CsvToLayerAsync");
             }
         }
 

@@ -321,7 +321,10 @@ Die Daten im definierten Format können auch programmatisch angesprochen werden 
 
 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource integration for SimplePoint CSV.
 + RBushCoord3D (Spatial Index data structure; used to make it easier to find data points on a two dimensional plane).
+- Programmatically create Layer based on Pro Plugin Datasource.
+- Design data path configurable (Fusion.m_PathCsvEntities).
 - NuGet NGSIBaseModel (convert the Json objects received in the NGSI format to C# Models).
+- Dynamically update changes on entities (NGSI data).
 
 
 ---------------------------------------------------------------------------------------------------
