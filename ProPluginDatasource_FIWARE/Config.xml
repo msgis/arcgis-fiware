@@ -8,7 +8,7 @@
   <Version>3.3.01</Version>
   <Author>roman.trojan@msgis.com</Author>
   <Company>ms.GIS</Company>
-  <Date>29.11.2023 08:50:00</Date>
+  <Date>07.12.2023 08:50:00</Date>
   <Targets>
     <Target name="ArcGISPro" version="3.0" />
   </Targets>

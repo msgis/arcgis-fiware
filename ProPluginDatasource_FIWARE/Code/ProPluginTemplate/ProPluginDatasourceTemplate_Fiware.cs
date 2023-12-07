@@ -1,4 +1,5 @@
 ﻿using ArcGIS.Core.Data;
+using ArcGIS.Core.Data.Exceptions;
 using ArcGIS.Core.Data.PluginDatastore;
 using ArcGIS.Core.Geometry;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
@@ -7,11 +8,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace msGIS.ProPluginDatasource_FIWARE
 {
     // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
+    // 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource integration for SimplePoint CSV.
 
     // Summary:
     //     This abstract class serves as one of the key extensibility points that comprise
@@ -32,9 +35,20 @@ namespace msGIS.ProPluginDatasource_FIWARE
             //Category = "My Category";
         }
 
+        /*
         private string m_DatasourcePath = "";
         private Dictionary<string, PluginTableTemplate> m_DicTypeTables;
         private IReadOnlyList<string> m_TableNames = null;
+        */
+
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [DllImport("kernel32.dll")]
+        internal static extern uint GetCurrentThreadId();
+
+        private string _filePath = "";
+        private uint _thread_id;
+
+        private Dictionary<string, PluginTableTemplate> _tables;
 
         // Summary:
         //     Formally opens the Plugin Datasource in order for the new data format to be integrated
@@ -65,6 +79,14 @@ namespace msGIS.ProPluginDatasource_FIWARE
         //     properly, then it is the responsibility of this concrete implementation to ensure
         //     the data are properly shared and/or updated.
 
+        /// <summary>
+        /// Open the specified workspace
+        /// </summary>
+        /// <param name="connectionPath">The path to the workspace</param>
+        /// <remarks>
+        /// .NET Clients access Open via the ArcGIS.Core.Data.PluginDatastore.PluginDatastore class
+        /// whereas Native clients (Pro internals) access via IWorkspaceFactory</remarks>
+
         // This method should establish a connection to the underlying data source specified by connectionPath.
         // For example, if this Plugin Datasource reads MySQL databases, this method would establish a connection to a MySQL database.
         public override void Open(Uri connectionPath)
@@ -77,16 +99,28 @@ namespace msGIS.ProPluginDatasource_FIWARE
             // throw new NotImplementedException();
 
             // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
+            /*
             m_DatasourcePath = connectionPath.ToString();
             m_TableNames = Fusion.m_ListEntityTypes;
-
             m_DicTypeTables = new Dictionary<string, PluginTableTemplate>();
+            */
             /*
             foreach (var tabName in GetTableNames())
             {
                 m_DicTypeTables.Add(tabName, new ProPluginTableTemplate_Fiware(tabName));
             }
             */
+
+            if (!System.IO.Directory.Exists(connectionPath.LocalPath))
+            {
+                throw new System.IO.DirectoryNotFoundException(connectionPath.LocalPath);
+            }
+            //initialize
+            //Strictly speaking, tracking your thread id is only necessary if
+            //your implementation uses internals that have thread affinity.
+            _thread_id = GetCurrentThreadId();
+            _tables = new Dictionary<string, PluginTableTemplate>();
+            _filePath = connectionPath.LocalPath;
         }
 
         // Summary:
@@ -106,6 +140,7 @@ namespace msGIS.ProPluginDatasource_FIWARE
             //data source instance
             // throw new NotImplementedException();
 
+            /*
             m_DatasourcePath = "";
             if (m_TableNames != null)
             {
@@ -120,16 +155,21 @@ namespace msGIS.ProPluginDatasource_FIWARE
             //Dispose of any cached table instances here
             if (m_DicTypeTables != null)
             {
-                /*
                 foreach (var table in m_DicTypeTables.Values)
                 {
                     // ((ProPluginTableTemplate_Fiware)table).Dispose();
                 }
-                */
                 m_DicTypeTables.Clear();
                 m_DicTypeTables = null;
             }
+            */
 
+            //Dispose of any cached table instances here
+            foreach (var table in _tables.Values)
+            {
+                ((ProPluginTableTemplate_Fiware)table).Dispose();
+            }
+            _tables.Clear();
         }
 
         // Summary:
@@ -154,22 +194,65 @@ namespace msGIS.ProPluginDatasource_FIWARE
         //     Any input name argument for this method should be one of the returned values
         //     in ArcGIS.Core.Data.PluginDatastore.PluginDatasourceTemplate.GetTableNames.
 
+        /// <summary>
+        /// Open the specified table
+        /// </summary>
+        /// <param name="name">The name of the table to open</param>
+        /// <remarks>For the sample, you can also pass in the name of the csv file<br/>
+        /// e.g. "TREE_INSPECTIONS" or "tree_inspections.csv" will both work</remarks>
+        /// <returns><see cref="PluginTableTemplate"/></returns>
+
         // This routine conceptually opens a table, although again the backing datastore need not be a database table.
         // The developer should create and return a plug-in table, which is a class that inherits from PluginTableTemplate.
         // Conceptually, a .NET client calls the PluginDatastore.OpenTable() method which calls this routine,
         // wraps up the returned PluginTableTemplate concrete instance as a ArcGIS.Core.Data.Table or ArcGIS.Core.Data.FeatureClass.
-        public override PluginTableTemplate OpenTable(string tableName)
+        public override PluginTableTemplate OpenTable(string name)
         {
             //TODO Open the given table/object in the plugin data source
             // throw new NotImplementedException();
+            /*
             if (!this.GetTableNames().Contains(tableName))
                 throw new Exception($"The table {tableName} was not found!");
 
-            ProPluginTableTemplate_Fiware proPluginTableTemplate_Fiware = new ProPluginTableTemplate_Fiware(tableName);
+            SpatialReference spatialReference = null;
+            ProPluginTableTemplate_Fiware proPluginTableTemplate_Fiware = new ProPluginTableTemplate_Fiware(m_DatasourcePath, tableName, spatialReference);
             if (m_DicTypeTables.ContainsKey(tableName))
                 throw new Exception($"The table {tableName} is ambiguous!");
             m_DicTypeTables.Add(tableName, proPluginTableTemplate_Fiware);
             return proPluginTableTemplate_Fiware;
+            */
+
+            //This is only necessary if your internals have thread affinity
+            //
+            //If you are using shared data (eg "static") it is your responsibility
+            //to manage access to it across multiple threads.
+            if (_thread_id != GetCurrentThreadId())
+            {
+                throw new ArcGIS.Core.CalledOnWrongThreadException();
+            }
+
+            var table_name = System.IO.Path.GetFileNameWithoutExtension(name).ToUpper();
+
+            //ensure the file name has a "csv" suffix
+            var file_name = System.IO.Path.ChangeExtension(name, ".csv");
+
+            if (!this.GetTableNames().Contains(table_name))
+                throw new GeodatabaseException($"The table {table_name} was not found");
+
+            //If you do ~not~ want to cache the csv for the lifetime of
+            //your workspace instance then return a new table on each request. The edge case
+            //for this sample being that the contents of the folder or individual csv's can
+            //change after the data is loaded and those changes will not be reflected in a
+            //given workspace instance until it is closed and re-opened.
+            //
+            //return new ProPluginTableTemplate(path, table_name, SpatialReferences.WGS84);
+
+            if (!_tables.Keys.Contains(table_name))
+            {
+                string path = System.IO.Path.Combine(_filePath, file_name);
+                _tables[table_name] = new ProPluginTableTemplate_Fiware(path, table_name, SpatialReferences.WGS84);
+            }
+            return _tables[table_name];
         }
 
         // Summary:
@@ -192,6 +275,11 @@ namespace msGIS.ProPluginDatasource_FIWARE
         //     fully qualified or unqualified as long as the names can be successfully used
         //     as arguments to ArcGIS.Core.Data.PluginDatastore.PluginDatasourceTemplate.OpenTable(System.String).
 
+        /// <summary>
+        /// Get the table names available in the workspace
+        /// </summary>
+        /// <returns></returns>
+
         // GetTableNames should return a list of all of the tables and feature classes that can be opened by the Plugin Datasource.
         // Remember that the underlying data source might not be composed of database tables; these are entities that exposed to ArcGIS Pro as tables.
         // For example, a Plugin Datasource that exposes an Excel spreadsheet as a datasource might treat each pane in the spreadsheet as an individual table.
@@ -200,7 +288,7 @@ namespace msGIS.ProPluginDatasource_FIWARE
         {
             // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
             // var tableNames = new List<string>();
-            IReadOnlyList<string> tableNames = m_TableNames;        // new List<string>();
+            // IReadOnlyList<string> tableNames = m_TableNames;        // new List<string>();
 
             /*
             // asyncTask.Wait();
@@ -219,7 +307,16 @@ namespace msGIS.ProPluginDatasource_FIWARE
 
             //TODO Return the names of all tables in the plugin
             //data source
-            return tableNames;
+            // return tableNames;
+
+            var fileNames =
+              System.IO.Directory.GetFiles(_filePath, "*.csv", System.IO.SearchOption.TopDirectoryOnly)
+                  .Select(fn => System.IO.Path.GetFileNameWithoutExtension(fn).ToUpper());
+
+            //there is an edge case where files could have been deleted after they
+            //were opened...so union in the cache names
+            var cachedTables = _tables.Keys;
+            return fileNames.Union(cachedTables).OrderBy(name => name).ToList();
         }
 
         // Summary:
@@ -260,11 +357,19 @@ namespace msGIS.ProPluginDatasource_FIWARE
         //     the framework will relay said ObjectIDs by setting ArcGIS.Core.Data.QueryFilter.ObjectIDs
         //     in the ArcGIS.Core.Data.QueryFilter that is passed to ArcGIS.Core.Data.PluginDatastore.PluginTableTemplate.Search(ArcGIS.Core.Data.QueryFilter).
 
-        // This routine should return true if the underlying data source supports a query language.
+        /// <summary>
+        /// Returns whether or not SQL queries are supported on the plugin
+        /// </summary>
+        /// <remarks>Returning false (default) means that the WhereClause of an
+        /// incoming query filter will always be empty (regardless of what clients
+        /// set it to)</remarks>
+        /// <returns>true or false</returns>
+        /// // This routine should return true if the underlying data source supports a query language.
         // The default is false. See the Queries section of this document for more information about queries.
         public override bool IsQueryLanguageSupported()
         {
-            return base.IsQueryLanguageSupported();
+            // return base.IsQueryLanguageSupported();
+            return true;
         }
 
         // Summary:

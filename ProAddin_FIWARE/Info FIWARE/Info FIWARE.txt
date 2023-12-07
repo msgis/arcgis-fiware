@@ -319,7 +319,12 @@ Nach der erfolgten Registrierung der spezifischen Datastore (per AddInx mit Plug
 Die Daten im definierten Format können auch programmatisch angesprochen werden (z.B. Layer erzeugen).
 
 
+3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource integration for SimplePoint CSV.
++ RBushCoord3D (Spatial Index data structure; used to make it easier to find data points on a two dimensional plane).
+- NuGet NGSIBaseModel (convert the Json objects received in the NGSI format to C# Models).
+
+
 ---------------------------------------------------------------------------------------------------
-rt: Next 3.3.05/2023mmdd/msGIS_FIWARE_rt_005: Xxx
+rt: Next 3.3.05/2023mmdd/msGIS_FIWARE_rt_006: Xxx
 To build an AddInX look for instructions at common folder.
 ---------------------------------------------------------------------------------------------------

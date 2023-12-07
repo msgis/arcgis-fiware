@@ -550,56 +550,124 @@ namespace msGIS.ProApp_FiwareSummit
             {
                 // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
                 // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
-                // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
                 // 3.3.05/20231206/msGIS_FIWARE_rt_004: Expertise FIWARE Integration ArcGIS PRO.
-                bool evalPlugInDatastore = false;
-                if (!evalPlugInDatastore)
+
+                bool evalPluginTables = false;
+                if (evalPluginTables)
                 {
-                    await Fusion.m_Messages.AlertAsyncMsg("Use SimplePointPlugin to evaluate CSV Datastore!", "Pro Datasource");
-                    return;
-                }
+                    await Fusion.m_Messages.MsNotImplementedAsync();
 
-                await Fusion.m_Messages.MsNotImplementedAsync();
+                    if (!await ProPluginDatasource_FIWARE.Fusion.InitAsync(Fusion.m_DatasourcePath))
+                        return;
 
-                if (!await ProPluginDatasource_FIWARE.Fusion.InitAsync(Fusion.m_DatasourcePath))
-                    return;
+                    // Types: /ngsi-ld/v1/types
+                    // Entities: /ngsi-ld/v1/entities?type={entityType}&offset={offset}&limit={limit}
+                    // Refresh: /ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3
+                    Uri uriDatasourcePath = new Uri(Fusion.m_DatasourcePath);
 
-                // Types: /ngsi-ld/v1/types
-                // Entities: /ngsi-ld/v1/entities?type={entityType}&offset={offset}&limit={limit}
-                // Refresh: /ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3
-                Uri uriDatasourcePath = new Uri(Fusion.m_DatasourcePath);
-
-                await QueuedTask.Run(() =>
-                {
-                    // PluginDatasourceConnectionPath : Connector
-                    // Plugin identifier is corresponding to ProPluginDatasource Config.xml PluginDatasource ID
-                    using (PluginDatastore pluginDatastore = new PluginDatastore(
-                     new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_Entities, uriDatasourcePath)))
+                    await QueuedTask.Run(() =>
                     {
-                        if (pluginDatastore != null)
+                        // PluginDatasourceConnectionPath : Connector
+                        // Plugin identifier is corresponding to ProPluginDatasource Config.xml PluginDatasource ID
+                        using (PluginDatastore pluginDatastore = new PluginDatastore(
+                         new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_Entities, uriDatasourcePath)))
                         {
-                            IReadOnlyList<string> tableNames = pluginDatastore.GetTableNames();
-                            if (tableNames != null)
+                            if (pluginDatastore != null)
                             {
-                                foreach (var table_name in tableNames)
+                                IReadOnlyList<string> tableNames = pluginDatastore.GetTableNames();
+                                if (tableNames != null)
                                 {
-                                    System.Diagnostics.Debug.Write($"Table: {table_name}\r\n");
-                                    //open each table....use the returned table name
-                                    //or just pass in the name of a csv file in the workspace folder
-                                    using (var table = pluginDatastore.OpenTable(table_name))
+                                    foreach (var table_name in tableNames)
                                     {
-                                        //get information about the table
-                                        using (var def = table.GetDefinition() as FeatureClassDefinition)
+                                        System.Diagnostics.Debug.Write($"Table: {table_name}\r\n");
+                                        //open each table....use the returned table name
+                                        //or just pass in the name of a csv file in the workspace folder
+                                        using (var table = pluginDatastore.OpenTable(table_name))
                                         {
+                                            //get information about the table
+                                            using (var def = table.GetDefinition() as FeatureClassDefinition)
+                                            {
 
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
-                    }
-                });
+                    });
 
+                }
+
+                // 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource integration for SimplePoint CSV.
+                bool evalCSV = true;
+                if (!evalCSV)
+                {
+                    await Fusion.m_Messages.AlertAsyncMsg("Use SimplePointPlugin to evaluate CSV Datastore!", "Pro Datasource");
+                    return;
+                }
+                else
+                {
+                    string csv_path = Fusion.m_PathCsvEntities;
+
+                    await QueuedTask.Run(() =>
+                    {
+
+                        using (PluginDatastore pluginws = new PluginDatastore(
+                             new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_Entities,
+                                   new Uri(csv_path, UriKind.Absolute))))
+                        {
+                            System.Diagnostics.Debug.Write("==========================\r\n");
+                            foreach (var table_name in pluginws.GetTableNames())
+                            {
+                                System.Diagnostics.Debug.Write($"Table: {table_name}\r\n");
+                                //open each table....use the returned table name
+                                //or just pass in the name of a csv file in the workspace folder
+                                using (var table = pluginws.OpenTable(table_name))
+                                {
+                                    //get information about the table
+                                    using (var def = table.GetDefinition() as FeatureClassDefinition)
+                                    {
+
+                                    }
+                                    //query and return all rows
+                                    //TODO - use a QueryFilter and Whereclause
+                                    //var qf = new QueryFilter()
+                                    //{
+                                    //  WhereClause = "OBJECTID > 0"
+                                    //};
+                                    //var rc = table.Search(qf);
+
+                                    using (var rc = table.Search(null))
+                                    {
+                                        while (rc.MoveNext())
+                                        {
+                                            using (var feat = rc.Current as Feature)
+                                            {
+                                                if (feat != null)
+                                                {
+                                                    //Get information from the feature
+                                                    var oid = feat.GetObjectID();
+                                                    var shape = feat.GetShape();
+
+                                                    //Access all the values
+                                                    var count = feat.GetFields().Count();
+                                                    for (int i = 0; i < count; i++)
+                                                    {
+                                                        var val = feat[i];
+                                                        //TODO use the value(s)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+
+                    });
+
+                }
             }
             catch (Exception ex)
             {
