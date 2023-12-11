@@ -18,6 +18,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -35,17 +36,20 @@
         <Label Grid.Row="2" Grid.Column="0" Content="REST-Layer" Margin="6,0,6,0" VerticalAlignment="Center"/>
         <Button x:Name="Button_EntityToLayer" Grid.Row="2" Grid.Column="1" Content="Entities --> Layer" ToolTip="Create layer features of this entity type (without Datasource Plugin)" Margin="6"/>
 
-        <Label Grid.Row="3" Grid.Column="0" Content="REST-CSV" Margin="6,0,6,0" VerticalAlignment="Center"/>
-        <Button x:Name="Button_EntityToCSV" Grid.Row="3" Grid.Column="1" Content="Entities --> CSV" ToolTip="Write entities of this type to CSV file for use with Datasource Plugin" Margin="6"/>
+        <Label Grid.Row="3" Content="Data Path" Margin="6,0,6,0" ToolTip="Connection Path" VerticalContentAlignment="Center"/>
+        <TextBox Grid.Row="3" x:Name="TextBox_DataPath" Grid.Column="1" Text="" IsReadOnly="False" Margin="6" VerticalAlignment="Center"/>
 
-        <Label Grid.Row="4" Grid.Column="0" Content="Datasource" Margin="6,0,6,0" VerticalAlignment="Center"/>
-        <Button x:Name="Button_Datasource" Grid.Row="4" Grid.Column="1" Content="Pro Datasource" ToolTip="Prepare CSV data type support for ArcGIS Pro Datasource Framework" Margin="6"/>
+        <Label Grid.Row="4" Grid.Column="0" Content="REST-CSV" Margin="6,0,6,0" VerticalAlignment="Center"/>
+        <Button x:Name="Button_EntityToCSV" Grid.Row="4" Grid.Column="1" Content="Entities --> CSV" ToolTip="Write entities of this type to CSV file for use with Datasource Plugin" Margin="6"/>
 
-        <Label Grid.Row="5" Grid.Column="0" Content="CSV-Layer" Margin="6,0,6,0" VerticalAlignment="Center"/>
-        <Button x:Name="Button_CsvToLayer" Grid.Row="5" Grid.Column="1" Content="CSV --> Layer" ToolTip="Create feature layer of this entity type using prepared ArcGIS Pro Datasource Framework" Margin="6"/>
+        <Label Grid.Row="5" Grid.Column="0" Content="Datasource" Margin="6,0,6,0" VerticalAlignment="Center"/>
+        <Button x:Name="Button_Datasource" Grid.Row="5" Grid.Column="1" Content="Pro Datasource" ToolTip="Prepare CSV data type support for ArcGIS Pro Datasource Framework" Margin="6"/>
 
-        <Label Grid.Row="6" Grid.Column="0" Content="To Do" Margin="6,0,6,0" VerticalAlignment="Center"/>
-        <Label Content="Ask for more!" ToolTip="roman.trojan@msgis.com" Grid.Row="6" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Orange"/>
+        <Label Grid.Row="6" Grid.Column="0" Content="CSV-Layer" Margin="6,0,6,0" VerticalAlignment="Center"/>
+        <Button x:Name="Button_CsvToLayer" Grid.Row="6" Grid.Column="1" Content="CSV --> Layer" ToolTip="Create feature layer of this entity type using prepared ArcGIS Pro Datasource Framework" Margin="6"/>
+
+        <Label Grid.Row="7" Grid.Column="0" Content="To Do" Margin="6,0,6,0" VerticalAlignment="Center"/>
+        <Label Content="Ask for more!" ToolTip="roman.trojan@msgis.com" Grid.Row="7" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Orange"/>
 
     </Grid>
 

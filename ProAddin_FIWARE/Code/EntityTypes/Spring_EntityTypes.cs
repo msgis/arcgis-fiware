@@ -44,6 +44,7 @@ namespace msGIS.ProApp_FiwareSummit
         private ComboBox ComboBox_EntityTypes;
         private Label Label_Count;
         private Button Button_EntityToLayer;
+        private TextBox TextBox_DataPath;
         private Button Button_EntityToCSV;
         private Button Button_Datasource;
         private Button Button_CsvToLayer;
@@ -60,7 +61,7 @@ namespace msGIS.ProApp_FiwareSummit
         //private bool m_SuspendSetLayersChk = false;
         private bool m_HasSpecialEvents_EntityTypes = false;
 
-        internal Spring_EntityTypes(Grid grid_EntityTypes, ComboBox comboBox_EntityTypes, Label label_Count, Button button_EntityToLayer, Button button_EntityToCSV, Button button_Datasource, Button button_CsvToLayer)
+        internal Spring_EntityTypes(Grid grid_EntityTypes, ComboBox comboBox_EntityTypes, Label label_Count, Button button_EntityToLayer, TextBox textBox_DataPath, Button button_EntityToCSV, Button button_Datasource, Button button_CsvToLayer)
         {
             Grid_EntityTypes = grid_EntityTypes;
             Grid_EntityTypes.IsEnabled = false;
@@ -80,6 +81,11 @@ namespace msGIS.ProApp_FiwareSummit
             Button_EntityToLayer = button_EntityToLayer;
             Button_EntityToLayer.IsEnabled = false;
             Button_EntityToLayer.Click += Button_EntityToLayer_Click;
+
+            TextBox_DataPath = textBox_DataPath;
+            TextBox_DataPath.IsEnabled = false;
+            // TextBox_DataPath.TextChanged
+            TextBox_DataPath.Text = Fusion.m_PathCsvEntities;
 
             Button_EntityToCSV = button_EntityToCSV;
             Button_EntityToCSV.IsEnabled = false;
@@ -331,6 +337,7 @@ namespace msGIS.ProApp_FiwareSummit
                 ComboBox_EntityTypes.Items.Clear();
 
                 Button_EntityToLayer.IsEnabled = false;
+                TextBox_DataPath.IsEnabled = false;
                 Button_EntityToCSV.IsEnabled = false;
                 Button_CsvToLayer.IsEnabled = false;
                 await CleanEntitiesCountAsync(false);
@@ -495,7 +502,7 @@ namespace msGIS.ProApp_FiwareSummit
                     return;
 
                 // 3.3.05/20231205/msGIS_FIWARE_rt_003: EntitiesToCsv for use with SimplePointPlugin.
-                string filePathCsv = Path.Combine(Fusion.m_PathCsvEntities, $"{entityType}.csv");
+                string filePathCsv = Path.Combine(TextBox_DataPath.Text, $"{entityType}.csv");
                 if (File.Exists(filePathCsv))
                 {
                     if (!await Fusion.m_Messages.MsAskAsync($"File already exists!{Environment.NewLine}{filePathCsv}{Environment.NewLine}Overwrite CSV?", "Entities --> CSV"))
@@ -538,6 +545,7 @@ namespace msGIS.ProApp_FiwareSummit
         {
             await CleanEntitiesCountAsync(false);
             Button_EntityToLayer.IsEnabled = HasComboEntityTypeSelected;
+            TextBox_DataPath.IsEnabled = HasComboEntityTypeSelected;
             Button_EntityToCSV.IsEnabled = HasComboEntityTypeSelected;
             Button_CsvToLayer.IsEnabled = HasComboEntityTypeSelected;
         }
@@ -620,7 +628,12 @@ namespace msGIS.ProApp_FiwareSummit
                 }
                 else
                 {
-                    string csv_path = Fusion.m_PathCsvEntities;
+                    string csv_path = TextBox_DataPath.Text;
+                    if (!Directory.Exists(csv_path))
+                    {
+                        await Fusion.m_Messages.AlertAsyncMsg($"Datasource path not found!", csv_path, "Pro Datasource");
+                        return;
+                    }
 
                     await QueuedTask.Run(() =>
                     {
@@ -702,7 +715,12 @@ namespace msGIS.ProApp_FiwareSummit
                     throw new Exception("Empty entity type!");
 
                 // 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource integration for SimplePoint CSV.
-                string csv_path = Fusion.m_PathCsvEntities;
+                string csv_path = TextBox_DataPath.Text;
+                if (!Directory.Exists(csv_path))
+                {
+                    await Fusion.m_Messages.AlertAsyncMsg($"Datasource path not found!", csv_path, "CSV-Layer");
+                    return;
+                }
 
                 await QueuedTask.Run(async() =>
                 {
