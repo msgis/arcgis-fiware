@@ -720,9 +720,10 @@ namespace msGIS.ProApp_FiwareSummit
 
                         //or just pass in the name of a csv file in the workspace folder
                         string table_name = $"{entityType}.csv";
-                        if (!File.Exists(table_name))
+                        string table_path = Path.Combine(csv_path, table_name);
+                        if (!File.Exists(table_path))
                         {
-                            await Fusion.m_Messages.AlertAsyncMsg($"Entity data not found!", table_name, "CSV-Layer");
+                            await Fusion.m_Messages.AlertAsyncMsg($"Entity data not found!", table_path, "CSV-Layer");
                         }
                         else
                         {
