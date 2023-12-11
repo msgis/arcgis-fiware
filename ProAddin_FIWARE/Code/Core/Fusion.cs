@@ -63,11 +63,11 @@ namespace msGIS.ProApp_FiwareSummit
 
         // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
         // Plugin identifier is corresponding to ProPluginDatasource Config.xml PluginDatasource ID
-        internal const string m_ProPluginDatasourceID_Entities = "msGIS_FIWARE_ProPluginDatasourceID_Entities";
+        internal const string m_ProPluginDatasourceID_Entities_FIW = "msGIS_ProPluginDatasourceID_Entities_FIWARE";
         internal const string m_DatasourcePath = "https://fiwaredev.msgis.net";
 
-        // 3.3.05/20231205/msGIS_FIWARE_rt_003: EntitiesToCsv for use with SimplePointPlugin.
-        internal const string m_PathCsvEntities = @"P:\MS\link\roman\FiwareSummit\ArcPro\Entities";     // "P:\\MS\\link\\roman\\FiwareSummit\\ArcPro\\Entities"
+        // 3.3.05/20231205/msGIS_FIWARE_rt_003: EntitiesToFile for use with SimplePointPlugin.
+        internal const string m_PathEntities = @"P:\MS\link\roman\FiwareSummit\ArcPro\Entities_FIW";            // "P:\\MS\\link\\roman\\FiwareSummit\\ArcPro\\Entities_FIW"
 
 
         #endregion Def

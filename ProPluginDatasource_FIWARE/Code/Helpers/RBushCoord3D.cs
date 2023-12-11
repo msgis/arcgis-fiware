@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace msGIS.ProPluginDatasource_FIWARE
 {
-    // 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource integration for SimplePoint CSV.
+    // 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource Integration for SimplePoint File-Format.
 
     internal class RBushCoord3D : RBush.ISpatialData, IComparable<RBushCoord3D>
     {

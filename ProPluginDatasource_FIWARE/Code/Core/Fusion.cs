@@ -24,6 +24,8 @@ namespace msGIS.ProPluginDatasource_FIWARE
         internal static string m_DatasourcePath { get; set; }
         internal static List<string> m_ListEntityTypes { get; set; }
 
+        public const string m_FileSuffix = "fiw";     // "csv";
+
         public static async Task<bool> InitAsync(string datasourcePath)
         {
             try

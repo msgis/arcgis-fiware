@@ -45,9 +45,8 @@ namespace msGIS.ProApp_FiwareSummit
         private Label Label_Count;
         private Button Button_EntityToLayer;
         private TextBox TextBox_DataPath;
-        private Button Button_EntityToCSV;
-        private Button Button_Datasource;
-        private Button Button_CsvToLayer;
+        private Button Button_EntityToFile;
+        private Button Button_FileToLayer;
 
         private Layer m_LayerEntitiesPoints = null;
 
@@ -61,7 +60,7 @@ namespace msGIS.ProApp_FiwareSummit
         //private bool m_SuspendSetLayersChk = false;
         private bool m_HasSpecialEvents_EntityTypes = false;
 
-        internal Spring_EntityTypes(Grid grid_EntityTypes, ComboBox comboBox_EntityTypes, Label label_Count, Button button_EntityToLayer, TextBox textBox_DataPath, Button button_EntityToCSV, Button button_Datasource, Button button_CsvToLayer)
+        internal Spring_EntityTypes(Grid grid_EntityTypes, ComboBox comboBox_EntityTypes, Label label_Count, Button button_EntityToLayer, TextBox textBox_DataPath, Button button_EntityToFile, Button button_FileToLayer)
         {
             Grid_EntityTypes = grid_EntityTypes;
             Grid_EntityTypes.IsEnabled = false;
@@ -85,22 +84,18 @@ namespace msGIS.ProApp_FiwareSummit
             TextBox_DataPath = textBox_DataPath;
             TextBox_DataPath.IsEnabled = false;
             // TextBox_DataPath.TextChanged
-            TextBox_DataPath.Text = Fusion.m_PathCsvEntities;
+            TextBox_DataPath.Text = Fusion.m_PathEntities;
 
-            Button_EntityToCSV = button_EntityToCSV;
-            Button_EntityToCSV.IsEnabled = false;
-            Button_EntityToCSV.Click += Button_EntityToCSV_Click;
+            Button_EntityToFile = button_EntityToFile;
+            Button_EntityToFile.IsEnabled = false;
+            Button_EntityToFile.Click += Button_EntityToFile_Click;
 
-            Button_Datasource = button_Datasource;
-            Button_Datasource.IsEnabled = true;
-            Button_Datasource.Click += Button_Datasource_Click;
-
-            Button_CsvToLayer = button_CsvToLayer;
-            Button_CsvToLayer.IsEnabled = false;
-            Button_CsvToLayer.Click += Button_CsvToLayer_Click;
+            Button_FileToLayer = button_FileToLayer;
+            Button_FileToLayer.IsEnabled = false;
+            Button_FileToLayer.Click += Button_FileToLayer_Click;
 
             _ = CleanEntitiesCountAsync(false);
-            Button_CsvToLayer = button_CsvToLayer;
+            Button_FileToLayer = button_FileToLayer;
         }
 
         private async void OnMapViewChanged(ActiveMapViewChangedEventArgs args)
@@ -338,8 +333,8 @@ namespace msGIS.ProApp_FiwareSummit
 
                 Button_EntityToLayer.IsEnabled = false;
                 TextBox_DataPath.IsEnabled = false;
-                Button_EntityToCSV.IsEnabled = false;
-                Button_CsvToLayer.IsEnabled = false;
+                Button_EntityToFile.IsEnabled = false;
+                Button_FileToLayer.IsEnabled = false;
                 await CleanEntitiesCountAsync(false);
             }
             catch (Exception ex)
@@ -463,7 +458,7 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
-        private async Task EntitiesToCsvAsync()
+        private async Task EntitiesToFileAsync()
         {
             Helper_Progress m_Helper_Progress = null;
             try
@@ -489,7 +484,7 @@ namespace msGIS.ProApp_FiwareSummit
                 if (jArrayEntities == null)
                     return;
                 if (jArrayEntities.Count == 0)
-                    await Fusion.m_Messages.AlertAsyncMsg("No entities acquired!", "EntitiesToCsvAsync");
+                    await Fusion.m_Messages.AlertAsyncMsg("No entities acquired!", "EntitiesToFileAsync");
                 await ShowCountAsync(jArrayEntities.Count);
 
                 m_Helper_Progress = new Helper_Progress(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework, isProgressCancelable);
@@ -501,17 +496,23 @@ namespace msGIS.ProApp_FiwareSummit
                 if (listFeatures == null)
                     return;
 
-                // 3.3.05/20231205/msGIS_FIWARE_rt_003: EntitiesToCsv for use with SimplePointPlugin.
-                string filePathCsv = Path.Combine(TextBox_DataPath.Text, $"{entityType}.csv");
-                if (File.Exists(filePathCsv))
+                // 3.3.05/20231205/msGIS_FIWARE_rt_003: EntitiesToFile for use with SimplePointPlugin.
+                string dirPath = TextBox_DataPath.Text;
+                if (!Directory.Exists(dirPath))
                 {
-                    if (!await Fusion.m_Messages.MsAskAsync($"File already exists!{Environment.NewLine}{filePathCsv}{Environment.NewLine}Overwrite CSV?", "Entities --> CSV"))
-                        return;
-                    File.Delete(filePathCsv);
+                    await Fusion.m_Messages.AlertAsyncMsg($"Datasource path not found!", dirPath, "Pro Datasource");
+                    return;
                 }
-                // FileStream fileStreamCsv = File.Create(filePathCsv);
+                string filePath = Path.Combine(dirPath, $"{entityType}.{ProPluginDatasource_FIWARE.Fusion.m_FileSuffix}");
+                if (File.Exists(filePath))
+                {
+                    if (!await Fusion.m_Messages.MsAskAsync($"File already exists!{Environment.NewLine}{filePath}{Environment.NewLine}Overwrite File?", "Entities --> File"))
+                        return;
+                    File.Delete(filePath);
+                }
+                // FileStream fileStream = File.Create(filePath);
 
-                using (StreamWriter writer = new StreamWriter(filePathCsv))
+                using (StreamWriter writer = new StreamWriter(filePath))
                 {
                     // Write headers
                     writer.WriteLine("POINT_X,POINT_Y,NAME");
@@ -525,11 +526,11 @@ namespace msGIS.ProApp_FiwareSummit
                     }
                 }
 
-                await Fusion.m_Messages.AlertAsyncMsg($"{entityType} was exported to CSV.", filePathCsv, "Entities --> CSV");
+                await Fusion.m_Messages.AlertAsyncMsg($"{entityType} was exported to File.", filePath, "Entities --> File");
             }
             catch (Exception ex)
             {
-                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "EntitiesToCsvAsync");
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "EntitiesToFileAsync");
             }
             finally
             {
@@ -546,8 +547,8 @@ namespace msGIS.ProApp_FiwareSummit
             await CleanEntitiesCountAsync(false);
             Button_EntityToLayer.IsEnabled = HasComboEntityTypeSelected;
             TextBox_DataPath.IsEnabled = HasComboEntityTypeSelected;
-            Button_EntityToCSV.IsEnabled = HasComboEntityTypeSelected;
-            Button_CsvToLayer.IsEnabled = HasComboEntityTypeSelected;
+            Button_EntityToFile.IsEnabled = HasComboEntityTypeSelected;
+            Button_FileToLayer.IsEnabled = HasComboEntityTypeSelected;
         }
 
         private async void Button_EntityToLayer_Click(object sender, RoutedEventArgs e)
@@ -555,133 +556,127 @@ namespace msGIS.ProApp_FiwareSummit
             await EntitiesToFeaturesAsync();
         }
 
-        private async void Button_EntityToCSV_Click(object sender, RoutedEventArgs e)
+        private async void Button_EntityToFile_Click(object sender, RoutedEventArgs e)
         {
-            await EntitiesToCsvAsync();
+            await EntitiesToFileAsync();
         }
 
-        private async void Button_CsvToLayer_Click(object sender, RoutedEventArgs e)
+        private async void Button_FileToLayer_Click(object sender, RoutedEventArgs e)
         {
-            await CsvToLayerAsync();
+            await FileToLayerAsync();
         }
 
-        private async void Button_Datasource_Click(object sender, RoutedEventArgs e)
+        private async Task EvalPluginByUriAsync()
         {
             try
             {
                 // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
                 // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
                 // 3.3.05/20231206/msGIS_FIWARE_rt_004: Expertise FIWARE Integration ArcGIS PRO.
+                await Fusion.m_Messages.MsNotImplementedAsync();
 
-                bool evalPluginTables = false;
-                if (evalPluginTables)
+                if (!await ProPluginDatasource_FIWARE.Fusion.InitAsync(Fusion.m_DatasourcePath))
+                    return;
+
+                // Types: /ngsi-ld/v1/types
+                // Entities: /ngsi-ld/v1/entities?type={entityType}&offset={offset}&limit={limit}
+                // Refresh: /ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3
+                Uri uriDatasourcePath = new Uri(Fusion.m_DatasourcePath);
+
+                await QueuedTask.Run(() =>
                 {
-                    await Fusion.m_Messages.MsNotImplementedAsync();
-
-                    if (!await ProPluginDatasource_FIWARE.Fusion.InitAsync(Fusion.m_DatasourcePath))
-                        return;
-
-                    // Types: /ngsi-ld/v1/types
-                    // Entities: /ngsi-ld/v1/entities?type={entityType}&offset={offset}&limit={limit}
-                    // Refresh: /ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3
-                    Uri uriDatasourcePath = new Uri(Fusion.m_DatasourcePath);
-
-                    await QueuedTask.Run(() =>
+                    // PluginDatasourceConnectionPath : Connector
+                    // Plugin identifier is corresponding to ProPluginDatasource Config.xml PluginDatasource ID
+                    using (PluginDatastore pluginDatastore = new PluginDatastore(
+                     new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_Entities_FIW, uriDatasourcePath)))
                     {
-                        // PluginDatasourceConnectionPath : Connector
-                        // Plugin identifier is corresponding to ProPluginDatasource Config.xml PluginDatasource ID
-                        using (PluginDatastore pluginDatastore = new PluginDatastore(
-                         new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_Entities, uriDatasourcePath)))
+                        if (pluginDatastore != null)
                         {
-                            if (pluginDatastore != null)
+                            IReadOnlyList<string> tableNames = pluginDatastore.GetTableNames();
+                            if (tableNames != null)
                             {
-                                IReadOnlyList<string> tableNames = pluginDatastore.GetTableNames();
-                                if (tableNames != null)
+                                foreach (var table_name in tableNames)
                                 {
-                                    foreach (var table_name in tableNames)
+                                    System.Diagnostics.Debug.Write($"Table: {table_name}\r\n");
+                                    //open each table....use the returned table name
+                                    //or just pass in the name of a csv file in the workspace folder
+                                    using (var table = pluginDatastore.OpenTable(table_name))
                                     {
-                                        System.Diagnostics.Debug.Write($"Table: {table_name}\r\n");
-                                        //open each table....use the returned table name
-                                        //or just pass in the name of a csv file in the workspace folder
-                                        using (var table = pluginDatastore.OpenTable(table_name))
+                                        //get information about the table
+                                        using (var def = table.GetDefinition() as FeatureClassDefinition)
                                         {
-                                            //get information about the table
-                                            using (var def = table.GetDefinition() as FeatureClassDefinition)
-                                            {
 
-                                            }
                                         }
                                     }
                                 }
                             }
                         }
-                    });
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "EvalPluginTablesAsync");
+            }
+        }
 
-                }
-
-                // 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource integration for SimplePoint CSV.
-                bool evalCSV = true;
-                if (!evalCSV)
+        private async Task EvalPluginTableContentsAsync(string dirPath)
+        {
+            try
+            {
+                // 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource Integration for SimplePoint File-Format.
+                if (!Directory.Exists(dirPath))
                 {
-                    await Fusion.m_Messages.AlertAsyncMsg("Use SimplePointPlugin to evaluate CSV Datastore!", "Pro Datasource");
+                    await Fusion.m_Messages.AlertAsyncMsg($"Datasource path not found!", dirPath, "Pro Datasource");
                     return;
                 }
-                else
+
+                await QueuedTask.Run(() =>
                 {
-                    string csv_path = TextBox_DataPath.Text;
-                    if (!Directory.Exists(csv_path))
-                    {
-                        await Fusion.m_Messages.AlertAsyncMsg($"Datasource path not found!", csv_path, "Pro Datasource");
-                        return;
-                    }
 
-                    await QueuedTask.Run(() =>
+                    using (PluginDatastore pluginws = new PluginDatastore(
+                         new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_Entities_FIW,
+                               new Uri(dirPath, UriKind.Absolute))))
                     {
-
-                        using (PluginDatastore pluginws = new PluginDatastore(
-                             new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_Entities,
-                                   new Uri(csv_path, UriKind.Absolute))))
+                        System.Diagnostics.Debug.Write("==========================\r\n");
+                        foreach (var table_name in pluginws.GetTableNames())
                         {
-                            System.Diagnostics.Debug.Write("==========================\r\n");
-                            foreach (var table_name in pluginws.GetTableNames())
+                            System.Diagnostics.Debug.Write($"Table: {table_name}\r\n");
+                            //open each table....use the returned table name
+                            //or just pass in the name of a csv file in the workspace folder
+                            using (var table = pluginws.OpenTable(table_name))
                             {
-                                System.Diagnostics.Debug.Write($"Table: {table_name}\r\n");
-                                //open each table....use the returned table name
-                                //or just pass in the name of a csv file in the workspace folder
-                                using (var table = pluginws.OpenTable(table_name))
+                                //get information about the table
+                                using (var def = table.GetDefinition() as FeatureClassDefinition)
                                 {
-                                    //get information about the table
-                                    using (var def = table.GetDefinition() as FeatureClassDefinition)
-                                    {
 
-                                    }
-                                    //query and return all rows
-                                    //TODO - use a QueryFilter and Whereclause
-                                    //var qf = new QueryFilter()
-                                    //{
-                                    //  WhereClause = "OBJECTID > 0"
-                                    //};
-                                    //var rc = table.Search(qf);
+                                }
+                                //query and return all rows
+                                //TODO - use a QueryFilter and Whereclause
+                                //var qf = new QueryFilter()
+                                //{
+                                //  WhereClause = "OBJECTID > 0"
+                                //};
+                                //var rc = table.Search(qf);
 
-                                    using (var rc = table.Search(null))
+                                using (var rc = table.Search(null))
+                                {
+                                    while (rc.MoveNext())
                                     {
-                                        while (rc.MoveNext())
+                                        using (var feat = rc.Current as Feature)
                                         {
-                                            using (var feat = rc.Current as Feature)
+                                            if (feat != null)
                                             {
-                                                if (feat != null)
-                                                {
-                                                    //Get information from the feature
-                                                    var oid = feat.GetObjectID();
-                                                    var shape = feat.GetShape();
+                                                //Get information from the feature
+                                                var oid = feat.GetObjectID();
+                                                var shape = feat.GetShape();
 
-                                                    //Access all the values
-                                                    var count = feat.GetFields().Count();
-                                                    for (int i = 0; i < count; i++)
-                                                    {
-                                                        var val = feat[i];
-                                                        //TODO use the value(s)
-                                                    }
+                                                //Access all the values
+                                                var count = feat.GetFields().Count();
+                                                for (int i = 0; i < count; i++)
+                                                {
+                                                    var val = feat[i];
+                                                    //TODO use the value(s)
                                                 }
                                             }
                                         }
@@ -689,20 +684,18 @@ namespace msGIS.ProApp_FiwareSummit
                                 }
                             }
                         }
+                    }
 
 
-                    });
-
-                    await Fusion.m_Messages.AlertAsyncMsg($"ArcGIS Pro Datasource Framework has been prepared to support CSV type.", $"{Fusion.m_ProPluginDatasourceID_Entities}{Environment.NewLine}{csv_path}", "Plugin Datasource CSV");
-                }
+                });
             }
             catch (Exception ex)
             {
-                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "Button_Datasource_Click");
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "EvalPluginTableContentsAsync");
             }
         }
 
-        private async Task CsvToLayerAsync()
+        private async Task FileToLayerAsync()
         {
             try
             {
@@ -714,19 +707,31 @@ namespace msGIS.ProApp_FiwareSummit
                 if (string.IsNullOrEmpty(entityType))
                     throw new Exception("Empty entity type!");
 
-                // 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource integration for SimplePoint CSV.
-                string csv_path = TextBox_DataPath.Text;
-                if (!Directory.Exists(csv_path))
+                // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
+                // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
+                // 3.3.05/20231206/msGIS_FIWARE_rt_004: Expertise FIWARE Integration ArcGIS PRO.
+                // 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource Integration for SimplePoint File-Format.
+
+                string dirPath = TextBox_DataPath.Text;
+                if (!Directory.Exists(dirPath))
                 {
-                    await Fusion.m_Messages.AlertAsyncMsg($"Datasource path not found!", csv_path, "CSV-Layer");
+                    await Fusion.m_Messages.AlertAsyncMsg($"Datasource path not found!", dirPath, "File-Layer");
                     return;
                 }
+
+                bool evalPluginByUri = false;
+                if (evalPluginByUri)
+                    await EvalPluginByUriAsync();
+
+                bool evalPluginTableContents = false;
+                if (evalPluginTableContents)
+                    await EvalPluginTableContentsAsync(dirPath);
 
                 await QueuedTask.Run(async() =>
                 {
                     using (PluginDatastore pluginws = new PluginDatastore(
-                         new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_Entities,
-                               new Uri(csv_path, UriKind.Absolute))))
+                         new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_Entities_FIW,
+                               new Uri(dirPath, UriKind.Absolute))))
                     {
                         //open each table....use the returned table name
                         /*
@@ -737,11 +742,11 @@ namespace msGIS.ProApp_FiwareSummit
                         */
 
                         //or just pass in the name of a csv file in the workspace folder
-                        string table_name = $"{entityType}.csv";
-                        string table_path = Path.Combine(csv_path, table_name);
+                        string table_name = $"{entityType}.{ProPluginDatasource_FIWARE.Fusion.m_FileSuffix}";
+                        string table_path = Path.Combine(dirPath, table_name);
                         if (!File.Exists(table_path))
                         {
-                            await Fusion.m_Messages.AlertAsyncMsg($"Entity data not found!", table_path, "CSV-Layer");
+                            await Fusion.m_Messages.AlertAsyncMsg($"Entity data not found!", table_path, "File-Layer");
                         }
                         else
                         {
@@ -759,7 +764,7 @@ namespace msGIS.ProApp_FiwareSummit
             }
             catch (Exception ex)
             {
-                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "CsvToLayerAsync");
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "FileToLayerAsync");
             }
         }
 

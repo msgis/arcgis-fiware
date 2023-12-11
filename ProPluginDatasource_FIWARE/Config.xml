@@ -5,10 +5,10 @@
   <Name>msGIS.ProPluginDatasource_FIWARE</Name>
   <AddInID>{0d10cbaf-86da-4952-90d8-618a573119c7}</AddInID>
   <Description>msGIS.ProPluginDatasource_FIWARE description</Description>
-  <Version>3.3.01</Version>
+  <Version>3.3.05</Version>
   <Author>roman.trojan@msgis.com</Author>
   <Company>ms.GIS</Company>
-  <Date>07.12.2023 08:50:00</Date>
+  <Date>11.12.2023 16:40:00</Date>
   <Targets>
     <Target name="ArcGISPro" version="3.0" />
   </Targets>
@@ -16,7 +16,7 @@
   <AddIn language="CLR:PluginDS" library="msGIS.ProPluginDatasource_FIWARE.dll" namespace="msGIS.ProPluginDatasource_FIWARE">
     <ArcGISPro>
       <PluginDatasources>
-        <PluginDatasource id="msGIS_FIWARE_ProPluginDatasourceID_Entities" class="ProPluginDatasourceTemplate_Fiware"/>
+        <PluginDatasource id="msGIS_ProPluginDatasourceID_Entities_FIWARE" class="ProPluginDatasourceTemplate_Fiware"/>
       </PluginDatasources>
     </ArcGISPro>
   </AddIn>

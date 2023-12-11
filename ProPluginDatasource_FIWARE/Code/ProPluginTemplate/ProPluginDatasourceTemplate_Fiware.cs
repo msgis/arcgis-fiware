@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace msGIS.ProPluginDatasource_FIWARE
 {
     // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
-    // 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource integration for SimplePoint CSV.
+    // 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource Integration for SimplePoint File-Format.
 
     // Summary:
     //     This abstract class serves as one of the key extensibility points that comprise
@@ -234,7 +234,7 @@ namespace msGIS.ProPluginDatasource_FIWARE
             var table_name = System.IO.Path.GetFileNameWithoutExtension(name).ToUpper();
 
             //ensure the file name has a "csv" suffix
-            var file_name = System.IO.Path.ChangeExtension(name, ".csv");
+            var file_name = System.IO.Path.ChangeExtension(name, $".{Fusion.m_FileSuffix}");
 
             if (!this.GetTableNames().Contains(table_name))
                 throw new GeodatabaseException($"The table {table_name} was not found");
@@ -310,7 +310,7 @@ namespace msGIS.ProPluginDatasource_FIWARE
             // return tableNames;
 
             var fileNames =
-              System.IO.Directory.GetFiles(_filePath, "*.csv", System.IO.SearchOption.TopDirectoryOnly)
+              System.IO.Directory.GetFiles(_filePath, $"*.{Fusion.m_FileSuffix}", System.IO.SearchOption.TopDirectoryOnly)
                   .Select(fn => System.IO.Path.GetFileNameWithoutExtension(fn).ToUpper());
 
             //there is an edge case where files could have been deleted after they

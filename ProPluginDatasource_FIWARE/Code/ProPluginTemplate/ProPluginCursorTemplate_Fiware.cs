@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace msGIS.ProPluginDatasource_FIWARE
 {
     // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
-    // 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource integration for SimplePoint CSV.
+    // 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource Integration for SimplePoint File-Format.
 
     public class ProPluginCursorTemplate_Fiware : PluginCursorTemplate
     {

@@ -304,25 +304,49 @@ Ich werde daher auf anderen Wegen auf die Inhalte von FIWARE zugreifen müssen a
 Anbei meine Anfragen an AI.
 https://chat.openai.com/share/a04629a6-ae7a-43ab-9987-107028365489
 
-3.3.05/20231205/msGIS_FIWARE_rt_003: EntitiesToCsv for use with SimplePointPlugin.
+3.3.05/20231205/msGIS_FIWARE_rt_003: EntitiesToFile for use with SimplePointPlugin.
 
 3.3.05/20231206/msGIS_FIWARE_rt_004: Expertise FIWARE Integration ArcGIS PRO.
 Die FIWARE Daten werden mittels REST API async Task HttpClient.GetAsync(string? requestUri) - Json - EntityTypes bzw. Entities(Type) geladen.
 Für die Darstellung habe ich folgende Möglichkeiten evaluiert.
 1.
-Die Datensätze werden zu einem zuvor angelegten Layer mittels EditOperation.Delete/Create hinzugefügt.
+Die Datensätze werden zu einem zuvor angelegten Layer/Datasource mittels EditOperation.Delete/Create hinzugefügt.
 Der Layer könnte auch programmatisch erzeugt werden.
 2.
 Mittels Pro PluginDatastore kann ein beliebiges Datenformat per URI definiert werden (Connection Properties oder File).
-Ich habe URI per CSV Formatierung evaluiert ("POINT_X,POINT_Y,NAME").
-Nach der erfolgten Registrierung der spezifischen Datastore (per AddInx mit Plugin) können die Daten dierekt in ArcGIS Pro hinzugefügt werden.
-Die Daten im definierten Format können auch programmatisch angesprochen werden (z.B. Layer erzeugen).
+Ich habe URI per File-Formatierung evaluiert ("POINT_X,POINT_Y,NAME").
+Mit dem spezifischen Datastore (AddInx mit Plugin) können die Daten programmatisch hinzugefügt und verwaltet werden.
+Dabei wird Datasource direkt mit dem spezifischen Format verknüpft.
 
+Betreffend Evaluierung Video zu Plugin Datasources basierend auf SqlExpress
+https://mediaspace.esri.com/media/t/1_gpsfiskh
+konnte ich die Anwendung wegen nicht funktionierender Connection nicht evaluieren.
+Es ist nicht so wichtig, weil das Prinzip für Plugin Datastore ist ähnlich wie aus einem Folder mit File-Format.
+SqlExpress.sqlexpress
+Server=localhost\sqlexpress;Database=TestSqlExpress;Integrated Security=SSPI;
+Server=localhost\sqlexpress;Database=FdTestSqlExpress;Integrated Security=SSPI;
+TestSqlExpress.mdf
+FDTestSQLExpress.mdf
+Der Author hat die Daten aus ArcMap GDB importiert, diese Daten finde ich aber nicht. Verfügbar sind die *.mdf Daten, welche ich nicht öffnen kann.
+Dabei konnte ich SQL Server (Express) nicht entsprechend konfigurieren.
 
-3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource integration for SimplePoint CSV.
+3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource Integration for SimplePoint File-Format.
 + RBushCoord3D (Spatial Index data structure; used to make it easier to find data points on a two dimensional plane).
 + Programmatically create Layer based on Pro Plugin Datasource.
-- Design data path configurable (Fusion.m_PathCsvEntities).
++ Configurable data path.
+
+Die genauere Evaluierung hat ergeben, dass CSV File-Format für die Evaluierung nicht gut geeignet ist,
+da ArcPro es per Default tabellarisch unterstützt und es wird verwirrend wann eigene Datastore zusätzlich zugreift.
+Daher habe ich ein willkürliches File-Format eingeführt "*.fiw".
+Mit einem spezifischen Datastore (AddInx mit Plugin) können die Daten programmatisch hinzugefügt und verwaltet werden.
+Dabei wird Datasource direkt mit dem spezifischen Format verknüpft.
+Derzeit zeigt sich im ArcPro UI das so definierte Format nicht um die Daten manuell hinzufügen zu können.
+Es dürfte anhand dem Beispiel basierend auf SqlExpress möglich sein (noch nicht evaluiert wegen für mich nicht verständlicher Konfiguration der Daten/Verbindung).
+Alle Variationen setzen derzeit vorgehende Konvertierung der FIWARE Daten (z.B. auf File-Format)
+wegen für mich nicht überwindbarer Komplikation beim Zugriff auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate.
+
+- Try to trigger the 'ProDataProjectItem' to allow add data from ArcPro (Catalog or AddData Button/Item).
+- Evaluate SqlExpress which triggers the 'ProDataProjectItem' (see ReadMe).
 - NuGet NGSIBaseModel (convert the Json objects received in the NGSI format to C# Models).
 - Dynamically update changes on entities (NGSI data).
 
