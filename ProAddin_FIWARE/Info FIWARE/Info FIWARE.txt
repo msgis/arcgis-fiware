@@ -355,15 +355,21 @@ Im ArcPro UI können verschiedene Elemente mit Inhalten per AddinX zu Catalog Pa
 Diese Vorgangsweise würde keinen Datastore Plugin verwenden.
 Natürlich könnte eine Kombination stattfinden.
 
-- Evaluate SqlExpress using MDF-Connection.
 
-- Configure ArcPro UI to manually add the data (Catalog or AddData Button/Item).
+- Always use newest ArcPro Version for FIWARE (3.2 upwards on NB536-11).
+- Check Error with Plugin on 3.2 (AZ) Button_FileToLayer.
+
+- Back to msGIS_FIWARE_rt_002 for using Get Method (EsriHttpClient) instead of GetAsync (HttpClient).
+https://pro.arcgis.com/en/pro-app/latest/sdk/api-reference/topic9058.html
+
+
+- Configure ArcPro UI to manually add/manage the data (Catalog, AddData Button/Item, etc.).
 DAML: <updateCategory refID="esri_core_projectContainers"> --> ProDataProjectItemContainer : CustomProjectItemContainer<ProDataProjectItem>.
 DAML: <updateCategory refID="esri_customItems"> --> ProDataProjectItem : CustomProjectItemBase, IMappableItem.
 Samples: Content_QuakeItem, Plugin_ProDataReader, Plugin_ProSqlExpress.
 
 - NuGet NGSIBaseModel to convert the Json objects received in the NGSI format to C# Models.
-
+- Evaluate SqlExpress using MDF-Connection.
 - Convert FIWARE REST - CRUD Datasource.
 - Dynamically update changes on entities (NGSI data).
 
