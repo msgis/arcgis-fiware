@@ -351,6 +351,10 @@ Im ArcPro UI können eigene Elemente per AddinX hinzugefügt werden z.B. im Cata
 ArcPro macht das alles also nicht automatisch, sondern bietet Möglichkeiten UI zu erweitern oder verändern.
 Es scheint ziemlich aufwendig, daher wäre eine gezielte Spezifikation angebracht.
 
+Im ArcPro UI können verschiedene Elemente mit Inhalten per AddinX zu Catalog Pane hinzugefügt werden. Es könnten z.B. FIWARE Entities ausgelistet und beim Klick auf einen Typ die Daten grafisch dargestellt werden.
+Diese Vorgangsweise würde keinen Datastore Plugin verwenden.
+Natürlich könnte eine Kombination stattfinden.
+
 - Evaluate SqlExpress using MDF-Connection.
 
 - Configure ArcPro UI to manually add the data (Catalog or AddData Button/Item).
