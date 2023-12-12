@@ -335,19 +335,32 @@ Dabei konnte ich SQL Server (Express) nicht entsprechend konfigurieren.
 + Programmatically create Layer based on Pro Plugin Datasource.
 + Configurable data path.
 
-Die genauere Evaluierung hat ergeben, dass CSV File-Format für die Evaluierung nicht gut geeignet ist,
-da ArcPro es per Default tabellarisch unterstützt und es wird verwirrend wann eigene Datastore zusätzlich zugreift.
-Daher habe ich ein willkürliches File-Format eingeführt "*.fiw".
-Mit einem spezifischen Datastore (AddInx mit Plugin) können die Daten programmatisch hinzugefügt und verwaltet werden.
-Dabei wird Datasource direkt mit dem spezifischen Format verknüpft.
-Derzeit zeigt sich im ArcPro UI das so definierte Format nicht um die Daten manuell hinzufügen zu können.
-Es dürfte anhand dem Beispiel basierend auf SqlExpress möglich sein (noch nicht evaluiert wegen für mich nicht verständlicher Konfiguration der Daten/Verbindung).
-Alle Variationen setzen derzeit vorgehende Konvertierung der FIWARE Daten (z.B. auf File-Format)
-wegen für mich nicht überwindbarer Komplikation beim Zugriff auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate.
+Das CSV File-Format ist für die Evaluierung nicht gut geeignet,
+da ArcPro es per Default tabellarisch unterstützt und es wird verwirrend wann das eigene Datastore Plugin zugreift.
+Daher habe ich ein willkürliches File-Format eingeführt "*.fiw" mit dem Datasource verknüpft wird.
+Mit einem spezifischen Datastore (AddInx mit Plugin) können die Daten programmatisch, jedoch derzeit nicht manuell mit ArcPro Steuerung hinzugefügt werden.
+Das manuelle Hinzufügen dürfte anhand Beispiel basierend auf SqlExpress möglich sein (noch nicht evaluiert wegen für mich nicht verständlicher Konfiguration der Daten/Verbindung).
+Alle Variationen setzen vorgehende Konvertierung der FIWARE Daten, wobei eigene Formatierungen mittels Datastore Plugin nur einen Read-Only Modus zulassen.
+Die Komplikation beim Zugriff auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate bleibt bestehen.
+Insgesamt würde ich für die FIWARE Integration von Datastore Plugin abraten und tendiere zu einem von ArcPro direkt unterstütztem Format/Datenbank (CRUD).
 
-- Try to trigger the 'ProDataProjectItem' to allow add data from ArcPro (Catalog or AddData Button/Item).
-- Evaluate SqlExpress which triggers the 'ProDataProjectItem' (see ReadMe).
-- NuGet NGSIBaseModel (convert the Json objects received in the NGSI format to C# Models).
+Die Daten zu einmal erzeugtem Layer werden entsprechend Datastore beim Öffnen von APRX geladen.
+Um die Updates von FIREWARE Daten zu visualisieren müsste im Fall von Read-Only Datastore Plugin das ArcPro Projekt (APRX) nach Aktualisierung von Datasource neu geladen werden.
+
+Im ArcPro UI können eigene Elemente per AddinX hinzugefügt werden z.B. im Catalog Pane die Inhalte basierend auf eigenem Datasource Format (definiert per Datastore Plugin).
+ArcPro macht das alles also nicht automatisch, sondern bietet Möglichkeiten UI zu erweitern oder verändern.
+Es scheint ziemlich aufwendig, daher wäre eine gezielte Spezifikation angebracht.
+
+- Evaluate SqlExpress using MDF-Connection.
+
+- Configure ArcPro UI to manually add the data (Catalog or AddData Button/Item).
+DAML: <updateCategory refID="esri_core_projectContainers"> --> ProDataProjectItemContainer : CustomProjectItemContainer<ProDataProjectItem>.
+DAML: <updateCategory refID="esri_customItems"> --> ProDataProjectItem : CustomProjectItemBase, IMappableItem.
+Samples: Content_QuakeItem, Plugin_ProDataReader, Plugin_ProSqlExpress.
+
+- NuGet NGSIBaseModel to convert the Json objects received in the NGSI format to C# Models.
+
+- Convert FIWARE REST - CRUD Datasource.
 - Dynamically update changes on entities (NGSI data).
 
 
