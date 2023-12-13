@@ -369,7 +369,6 @@ dass bei der Entwicklung teilweise SDK/Community Ansätze verwendet werden und d
 - Back to msGIS_FIWARE_rt_002 for using Get Method (EsriHttpClient) instead of GetAsync (HttpClient).
 https://pro.arcgis.com/en/pro-app/latest/sdk/api-reference/topic9058.html
 
-
 - Configure ArcPro UI to manually add/manage the data (Catalog, AddData Button/Item, etc.).
 DAML: <updateCategory refID="esri_core_projectContainers"> --> ProDataProjectItemContainer : CustomProjectItemContainer<ProDataProjectItem>.
 DAML: <updateCategory refID="esri_customItems"> --> ProDataProjectItem : CustomProjectItemBase, IMappableItem.

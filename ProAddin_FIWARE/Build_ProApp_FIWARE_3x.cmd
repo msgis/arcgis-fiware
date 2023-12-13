@@ -11,7 +11,6 @@ rem ----------------------------------------------------------------------------
 rem Build
 rem -----------------------------------------------------------------------------------------------------
 echo on
-Call Delete_obj_bin.cmd
 Call Make_ProApp_FIWARE_3x.cmd
 Call Install_ProApp_FIWARE_3x.cmd
 

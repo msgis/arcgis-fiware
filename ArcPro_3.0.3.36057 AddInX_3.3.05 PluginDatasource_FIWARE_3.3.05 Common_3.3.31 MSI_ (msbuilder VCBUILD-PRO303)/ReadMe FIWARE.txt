@@ -1,40 +1,51 @@
 ===================================================================================================
-FiwareSummit
+Pro Fiware
 
 Project:
 https://app.asana.com/0/1204285422260806/1204530723943675/
+old: https://bitbucket.org/msgis/fiwaresummit-arcgispro
 https://github.com/msgis/arcgis-fiware.git
 
 Author:
 mailto:roman.trojan@msgis.com
 Time:
 [0141] Fiware.Summit _ms.GIS.Intern PRJ.Fiware_Summit
+[0200] LAB _ms.GIS.Intern LAB.FIWARE
 
 ===================================================================================================
 
 ---------------------------------------------------------------------------------------------------
 Entity-Types
 ---------------------------------------------------------------------------------------------------
-Die Daten werden als JSON-Objekt aus Rest-Api übernommen.
-Alternativ könnten die Daten über JSON-File transferiert werden.
+Die Daten werden aus Rest-Api übernommen (als JSON-Objekte).
 
 ---------------------------------------------------------------------------------------------------
 APRX
 ---------------------------------------------------------------------------------------------------
 APRX muss "Fiware" und "Summit" im Dateinamen beinhalten.
-z.B. "RT Wien Fiware_Summit.aprx"
+z.B. "Smart City Wien Fiware_Summit.aprx"
 Map muss den Tag "Fiware_Summit" beinhalten.
 Map muss einen Layer mit Tag "Entities_Points" und Typ Point beinhalten.
 
 ---------------------------------------------------------------------------------------------------
-AddInX
+esriAddInX
 ---------------------------------------------------------------------------------------------------
 AddInX "msGIS.ProApp_FiwareSummit.esriAddinX" installieren.
-(doppelklicken, aus ArcPro oder per GUID)
+(doppelklicken, aus ArcPro, per GUID, mit MSBuild oder Visual Studio)
 Sollte in folgendem Ordner ersichtlich sein:
 C:\Users\[user]\Documents\ArcGIS\AddIns\ArcGISPro
-Nach einem Start in ArcPro sollten die Komponenten ersichtlich werden:
+Nach einem Start von ArcPro sollten die Komponenten ersichtlich werden:
 C:\Users\[user]\AppData\Local\ESRI\ArcGISPro\AssemblyCache
+
+---------------------------------------------------------------------------------------------------
+esriPlugin
+---------------------------------------------------------------------------------------------------
+Plugin "msGIS.ProPluginDatasource_FIWARE.esriPlugin" installieren.
+(doppelklicken, aus ArcPro, per GUID, mit MSBuild oder Visual Studio)
+Sollte in folgendem Ordner ersichtlich sein:
+C:\Users\[user]\Documents\ArcGIS\AddIns\ArcGISPro3.0
+Nach einem Start von ArcPro sollten die Komponenten ersichtlich werden:
+C:\Users\[user]\AppData\Local\ESRI\ArcGISPro3.[x]\AssemblyCache
 
 ---------------------------------------------------------------------------------------------------
 ArcPro
@@ -46,15 +57,5 @@ Tab "FiwareSummit" klicken, es müsste sich die Gruppe "FiwareSummit" mit weitere
 Button "Info FiwareSummit" ist nur informativ.
 Button "Entity Types" klicken, es müsste sich rechts eine Dockpane "FiwareSummit-Board" zeigen.
 
-Nun kann per ComboBox "Entity type" ausgewählt werden.
-Mit Klick auf Button "Entities zeigen" werden laut ausgewähltem Typ die Entities per REST-Api
-in ein JArray geladen und zu einem vordefinierten Layer hinzugefügt.
-Alle zuvor vorhandenen Objekte am Layer werden gelöscht.
-
-(Stand 2023.05.26 Version 3.3.03)
-
-Wünschenswert:
-Layer Objekte mit Attribut "Typ" versehen, damit nur die entsprechenden Objekte gelöscht werden und auch später besser identifiziert werden können.
-Löschen der Objekte entsprechend "Typ".
-Löschen aller Objekte (Reset).
-Dynamischer Update anhand per REST-Api. 
+Nun kann per ComboBox "Entity type" ausgewählt werden und die Daten entsprechend Entities in ArcGIS Pro dargestellt werden.
+Je nach Version der Entwicklung kann es verschiedene Abweichungen oder Erweiterungen geben.

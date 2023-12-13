@@ -16,19 +16,30 @@ echo on > %MakeInfo%
 echo ----------------------------------------------------------------------------------------------------->> %MakeInfo%
 echo Start make ProApp_FIWARE_3x on %date% %time% by %username% on %computername%>> %MakeInfo%
 echo ----------------------------------------------------------------------------------------------------->> %MakeInfo%
+goto :Main
 
 rem -----------------------------------------------------------------------------------------------------
 rem Manage to compile
 rem -----------------------------------------------------------------------------------------------------
-rem attrib -r bin\*.* /S
-rem del /S /Q bin\*.*
-rem del /S /Q obj
-if exist obj (
-	rmdir /S /Q obj
-)
-if exist bin (
-	rmdir /S /Q bin
-)
+:Delete_ObjBin
+	rem attrib -r bin\*.* /S
+	rem del /S /Q bin\*.*
+	rem del /S /Q obj
+	if exist obj (
+		rmdir /S /Q obj
+	)
+	if exist bin (
+		rmdir /S /Q bin
+	)
+goto :eof
+exit /b
+
+rem -----------------------------------------------------------------------------------------------------
+REM Main
+rem -----------------------------------------------------------------------------------------------------
+:Main
+call :Delete_ObjBin
+git pull
 
 set MyDir=%CD%
 cd %MyDir%
@@ -37,6 +48,7 @@ rem ----------------------------------------------------------------------------
 REM ProApp_Common_FIWARE_3x
 rem -----------------------------------------------------------------------------------------------------
 cd ..\..\..\ProApp-Common
+call :Delete_ObjBin
 git pull
 if "%BuildProApp_Common%" == 1 (
 	MsBuild.exe msGIS.ProApp_Common_FIWARE_3x.csproj -t:Clean -p:Configuration=Release >> %MakeInfo%
@@ -49,7 +61,7 @@ rem ----------------------------------------------------------------------------
 REM ProPluginDatasource_FIWARE_3x
 rem -----------------------------------------------------------------------------------------------------
 cd ..\ProPluginDatasource_FIWARE
-git pull
+call :Delete_ObjBin
 if "%BuildProPluginDatasource_FIWARE%" == 1 (
 	rem devenv.exe ProPluginDatasource_FIWARE_3x.sln /rebuild Release /out %MakeInfo%
 	MsBuild.exe msGIS.ProPluginDatasource_FIWARE_3x.csproj -t:Clean -p:Configuration=Release >> %MakeInfo%
@@ -61,7 +73,6 @@ cd %MyDir%
 rem -----------------------------------------------------------------------------------------------------
 REM ProApp_FIWARE_3x
 rem -----------------------------------------------------------------------------------------------------
-git pull
 MsBuild.exe msGIS.ProApp_FIWARE_3x.csproj -t:Clean >> %MakeInfo%
 rem devenv.exe ProApp_FIWARE_3x.sln /rebuild Release /out %MakeInfo%
 MSBuild.exe ProApp_FIWARE_3x.sln -m -t:restore -property:Configuration=Release >> %MakeInfo%
