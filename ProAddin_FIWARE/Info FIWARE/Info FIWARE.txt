@@ -355,9 +355,14 @@ Im ArcPro UI können verschiedene Elemente mit Inhalten per AddinX zu Catalog Pa
 Diese Vorgangsweise würde keinen Datastore Plugin verwenden.
 Natürlich könnte eine Kombination stattfinden.
 
++ Always use newest ArcPro Version for FIWARE (3.2 upwards on NB536-11).
++ Check Error with Plugin on 3.2 (AZ) Button_FileToLayer.
+Für das Testen von Pro Datastore Plugin ist neben der Installation von esriPlugin (zusätzlich zu esriAddinX) auch zu beachten,
+dass bei der Entwicklung teilweise SDK/Community Ansätze verwendet werden und daher manche Abläufe derzeit nur unter USA System-Einstellungen funktionieren (Zahlen mit Punkt/Komma).
 
-- Always use newest ArcPro Version for FIWARE (3.2 upwards on NB536-11).
-- Check Error with Plugin on 3.2 (AZ) Button_FileToLayer.
+
+- Install esriPlugin (not in bin folder).
+- Update ReadMe FIWARE (Install).
 
 - Back to msGIS_FIWARE_rt_002 for using Get Method (EsriHttpClient) instead of GetAsync (HttpClient).
 https://pro.arcgis.com/en/pro-app/latest/sdk/api-reference/topic9058.html
