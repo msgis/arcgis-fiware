@@ -7,7 +7,7 @@ echo Authors:
 echo roman.trojan@msgis.com 20231001-
 echo =====================================================================================================
 
-Set InstVer=ArcPro_3.0.3.36057 AddInX_3.3.05 Common_3.3.31 MSI_
+Set InstVer=ArcPro_3.0.3.36057 AddInX_3.3.05 PluginDatasource_FIWARE_3.3.05 Common_3.3.31 MSI_
 
 rem -----------------------------------------------------------------------------------------------------
 rem Testing %date% %time% by %username% on %computername%
@@ -23,5 +23,7 @@ if not exist %PathTest% (
 xcopy /Y /R ".\Info FIWARE\ReadMe FIWARE.txt" %PathTest%
 Set PathAddInX=.
 xcopy /Y /R %PathAddInX%\bin\Release\net6.0-windows\*.esriAddinX %PathTest%
+Set PathPluginDatasource_FIWARE=..\ProPluginDatasource_FIWARE
+xcopy /Y /R %PathPluginDatasource_FIWARE%\bin\Release\net6.0-windows\*.esriPlugin %PathTest%
 
 :End
