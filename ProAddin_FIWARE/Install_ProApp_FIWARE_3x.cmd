@@ -20,10 +20,10 @@ if not exist %PathTest% (
 	mkdir %PathTest%
 )
 
-xcopy /Y /R ".\Info FIWARE\ReadMe FIWARE.txt" %PathTest%
+xcopy /I /Y /R ".\Info FIWARE\ReadMe FIWARE.txt" %PathTest%
 Set PathAddInX=.
-xcopy /Y /R %PathAddInX%\bin\Release\net6.0-windows\*.esriAddinX %PathTest%
+xcopy /I /Y /R %PathAddInX%\bin\Release\net6.0-windows\*.esriAddinX %PathTest%
 Set PathPluginDatasource_FIWARE=..\ProPluginDatasource_FIWARE
-xcopy /Y /R %PathPluginDatasource_FIWARE%\bin\Release\net6.0-windows\*.esriPlugin %PathTest%
+xcopy /I /Y /R %PathPluginDatasource_FIWARE%\bin\Release\net6.0-windows\*.esriPlugin %PathTest%
 
 :End
