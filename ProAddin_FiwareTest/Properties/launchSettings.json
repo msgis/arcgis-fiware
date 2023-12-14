@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "msGIS.ProApp_FiwareTest": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Program Files\\ArcGIS\\Pro\\bin\\ArcGISPro.exe"
+    }
+  }
+}

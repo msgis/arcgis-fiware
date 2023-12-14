@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ArcGIS defaultAssembly="msGIS.ProApp_FiwareTest.dll"
+        defaultNamespace="msGIS.ProApp_FiwareTest"
+        xmlns="http://schemas.esri.com/DADF/Registry"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
+
+  <AddInInfo id="{f4ff2927-fd1c-4cd9-88c4-02210b2d2ed1}" version="3.3.06" desktopVersion="3.0.3.36057">
+    <!-- Created 20230524/RT as 3.1.41833 -->
+    <Name>msGIS.ProApp_FiwareTest</Name>   
+    <Description>msGIS.ProApp_FiwareTest</Description>
+    <Image>Images_AddInContent\AddinDesktop32.png</Image>
+    <Author>roman.trojan@msgis.com</Author>
+    <Company>ms.GIS</Company>
+    <Date>14.12.2023 11:40:00</Date>
+    <Subject>Framework</Subject>
+    <!-- Note subject can be one or more of these topics:
+                    Content, Framework, Editing, Geodatabase, Geometry, Geoprocessing, Layouts, Map Authoring, Map Exploration -->
+  </AddInInfo>
+
+  <conditions>
+    <!-- our custom conditions -->
+    <!-- our condition is set true or false based on this underlying state -->
+    <insertCondition id="msGIS_FiwareTest_ConditionID_Main" caption="FiwareTest-Main" description="FiwareTest-Main state">
+      <state id="msGIS_FiwareTest_StateID_Main" />
+    </insertCondition>
+    <insertCondition id="msGIS_FiwareTest_ConditionID_Menu" caption="FiwareTest-Menu" description="FiwareTest-Menu state">
+      <state id="msGIS_FiwareTest_StateID_Menu" />
+    </insertCondition>
+    <insertCondition id="msGIS_FiwareTest_ConditionID_Map" caption="FiwareTest-Map" description="FiwareTest-Map state">
+      <and>
+        <state id="msGIS_FiwareTest_StateID_Menu" />
+        <!--<state id="esri_mapping_mapPane" />-->
+        <state id="msGIS_FiwareTest_StateID_Map" />
+      </and>
+      <or></or>
+    </insertCondition>
+  </conditions>
+
+  <modules>
+    <insertModule id="msGIS_FiwareTest_ModuleID_Main" className="Module_FiwareTest" autoLoad="true" caption="ms.GIS FiwareTest AddIn">
+		<!-- uncomment to have the control hosted on a separate tab-->
+		<tabs>
+			<!--<tab id="msGIS.ProApp_FiwareTest_Tab1" caption="New Tab">
+          <group refID="msGIS.ProApp_FiwareTest_Group1"/>
+        </tab>-->
+			<tab id="msGIS_FiwareTest_TabID_Main" keytip="T-FiwareTest-Main" caption="FiwareTest" condition="msGIS_FiwareTest_ConditionID_Main">
+				<group refID="msGIS_FiwareTest_GroupID_Main" />
+			</tab>
+		</tabs>
+
+		<groups>
+			<!-- comment this out if you have no controls on the Addin tab to avoid
+              an empty group-->
+			<!--<group id="msGIS.ProApp_FiwareTest_Group1" caption="Group 1" appearsOnAddInTab="true">
+          -->
+			<!-- host controls within groups -->
+			<!--
+        </group>-->
+			<group id="msGIS_FiwareTest_GroupID_Main" keytip="G-FiwareTest-Main" caption="FiwareTest" appearsOnAddInTab="false" condition="msGIS_FiwareTest_ConditionID_Menu">
+				<button refID="msGIS_FiwareTest_ButtonID_ProjectInfo" size="large" />
+				<button refID="msGIS_FiwareTest_ButtonID_TS_EntityTypes" size="large" />
+				<!--<button refID="msGIS_FiwareTest_ButtonID_Datasource" size="large" />-->
+			</group>
+		</groups>
+
+		<dockPanes>
+			<dockPane id="msGIS_FiwareTest_DockpaneID_EntityTypes" caption="FiwareTest-Board" className="Dockpane_EntityTypes" dock="group" dockWith="esri_core_projectDockPane">
+				<content className="UserControl_EntityTypes" />
+			</dockPane>
+		</dockPanes>
+
+		<controls>
+			<!-- add your controls here -->
+			<!-- Test: Button_ProjectInfo (can change properties like image and description) or delegate command msGIS_FiwareTest_ModuleID_Main:OnCustomButtonClick_ProjectInfo -->
+			<button id="msGIS_FiwareTest_ButtonID_ProjectInfo" keytip="B-ProjectInfo" caption="Info FiwareTest" className="Button_ProjectInfo" loadOnClick="true" condition="msGIS_FiwareTest_ConditionID_Map">
+				<tooltip heading="Info FiwareTest AddIn">Projekt-Info FiwareTest zeigen.<disabledText /></tooltip>
+			</button>
+			<button id="msGIS_FiwareTest_ButtonID_TS_EntityTypes" keytip="B-EntityTypes" caption="Entity Types" className="msGIS_FiwareTest_ModuleID_Main:OnCustomButtonClick_TS_EntityTypes" loadOnClick="true" condition="msGIS_FiwareTest_ConditionID_Map">
+				<tooltip heading="FiwareTest">EntityTypes.<disabledText /></tooltip>
+			</button>
+			<!--<button id="msGIS_FiwareTest_ButtonID_Datasource" keytip="B-Datasource" caption="Datasource" className="msGIS_FiwareTest_ModuleID_Main:OnCustomButtonClick_Datasource" loadOnClick="true" condition="msGIS_FiwareTest_ConditionID_Map">
+				<tooltip heading="Fiware">Datasource.<disabledText /></tooltip>
+			</button>-->
+		</controls>
+
+	</insertModule>
+  </modules>
+</ArcGIS>
