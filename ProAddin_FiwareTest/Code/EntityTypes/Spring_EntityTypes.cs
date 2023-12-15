@@ -1,5 +1,6 @@
 ﻿using msGIS.ProApp_Common_FIWARE_3x;
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using ArcGIS.Core.Data;
