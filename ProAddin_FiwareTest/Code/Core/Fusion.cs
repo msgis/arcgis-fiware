@@ -31,6 +31,7 @@ namespace msGIS.ProApp_FiwareTest
         internal static Helper_Uni m_Helper_Uni { get; set; }
         internal static Helper_Geom m_Helper_Geom { get; set; }
         internal static Helper_Op m_Helper_Op { get; set; }
+        internal static Fiware_RestApi_NetHttpClient m_Fiware_RestApi_NetHttpClient { get; set; }
 
         #endregion Common
 

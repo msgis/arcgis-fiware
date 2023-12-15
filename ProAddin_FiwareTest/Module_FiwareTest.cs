@@ -104,6 +104,7 @@ namespace msGIS.ProApp_FiwareTest
                 Fusion.m_Helper_Uni = new Helper_Uni(Fusion.m_Global, Fusion.m_Messages);
                 Fusion.m_Helper_Geom = new Helper_Geom(Fusion.m_Messages);
                 Fusion.m_Helper_Op = new Helper_Op(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework);
+                Fusion.m_Fiware_RestApi_NetHttpClient = new Fiware_RestApi_NetHttpClient(Fusion.m_Global, Fusion.m_Messages);
 
                 // ApplicationReadyEvent.Subscribe(OnApplicationReady);
                 // ApplicationClosingEvent.Subscribe(OnApplicationClosing);

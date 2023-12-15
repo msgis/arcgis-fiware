@@ -17,6 +17,7 @@ namespace msGIS.ProPluginDatasource_EntityFile
 
         internal static Global m_Global { get; set; }
         internal static Messages m_Messages { get; set; }
+        internal static Fiware_RestApi_NetHttpClient m_Fiware_RestApi_NetHttpClient { get; set; }
 
         #endregion Common
 
@@ -39,10 +40,11 @@ namespace msGIS.ProPluginDatasource_EntityFile
 
                 Fusion.m_Global = new Global();
                 Fusion.m_Messages = new Messages(Fusion.m_Global);
+                Fusion.m_Fiware_RestApi_NetHttpClient = new Fiware_RestApi_NetHttpClient(Fusion.m_Global, Fusion.m_Messages);
 
                 // Get entity types from JSON.
                 // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
-                m_ListEntityTypes = await RestApi_Fiware.ReadEntityTypesFromRestApiAsync(datasourcePath);
+                m_ListEntityTypes = await Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(datasourcePath);
                 if (m_ListEntityTypes != null)
                 {
                     m_DatasourcePath = datasourcePath;

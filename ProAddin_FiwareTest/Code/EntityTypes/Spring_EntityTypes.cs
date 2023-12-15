@@ -265,7 +265,7 @@ namespace msGIS.ProApp_FiwareTest
                 }
 
                 // Get entity types from JSON.
-                List<string> listEntityTypes = await RestApi_Fiware.ReadEntityTypesFromRestApiAsync(Fusion.m_DatasourcePath);
+                List<string> listEntityTypes = await Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(Fusion.m_DatasourcePath);
 
                 // Populate combo wih entity types.
                 await PopulateEntityTypesAsync(listEntityTypes);
@@ -392,7 +392,7 @@ namespace msGIS.ProApp_FiwareTest
                 await m_Helper_Progress.ShowProgressAsync("GetEntitiesFromRestApiAsync", 900000, false);
                 JArray jArrayEntities = await QueuedTask.Run(async () =>
                 {
-                    return await RestApi_Fiware.GetEntitiesFromRestApiAsync(Fusion.m_DatasourcePath, entityType);
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(Fusion.m_DatasourcePath, entityType);
                 }, m_Helper_Progress.ProgressAssistant);
 
                 if (jArrayEntities == null)
@@ -405,7 +405,7 @@ namespace msGIS.ProApp_FiwareTest
                 await m_Helper_Progress.ShowProgressAsync("BuildFeaturesFromJsonEntitiesAsync", (uint)jArrayEntities.Count, true);
                 List<MapPoint> listFeatures = await QueuedTask.Run(async () =>
                 {
-                    return await RestApi_Fiware.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities);
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities);
                 }, m_Helper_Progress.ProgressAssistant);
                 if (listFeatures == null)
                     return;
@@ -478,7 +478,7 @@ namespace msGIS.ProApp_FiwareTest
                 await m_Helper_Progress.ShowProgressAsync("GetEntitiesFromRestApiAsync", 900000, false);
                 JArray jArrayEntities = await QueuedTask.Run(async () =>
                 {
-                    return await RestApi_Fiware.GetEntitiesFromRestApiAsync(Fusion.m_DatasourcePath, entityType);
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(Fusion.m_DatasourcePath, entityType);
                 }, m_Helper_Progress.ProgressAssistant);
 
                 if (jArrayEntities == null)
@@ -491,7 +491,7 @@ namespace msGIS.ProApp_FiwareTest
                 await m_Helper_Progress.ShowProgressAsync("BuildFeaturesFromJsonEntitiesAsync", (uint)jArrayEntities.Count, true);
                 List<MapPoint> listFeatures = await QueuedTask.Run(async () =>
                 {
-                    return await RestApi_Fiware.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities);
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities);
                 }, m_Helper_Progress.ProgressAssistant);
                 if (listFeatures == null)
                     return;
