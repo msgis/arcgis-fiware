@@ -374,7 +374,8 @@ InstVer=ArcPro_3.0.3.36057 AddInX_3.3.06 PluginDatasource_FiwareTest_3.3.06 Comm
 
 3.3.06/20231214/msGIS_FIWARE_rt_006: Rename FiwareSummit to FiwareTest/EntityFile (Project, Namespace, Module, ID, Plugin).
 
-- New ProPluginDatasource_EntityFileHttp
+3.3.06/20231214/msGIS_FIWARE_rt_007: ProPluginDatasource_EntityHttp.
+- New project.
 - Back to msGIS_FIWARE_rt_002 for using Get Method (EsriHttpClient) instead of GetAsync (HttpClient).
 https://pro.arcgis.com/en/pro-app/latest/sdk/api-reference/topic9058.html
 
@@ -390,6 +391,6 @@ Samples: Content_QuakeItem, Plugin_ProDataReader, Plugin_ProSqlExpress.
 
 
 ---------------------------------------------------------------------------------------------------
-rt: Next 3.3.06/2023mmdd/msGIS_FIWARE_rt_007: Xxx
+rt: Next 3.3.06/2023mmdd/msGIS_FIWARE_rt_008: Xxx
 To build an AddInX look for instructions at common folder.
 ---------------------------------------------------------------------------------------------------
