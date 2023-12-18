@@ -66,6 +66,8 @@ namespace msGIS.ProApp_FiwareTest
         // 3.3.06/20231214/msGIS_FIWARE_rt_006: Rename FiwareSummit to FiwareTest/EntityFile (Project, Namespace, Module, ID, Plugin).
         // Plugin identifier is corresponding to ProPluginDatasource Config.xml PluginDatasource ID
         internal const string m_ProPluginDatasourceID_EntityFile = "msGIS_ProPluginDatasourceID_EntityFile";
+        // 3.3.06/20231218/msGIS_FIWARE_rt_007: ProPluginDatasource_FiwareHttpClient.
+        internal const string m_ProPluginDatasourceID_FiwareHttpClient = "msGIS_ProPluginDatasourceID_FiwareHttpClient";
         internal const string m_DatasourcePath = "https://fiwaredev.msgis.net";
 
         // 3.3.05/20231205/msGIS_FIWARE_rt_003: EntitiesToFile for use with SimplePointPlugin.
