@@ -8,7 +8,7 @@
   <Version>3.3.06</Version>
 	<Author>roman.trojan@msgis.com</Author>
 	<Company>ms.GIS</Company>
-	<Date>18.12.2023 11:40:00</Date>
+	<Date>19.12.2023 12:00:00</Date>
 	<Targets>
     <Target name="ArcGISPro" version="3.2" />
   </Targets>
@@ -16,7 +16,7 @@
   <AddIn language="CLR:PluginDS" library="msGIS.ProPluginDatasource_FiwareHttpClient.dll" namespace="msGIS.ProPluginDatasource_FiwareHttpClient">
     <ArcGISPro>
       <PluginDatasources>
-        <PluginDatasource id="msGIS_ProPluginDatasourceID_FiwareHttpClient" class="ProPluginDatasourceTemplate"/>
+        <PluginDatasource id="msGIS_ProPluginDatasourceID_FiwareHttpClient" class="ProPluginDatasourceTemplate_FiwareHttpClient"/>
       </PluginDatasources>
     </ArcGISPro>
   </AddIn>
