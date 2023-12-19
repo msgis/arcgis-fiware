@@ -33,7 +33,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Globalization;
 using System.Windows.Input;
-using msGIS.ProPluginDatasource_EntityFile;
 
 namespace msGIS.ProApp_FiwareTest
 {
@@ -47,7 +46,8 @@ namespace msGIS.ProApp_FiwareTest
         private Button Button_EntityToLayer;
         private TextBox TextBox_DataPath;
         private Button Button_EntityToFile;
-        private Button Button_FileToLayer;
+        private Button Button_FileToDsfLayer;
+        private Button Button_EntityToDsfLayer;
 
         private Layer m_LayerEntitiesPoints = null;
 
@@ -61,7 +61,8 @@ namespace msGIS.ProApp_FiwareTest
         //private bool m_SuspendSetLayersChk = false;
         private bool m_HasSpecialEvents_EntityTypes = false;
 
-        internal Spring_EntityTypes(Grid grid_EntityTypes, ComboBox comboBox_EntityTypes, Label label_Count, Button button_EntityToLayer, TextBox textBox_DataPath, Button button_EntityToFile, Button button_FileToLayer)
+        internal Spring_EntityTypes(Grid grid_EntityTypes, ComboBox comboBox_EntityTypes, Label label_Count, Button button_EntityToLayer,
+            TextBox textBox_DataPath, Button button_EntityToFile, Button button_FileToDsfLayer, Button button_EntityToDsfLayer)
         {
             Grid_EntityTypes = grid_EntityTypes;
             Grid_EntityTypes.IsEnabled = false;
@@ -77,6 +78,7 @@ namespace msGIS.ProApp_FiwareTest
             ComboBox_EntityTypes = comboBox_EntityTypes;
             ComboBox_EntityTypes.DropDownClosed += ComboBox_EntityTypes_DropDownClosed;
             Label_Count = label_Count;
+            _ = CleanEntitiesCountAsync(false);
 
             Button_EntityToLayer = button_EntityToLayer;
             Button_EntityToLayer.IsEnabled = false;
@@ -91,12 +93,13 @@ namespace msGIS.ProApp_FiwareTest
             Button_EntityToFile.IsEnabled = false;
             Button_EntityToFile.Click += Button_EntityToFile_Click;
 
-            Button_FileToLayer = button_FileToLayer;
-            Button_FileToLayer.IsEnabled = false;
-            Button_FileToLayer.Click += Button_FileToLayer_Click;
+            Button_FileToDsfLayer = button_FileToDsfLayer;
+            Button_FileToDsfLayer.IsEnabled = false;
+            Button_FileToDsfLayer.Click += Button_FileToDsfLayer_Click;
 
-            _ = CleanEntitiesCountAsync(false);
-            Button_FileToLayer = button_FileToLayer;
+            Button_EntityToDsfLayer = button_EntityToDsfLayer;
+            Button_EntityToDsfLayer.IsEnabled = false;
+            Button_EntityToDsfLayer.Click += Button_EntityToDsfLayer_Click;
         }
 
         private async void OnMapViewChanged(ActiveMapViewChangedEventArgs args)
@@ -335,7 +338,8 @@ namespace msGIS.ProApp_FiwareTest
                 Button_EntityToLayer.IsEnabled = false;
                 TextBox_DataPath.IsEnabled = false;
                 Button_EntityToFile.IsEnabled = false;
-                Button_FileToLayer.IsEnabled = false;
+                Button_FileToDsfLayer.IsEnabled = false;
+                Button_EntityToDsfLayer.IsEnabled = false;
                 await CleanEntitiesCountAsync(false);
             }
             catch (Exception ex)
@@ -364,24 +368,58 @@ namespace msGIS.ProApp_FiwareTest
             }
         }
 
+        #region Controls
+
         private bool HasComboEntityTypeSelected
         {
             get
             {
-                return ((ComboBox_EntityTypes != null) && (ComboBox_EntityTypes.Items.Count > 0) && (ComboBox_EntityTypes.SelectedIndex >= 0));
+                return ((ComboBox_EntityTypes != null) && (ComboBox_EntityTypes.Items.Count > 0) && (ComboBox_EntityTypes.SelectedIndex >= 0) && (!string.IsNullOrEmpty(ComboBox_EntityTypes.SelectedItem.ToString())));
             }
         }
 
+        private async void ComboBox_EntityTypes_DropDownClosed(object sender, EventArgs e)
+        {
+            await CleanEntitiesCountAsync(false);
+            Button_EntityToLayer.IsEnabled = HasComboEntityTypeSelected;
+            TextBox_DataPath.IsEnabled = HasComboEntityTypeSelected;
+            Button_EntityToFile.IsEnabled = HasComboEntityTypeSelected;
+            Button_FileToDsfLayer.IsEnabled = HasComboEntityTypeSelected;
+            Button_EntityToDsfLayer.IsEnabled = HasComboEntityTypeSelected;
+        }
 
-        private async Task EntitiesToFeaturesAsync()
+        private async void Button_EntityToLayer_Click(object sender, RoutedEventArgs e)
+        {
+            await EntityToLayeAsync();
+        }
+
+        private async void Button_EntityToFile_Click(object sender, RoutedEventArgs e)
+        {
+            await EntityToFileAsync();
+        }
+
+        private async void Button_FileToDsfLayer_Click(object sender, RoutedEventArgs e)
+        {
+            await FileToDsfLayerAsync();
+        }
+
+        private async void Button_EntityToDsfLayer_Click(object sender, RoutedEventArgs e)
+        {
+            await EntityToDsfLayerAsync();
+        }
+
+        #endregion Controls
+
+
+        #region Processing
+
+        private async Task EntityToLayeAsync()
         {
             Helper_Progress m_Helper_Progress = null;
             try
             {
                 if (!HasComboEntityTypeSelected)
                     throw new Exception("No entity type selected!");
-                if (m_LayerEntitiesPoints == null)
-                    throw new Exception($"Layer {Fusion.m_LayerTagEntitiesPoints} is not acquired!");
                 string entityType = ComboBox_EntityTypes.SelectedItem.ToString();
                 if (string.IsNullOrEmpty(entityType))
                     throw new Exception("Empty entity type!");
@@ -399,7 +437,7 @@ namespace msGIS.ProApp_FiwareTest
                 if (jArrayEntities == null)
                     return;
                 if (jArrayEntities.Count == 0)
-                    await Fusion.m_Messages.AlertAsyncMsg("No entities acquired!", "EntitiesToFeaturesAsync");
+                    await Fusion.m_Messages.AlertAsyncMsg("No entities acquired!", "EntityToLayeAsync");
                 await ShowCountAsync(jArrayEntities.Count);
 
                 m_Helper_Progress = new Helper_Progress(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework, isProgressCancelable);
@@ -447,7 +485,7 @@ namespace msGIS.ProApp_FiwareTest
             }
             catch (Exception ex)
             {
-                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "EntitiesToFeaturesAsync");
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "EntityToLayeAsync");
             }
             finally
             {
@@ -459,15 +497,13 @@ namespace msGIS.ProApp_FiwareTest
             }
         }
 
-        private async Task EntitiesToFileAsync()
+        private async Task EntityToFileAsync()
         {
             Helper_Progress m_Helper_Progress = null;
             try
             {
                 if (!HasComboEntityTypeSelected)
                     throw new Exception("No entity type selected!");
-                if (m_LayerEntitiesPoints == null)
-                    throw new Exception($"Layer {Fusion.m_LayerTagEntitiesPoints} is not acquired!");
                 string entityType = ComboBox_EntityTypes.SelectedItem.ToString();
                 if (string.IsNullOrEmpty(entityType))
                     throw new Exception("Empty entity type!");
@@ -485,7 +521,7 @@ namespace msGIS.ProApp_FiwareTest
                 if (jArrayEntities == null)
                     return;
                 if (jArrayEntities.Count == 0)
-                    await Fusion.m_Messages.AlertAsyncMsg("No entities acquired!", "EntitiesToFileAsync");
+                    await Fusion.m_Messages.AlertAsyncMsg("No entities acquired!", "EntityToFileAsync");
                 await ShowCountAsync(jArrayEntities.Count);
 
                 m_Helper_Progress = new Helper_Progress(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework, isProgressCancelable);
@@ -531,7 +567,7 @@ namespace msGIS.ProApp_FiwareTest
             }
             catch (Exception ex)
             {
-                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "EntitiesToFileAsync");
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "EntityToFileAsync");
             }
             finally
             {
@@ -543,167 +579,12 @@ namespace msGIS.ProApp_FiwareTest
             }
         }
 
-        private async void ComboBox_EntityTypes_DropDownClosed(object sender, EventArgs e)
-        {
-            await CleanEntitiesCountAsync(false);
-            Button_EntityToLayer.IsEnabled = HasComboEntityTypeSelected;
-            TextBox_DataPath.IsEnabled = HasComboEntityTypeSelected;
-            Button_EntityToFile.IsEnabled = HasComboEntityTypeSelected;
-            Button_FileToLayer.IsEnabled = HasComboEntityTypeSelected;
-        }
-
-        private async void Button_EntityToLayer_Click(object sender, RoutedEventArgs e)
-        {
-            await EntitiesToFeaturesAsync();
-        }
-
-        private async void Button_EntityToFile_Click(object sender, RoutedEventArgs e)
-        {
-            await EntitiesToFileAsync();
-        }
-
-        private async void Button_FileToLayer_Click(object sender, RoutedEventArgs e)
-        {
-            await FileToLayerAsync();
-        }
-
-        private async Task EvalPluginByUriAsync()
-        {
-            try
-            {
-                // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
-                // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
-                // 3.3.05/20231206/msGIS_FIWARE_rt_004: Expertise FIWARE Integration ArcGIS PRO.
-                await Fusion.m_Messages.MsNotImplementedAsync();
-
-                if (!await ProPluginDatasource_EntityFile.Fusion.InitAsync(Fusion.m_DatasourcePath))
-                    return;
-
-                // Types: /ngsi-ld/v1/types
-                // Entities: /ngsi-ld/v1/entities?type={entityType}&offset={offset}&limit={limit}
-                // Refresh: /ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3
-                Uri uriDatasourcePath = new Uri(Fusion.m_DatasourcePath);
-
-                await QueuedTask.Run(() =>
-                {
-                    // PluginDatasourceConnectionPath : Connector
-                    // Plugin identifier is corresponding to ProPluginDatasource Config.xml PluginDatasource ID
-                    using (PluginDatastore pluginDatastore = new PluginDatastore(
-                     new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_EntityFile, uriDatasourcePath)))
-                    {
-                        if (pluginDatastore != null)
-                        {
-                            IReadOnlyList<string> tableNames = pluginDatastore.GetTableNames();
-                            if (tableNames != null)
-                            {
-                                foreach (var table_name in tableNames)
-                                {
-                                    System.Diagnostics.Debug.Write($"Table: {table_name}\r\n");
-                                    //open each table....use the returned table name
-                                    //or just pass in the name of a csv file in the workspace folder
-                                    using (var table = pluginDatastore.OpenTable(table_name))
-                                    {
-                                        //get information about the table
-                                        using (var def = table.GetDefinition() as FeatureClassDefinition)
-                                        {
-
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "EvalPluginTablesAsync");
-            }
-        }
-
-        private async Task EvalPluginTableContentsAsync(string dirPath)
-        {
-            try
-            {
-                // 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource Integration for SimplePoint File-Format.
-                if (!Directory.Exists(dirPath))
-                {
-                    await Fusion.m_Messages.AlertAsyncMsg($"Datasource path not found!", dirPath, "Pro Datasource");
-                    return;
-                }
-
-                await QueuedTask.Run(() =>
-                {
-
-                    using (PluginDatastore pluginws = new PluginDatastore(
-                         new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_EntityFile,
-                               new Uri(dirPath, UriKind.Absolute))))
-                    {
-                        System.Diagnostics.Debug.Write("==========================\r\n");
-                        foreach (var table_name in pluginws.GetTableNames())
-                        {
-                            System.Diagnostics.Debug.Write($"Table: {table_name}\r\n");
-                            //open each table....use the returned table name
-                            //or just pass in the name of a csv file in the workspace folder
-                            using (var table = pluginws.OpenTable(table_name))
-                            {
-                                //get information about the table
-                                using (var def = table.GetDefinition() as FeatureClassDefinition)
-                                {
-
-                                }
-                                //query and return all rows
-                                //TODO - use a QueryFilter and Whereclause
-                                //var qf = new QueryFilter()
-                                //{
-                                //  WhereClause = "OBJECTID > 0"
-                                //};
-                                //var rc = table.Search(qf);
-
-                                using (var rc = table.Search(null))
-                                {
-                                    while (rc.MoveNext())
-                                    {
-                                        using (var feat = rc.Current as Feature)
-                                        {
-                                            if (feat != null)
-                                            {
-                                                //Get information from the feature
-                                                var oid = feat.GetObjectID();
-                                                var shape = feat.GetShape();
-
-                                                //Access all the values
-                                                var count = feat.GetFields().Count();
-                                                for (int i = 0; i < count; i++)
-                                                {
-                                                    var val = feat[i];
-                                                    //TODO use the value(s)
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-
-                });
-            }
-            catch (Exception ex)
-            {
-                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "EvalPluginTableContentsAsync");
-            }
-        }
-
-        private async Task FileToLayerAsync()
+        private async Task FileToDsfLayerAsync()
         {
             try
             {
                 if (!HasComboEntityTypeSelected)
                     throw new Exception("No entity type selected!");
-                if (m_LayerEntitiesPoints == null)
-                    throw new Exception($"Layer {Fusion.m_LayerTagEntitiesPoints} is not acquired!");
                 string entityType = ComboBox_EntityTypes.SelectedItem.ToString();
                 if (string.IsNullOrEmpty(entityType))
                     throw new Exception("Empty entity type!");
@@ -719,14 +600,6 @@ namespace msGIS.ProApp_FiwareTest
                     await Fusion.m_Messages.AlertAsyncMsg($"Datasource path not found!", dirPath, "File-Layer");
                     return;
                 }
-
-                bool evalPluginByUri = false;
-                if (evalPluginByUri)
-                    await EvalPluginByUriAsync();
-
-                bool evalPluginTableContents = false;
-                if (evalPluginTableContents)
-                    await EvalPluginTableContentsAsync(dirPath);
 
                 await QueuedTask.Run(async() =>
                 {
@@ -765,9 +638,105 @@ namespace msGIS.ProApp_FiwareTest
             }
             catch (Exception ex)
             {
-                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "FileToLayerAsync");
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "FileToDsfLayerAsync");
             }
         }
+
+        private async Task EntityToDsfLayerAsync()
+        {
+            try
+            {
+                // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
+                // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
+                // 3.3.05/20231206/msGIS_FIWARE_rt_004: Expertise FIWARE Integration ArcGIS PRO.
+                // 3.3.06/20231218/msGIS_FIWARE_rt_007: ProPluginDatasource_FiwareHttpClient.
+                // await Fusion.m_Messages.MsNotImplementedAsync();
+
+                if (!HasComboEntityTypeSelected)
+                    throw new Exception("No entity type selected!");
+                string entityType = ComboBox_EntityTypes.SelectedItem.ToString();
+                if (string.IsNullOrEmpty(entityType))
+                    throw new Exception("Empty entity type!");
+
+                await CleanEntitiesCountAsync(true);
+
+                if (!await ProPluginDatasource_FiwareHttpClient.Fusion.InitAsync(Fusion.m_DatasourcePath))
+                    return;
+
+                // Types: /ngsi-ld/v1/types
+                // Entities: /ngsi-ld/v1/entities?type={entityType}&offset={offset}&limit={limit}
+                // Refresh: /ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3
+                Uri uriDatasourcePath = new Uri(Fusion.m_DatasourcePath);
+
+                await QueuedTask.Run(() =>
+                {
+                    // PluginDatasourceConnectionPath : Connector
+                    // Plugin identifier is corresponding to ProPluginDatasource Config.xml PluginDatasource ID
+                    using (PluginDatastore pluginDatastore = new PluginDatastore(
+                     new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_EntityFile, uriDatasourcePath)))
+                    {
+                        if (pluginDatastore != null)
+                        {
+                            IReadOnlyList<string> tableNames = pluginDatastore.GetTableNames();
+                            if (tableNames != null)
+                            {
+                                foreach (var table_name in tableNames)
+                                {
+                                    System.Diagnostics.Debug.Write($"Table: {table_name}\r\n");
+                                    //open each table....use the returned table name
+                                    //or just pass in the name of a csv file in the workspace folder
+                                    using (var table = pluginDatastore.OpenTable(table_name))
+                                    {
+                                        //get information about the table
+                                        using (var def = table.GetDefinition() as FeatureClassDefinition)
+                                        {
+
+                                        }
+                                        //query and return all rows
+                                        //TODO - use a QueryFilter and Whereclause
+                                        //var qf = new QueryFilter()
+                                        //{
+                                        //  WhereClause = "OBJECTID > 0"
+                                        //};
+                                        //var rc = table.Search(qf);
+
+                                        using (var rc = table.Search(null))
+                                        {
+                                            while (rc.MoveNext())
+                                            {
+                                                using (var feat = rc.Current as Feature)
+                                                {
+                                                    if (feat != null)
+                                                    {
+                                                        //Get information from the feature
+                                                        var oid = feat.GetObjectID();
+                                                        var shape = feat.GetShape();
+
+                                                        //Access all the values
+                                                        var count = feat.GetFields().Count();
+                                                        for (int i = 0; i < count; i++)
+                                                        {
+                                                            var val = feat[i];
+                                                            //TODO use the value(s)
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "EntityToDsfLayerAsync");
+            }
+        }
+
+        #endregion Processing
 
     }
 }

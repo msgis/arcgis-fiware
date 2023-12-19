@@ -23,6 +23,9 @@
   <ItemGroup>
     <Content Include="Config.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\ProApp-Common\msGIS.ProApp_Common_FIWARE_3x.csproj" />
+  </ItemGroup>
   <PropertyGroup>
     <PackageType>Plugin</PackageType>
     <AssemblyName>msGIS.ProPluginDatasource_FiwareHttpClient</AssemblyName>

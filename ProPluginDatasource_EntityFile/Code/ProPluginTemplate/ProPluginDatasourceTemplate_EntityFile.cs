@@ -36,12 +36,6 @@ namespace msGIS.ProPluginDatasource_EntityFile
             //Category = "My Category";
         }
 
-        /*
-        private string m_DatasourcePath = "";
-        private Dictionary<string, PluginTableTemplate> m_DicTypeTables;
-        private IReadOnlyList<string> m_TableNames = null;
-        */
-
         [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
         [DllImport("kernel32.dll")]
         internal static extern uint GetCurrentThreadId();
@@ -99,19 +93,6 @@ namespace msGIS.ProPluginDatasource_EntityFile
             //of your plugin may be initialized on different threads
             // throw new NotImplementedException();
 
-            // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
-            /*
-            m_DatasourcePath = connectionPath.ToString();
-            m_TableNames = Fusion.m_ListEntityTypes;
-            m_DicTypeTables = new Dictionary<string, PluginTableTemplate>();
-            */
-            /*
-            foreach (var tabName in GetTableNames())
-            {
-                m_DicTypeTables.Add(tabName, new ProPluginTableTemplate_EntityFile(tabName));
-            }
-            */
-
             if (!System.IO.Directory.Exists(connectionPath.LocalPath))
             {
                 throw new System.IO.DirectoryNotFoundException(connectionPath.LocalPath);
@@ -140,30 +121,6 @@ namespace msGIS.ProPluginDatasource_EntityFile
             //TODO Cleanup required to close the plugin 
             //data source instance
             // throw new NotImplementedException();
-
-            /*
-            m_DatasourcePath = "";
-            if (m_TableNames != null)
-            {
-                if (Fusion.m_ListEntityTypes != null)
-                {
-                    Fusion.m_ListEntityTypes.Clear();
-                    Fusion.m_ListEntityTypes = null;
-                }
-                m_TableNames = null;
-            }
-
-            //Dispose of any cached table instances here
-            if (m_DicTypeTables != null)
-            {
-                foreach (var table in m_DicTypeTables.Values)
-                {
-                    // ((ProPluginTableTemplate_EntityFile)table).Dispose();
-                }
-                m_DicTypeTables.Clear();
-                m_DicTypeTables = null;
-            }
-            */
 
             //Dispose of any cached table instances here
             foreach (var table in _tables.Values)
@@ -211,17 +168,6 @@ namespace msGIS.ProPluginDatasource_EntityFile
         {
             //TODO Open the given table/object in the plugin data source
             // throw new NotImplementedException();
-            /*
-            if (!this.GetTableNames().Contains(tableName))
-                throw new Exception($"The table {tableName} was not found!");
-
-            SpatialReference spatialReference = null;
-            ProPluginTableTemplate_EntityFile proPluginTableTemplate_EntityFile = new ProPluginTableTemplate_EntityFile(m_DatasourcePath, tableName, spatialReference);
-            if (m_DicTypeTables.ContainsKey(tableName))
-                throw new Exception($"The table {tableName} is ambiguous!");
-            m_DicTypeTables.Add(tableName, proPluginTableTemplate_EntityFile);
-            return proPluginTableTemplate_EntityFile;
-            */
 
             //This is only necessary if your internals have thread affinity
             //
@@ -287,25 +233,6 @@ namespace msGIS.ProPluginDatasource_EntityFile
         // The format of the strings returned is up to the developer; the only stipulation is that the strings returned by GetTableNames can be used in calls to OpenTable.
         public override IReadOnlyList<string> GetTableNames()
         {
-            // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
-            // var tableNames = new List<string>();
-            // IReadOnlyList<string> tableNames = m_TableNames;        // new List<string>();
-
-            /*
-            // asyncTask.Wait();
-            // Use a separate thread to wait for the task to complete
-            Task.Run(async () =>
-            {
-                Task<List<string>> asyncTask = RestApi_EntityFile.ReadEntityTypesFromRestApiAsync(m_DatasourcePath);
-                await asyncTask.ConfigureAwait(false);
-
-                // Continue with the rest of the code after the task has completed
-                List<string> listEntityTypes = asyncTask.Result;
-                if ((asyncTask.IsCompleted) && (listEntityTypes != null))
-                    m_TableNames = listEntityTypes;
-            }).GetAwaiter().GetResult();
-            */
-
             //TODO Return the names of all tables in the plugin
             //data source
             // return tableNames;
