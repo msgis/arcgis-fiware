@@ -80,19 +80,28 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
             //data source
             // return tableNames;
 
-            // asyncTask.Wait();
-            // Use a separate thread to wait for the task to complete
-            Task.Run(async () =>
+            // 3.3.06/20231218/msGIS_FIWARE_rt_007: ProPluginDatasource_FiwareHttpClient.
+            bool useAsyncTask = false;
+            if (useAsyncTask)
             {
-                Task<List<string>> asyncTask = Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(m_DatasourcePath);
-                await asyncTask.ConfigureAwait(false);
-
-                // Continue with the rest of the code after the task has completed
-                if (asyncTask.IsCompleted)
+                // asyncTask.Wait();
+                // Use a separate thread to wait for the task to complete
+                Task.Run(async () =>
                 {
-                    tableNames = asyncTask.Result;
-                }
-            }).GetAwaiter().GetResult();
+                    Task<List<string>> asyncTask = Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(m_DatasourcePath);
+                    await asyncTask.ConfigureAwait(false);
+
+                    // Continue with the rest of the code after the task has completed
+                    if (asyncTask.IsCompleted)
+                    {
+                        tableNames = asyncTask.Result;
+                    }
+                }).GetAwaiter().GetResult();
+            }
+            else
+            {
+                List<string> listTableNames = Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiSync(m_DatasourcePath);
+            }
 
             return tableNames;
         }
