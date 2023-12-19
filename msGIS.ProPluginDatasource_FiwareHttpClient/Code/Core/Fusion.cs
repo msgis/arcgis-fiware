@@ -23,10 +23,11 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
         #endregion Common
 
         public static bool m_IsInitialized { get; set; }
-        internal static string m_DatasourcePath { get; set; }
-        internal static List<string> m_ListEntityTypes { get; set; }
+        // internal static string m_DatasourcePath { get; set; }
+        // internal static List<string> m_ListEntityTypes { get; set; }
 
-        public static async Task<bool> InitAsync(string datasourcePath)
+        // public static async Task<bool> InitAsync(string datasourcePath)
+        public static async Task<bool> InitAsync()
         {
             try
             {
@@ -43,13 +44,15 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 // Get entity types from JSON.
                 // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
                 // 3.3.06/20231218/msGIS_FIWARE_rt_007: ProPluginDatasource_FiwareHttpClient.
+                /*
                 m_ListEntityTypes = await Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(datasourcePath);
                 if (m_ListEntityTypes != null)
                 {
                     m_DatasourcePath = datasourcePath;
-                    m_IsInitialized = true;
                 }
+                */
 
+                m_IsInitialized = true;
                 return m_IsInitialized;
             }
             catch (Exception ex)
@@ -58,5 +61,6 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 return false;
             }
         }
+
     }
 }

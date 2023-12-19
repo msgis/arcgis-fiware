@@ -13,32 +13,21 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
     public class ProPluginDatasourceTemplate_FiwareHttpClient : PluginDatasourceTemplate
     {
         // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
+        // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
         // 3.3.06/20231218/msGIS_FIWARE_rt_007: ProPluginDatasource_FiwareHttpClient.
 
-        /*
         private string m_DatasourcePath = "";
-        private Dictionary<string, PluginTableTemplate> m_DicTypeTables;
-        private IReadOnlyList<string> m_TableNames = null;
-        */
+        private Dictionary<string, PluginTableTemplate> m_DicTables;
 
         public override void Open(Uri connectionPath)
         {
             //TODO Initialize your plugin instance. Individual instances
             //of your plugin may be initialized on different threads
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
 
-            // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
-            /*
+            //initialize
             m_DatasourcePath = connectionPath.ToString();
-            m_TableNames = Fusion.m_ListEntityTypes;
-            m_DicTypeTables = new Dictionary<string, PluginTableTemplate>();
-            */
-            /*
-            foreach (var tabName in GetTableNames())
-            {
-                m_DicTypeTables.Add(tabName, new ProPluginTableTemplate_EntityFile(tabName));
-            }
-            */
+            m_DicTables = new Dictionary<string, PluginTableTemplate>();
 
         }
 
@@ -46,31 +35,18 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
         {
             //TODO Cleanup required to close the plugin 
             //data source instance
-            throw new NotImplementedException();
-
-            /*
-            m_DatasourcePath = "";
-            if (m_TableNames != null)
-            {
-                if (Fusion.m_ListEntityTypes != null)
-                {
-                    Fusion.m_ListEntityTypes.Clear();
-                    Fusion.m_ListEntityTypes = null;
-                }
-                m_TableNames = null;
-            }
+            // throw new NotImplementedException();
 
             //Dispose of any cached table instances here
-            if (m_DicTypeTables != null)
+            if (m_DicTables != null)
             {
-                foreach (var table in m_DicTypeTables.Values)
+                foreach (var table in m_DicTables.Values)
                 {
-                    // ((ProPluginTableTemplate_EntityFile)table).Dispose();
+                    ((ProPluginTableTemplate_FiwareHttpClient)table).Dispose();
                 }
-                m_DicTypeTables.Clear();
-                m_DicTypeTables = null;
+                m_DicTables.Clear();
+                m_DicTables = null;
             }
-            */
 
         }
 
@@ -78,19 +54,22 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
         {
             //TODO Open the given table/object in the plugin
             //data source
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
 
-            /*
+            string tableName = name;
             if (!this.GetTableNames().Contains(tableName))
                 throw new Exception($"The table {tableName} was not found!");
 
-            SpatialReference spatialReference = null;
-            ProPluginTableTemplate_EntityFile proPluginTableTemplate_EntityFile = new ProPluginTableTemplate_EntityFile(m_DatasourcePath, tableName, spatialReference);
-            if (m_DicTypeTables.ContainsKey(tableName))
+            // if (m_DicTables.ContainsKey(tableName))
+            if (m_DicTables.Keys.Contains(tableName))
                 throw new Exception($"The table {tableName} is ambiguous!");
-            m_DicTypeTables.Add(tableName, proPluginTableTemplate_EntityFile);
-            return proPluginTableTemplate_EntityFile;
-            */
+
+            SpatialReference spatialReference = SpatialReferences.WGS84;
+            ProPluginTableTemplate_FiwareHttpClient proPluginTableTemplate_FiwareHttpClient = new ProPluginTableTemplate_FiwareHttpClient(m_DatasourcePath, tableName, spatialReference);
+            // m_DicTables.Add(tableName, proPluginTableTemplate_FiwareHttpClient);
+            m_DicTables[tableName] = proPluginTableTemplate_FiwareHttpClient;
+
+            return proPluginTableTemplate_FiwareHttpClient;
         }
 
         public override IReadOnlyList<string> GetTableNames()
@@ -99,33 +78,30 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
 
             //TODO Return the names of all tables in the plugin
             //data source
-            return tableNames;
+            // return tableNames;
 
-            // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
-            // var tableNames = new List<string>();
-            // IReadOnlyList<string> tableNames = m_TableNames;        // new List<string>();
-
-            /*
             // asyncTask.Wait();
             // Use a separate thread to wait for the task to complete
             Task.Run(async () =>
             {
-                Task<List<string>> asyncTask = RestApi_EntityFile.ReadEntityTypesFromRestApiAsync(m_DatasourcePath);
+                Task<List<string>> asyncTask = Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(m_DatasourcePath);
                 await asyncTask.ConfigureAwait(false);
 
                 // Continue with the rest of the code after the task has completed
-                List<string> listEntityTypes = asyncTask.Result;
-                if ((asyncTask.IsCompleted) && (listEntityTypes != null))
-                    m_TableNames = listEntityTypes;
+                if (asyncTask.IsCompleted)
+                {
+                    tableNames = asyncTask.Result;
+                }
             }).GetAwaiter().GetResult();
-            */
 
+            return tableNames;
         }
 
         public override bool IsQueryLanguageSupported()
         {
             //default is false
-            return base.IsQueryLanguageSupported();
+            bool isQueryLanguageSupported = base.IsQueryLanguageSupported();
+            return isQueryLanguageSupported;
         }
     }
 }

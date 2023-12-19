@@ -660,25 +660,27 @@ namespace msGIS.ProApp_FiwareTest
 
                 await CleanEntitiesCountAsync(true);
 
-                if (!await ProPluginDatasource_FiwareHttpClient.Fusion.InitAsync(Fusion.m_DatasourcePath))
+                //if (!await ProPluginDatasource_FiwareHttpClient.Fusion.InitAsync(Fusion.m_DatasourcePath))
+                //    return;
+                if (!await ProPluginDatasource_FiwareHttpClient.Fusion.InitAsync())
                     return;
 
                 // Types: /ngsi-ld/v1/types
                 // Entities: /ngsi-ld/v1/entities?type={entityType}&offset={offset}&limit={limit}
                 // Refresh: /ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3
-                Uri uriDatasourcePath = new Uri(Fusion.m_DatasourcePath);
+                Uri uriDatasourcePath = new Uri(Fusion.m_DatasourcePath, UriKind.Absolute);
 
                 await QueuedTask.Run(() =>
                 {
                     // PluginDatasourceConnectionPath : Connector
                     // Plugin identifier is corresponding to ProPluginDatasource Config.xml PluginDatasource ID
                     using (PluginDatastore pluginDatastore = new PluginDatastore(
-                     new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_EntityFile, uriDatasourcePath)))
+                     new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_FiwareHttpClient, uriDatasourcePath)))
                     {
                         if (pluginDatastore != null)
                         {
                             IReadOnlyList<string> tableNames = pluginDatastore.GetTableNames();
-                            if (tableNames != null)
+                            if ((tableNames != null) && (tableNames.Count > 0))
                             {
                                 foreach (var table_name in tableNames)
                                 {

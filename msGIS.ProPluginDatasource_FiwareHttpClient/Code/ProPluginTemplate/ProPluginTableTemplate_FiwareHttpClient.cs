@@ -4,6 +4,7 @@ using ArcGIS.Core.Geometry;
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,50 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
     public class ProPluginTableTemplate_FiwareHttpClient : PluginTableTemplate
     {
         // 3.3.06/20231218/msGIS_FIWARE_rt_007: ProPluginDatasource_FiwareHttpClient.
+        private string m_DatasourcePath;
+        private string m_TableName;
+        private DataTable _table;
+        private SpatialReference m_SpatialReference;
+
+        public ProPluginTableTemplate_FiwareHttpClient(string datasourcePath, string tableName, SpatialReference spatialReference = null) : base()
+        {
+            m_DatasourcePath = datasourcePath;
+            m_TableName = tableName;
+            m_SpatialReference = spatialReference ?? SpatialReferences.WGS84;
+            // Open();
+        }
+
+
+        #region IDisposable
+
+        private bool _disposed = false;
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            //TODO free unmanaged resources here
+            System.Diagnostics.Debug.WriteLine("Table being disposed");
+
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                _table?.Clear();
+                _table = null;
+                m_SpatialReference = null;
+            }
+            _disposed = true;
+        }
+        #endregion
+
 
         public override IReadOnlyList<PluginField> GetFields()
         {

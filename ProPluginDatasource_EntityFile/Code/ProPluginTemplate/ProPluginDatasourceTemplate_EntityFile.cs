@@ -97,6 +97,7 @@ namespace msGIS.ProPluginDatasource_EntityFile
             {
                 throw new System.IO.DirectoryNotFoundException(connectionPath.LocalPath);
             }
+
             //initialize
             //Strictly speaking, tracking your thread id is only necessary if
             //your implementation uses internals that have thread affinity.
