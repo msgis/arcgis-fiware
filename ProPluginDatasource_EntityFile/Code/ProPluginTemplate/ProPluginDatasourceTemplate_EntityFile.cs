@@ -15,7 +15,6 @@ namespace msGIS.ProPluginDatasource_EntityFile
 {
     // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
     // 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource Integration for SimplePoint File-Format.
-    // 3.3.06/20231214/msGIS_FIWARE_rt_006: Rename FiwareSummit to FiwareTest/EntityFile (Project, Namespace, Module, ID, Plugin).
 
     // Summary:
     //     This abstract class serves as one of the key extensibility points that comprise

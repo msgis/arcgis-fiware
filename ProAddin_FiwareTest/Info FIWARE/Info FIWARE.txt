@@ -304,7 +304,6 @@ Anbei meine Anfragen an AI.
 https://chat.openai.com/share/a04629a6-ae7a-43ab-9987-107028365489
 
 3.3.05/20231205/msGIS_FIWARE_rt_003: EntitiesToFile for use with SimplePointPlugin.
-
 3.3.05/20231206/msGIS_FIWARE_rt_004: Expertise FIWARE Integration ArcGIS PRO.
 Die FIWARE Daten werden mittels REST API async Task HttpClient.GetAsync(string? requestUri) - Json - EntityTypes bzw. Entities(Type) geladen.
 Für die Darstellung habe ich folgende Möglichkeiten evaluiert.
@@ -377,8 +376,13 @@ InstVer=ArcPro_3.0.3.36057 AddInX_3.3.06 PluginDatasource_FiwareTest_3.3.06 Comm
 3.3.32/20231215/msGIS_ProApp_Common_rt_057: Fiware RestApi NetHttpClient.
 
 3.3.06/20231218/msGIS_FIWARE_rt_007: ProPluginDatasource_FiwareHttpClient.
-Eval using Get Method (EsriHttpClient) instead of GetAsync (NetHttpClient).
 https://pro.arcgis.com/en/pro-app/latest/sdk/api-reference/topic9058.html
+Ich konnte die Problematik bezogen auf NetHttpClient.GetAsync/EsriHttpClient.Get lösen.
+Die synchrone Funktion "EsriHttpClient.Get" bringt insofern nichts, weil in der Folge für "esriHttpResponse.Content.ReadAsStringAsync" keinen synchronen Adäquat gibt.
+Daher verwende ich asynchrone Funktion "esriHttpClient.GetAsync", welche gleiche Resultate liefert wie "httpClient.GetAsync".
+Der asynchrone Aufruf aus override Routine in der abstrakten Klasse vom Plugin Datasource funktioniert nun doch.
+Zuvor hat sich bei der Übergabe von Uri über Plugin im Vergleich zu direktem Aufruf ein "/" eingeschlichen.
+Zusätzlich warte ich in der synchronen Routine auf die asynchrone Ausführung mittels System-Task, nachdem ich für Esri-QueuedTask keine entsprechende Möglichkeit gefunden habe (entweder blockiert oder wartet nicht).
 
 - Configure ArcPro UI to manually add/manage the data (Catalog, AddData Button/Item, etc.).
 DAML: <updateCategory refID="esri_core_projectContainers"> --> ProDataProjectItemContainer : CustomProjectItemContainer<ProDataProjectItem>.

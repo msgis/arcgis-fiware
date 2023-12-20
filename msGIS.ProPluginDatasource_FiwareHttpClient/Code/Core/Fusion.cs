@@ -11,7 +11,6 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
     public static class Fusion
     {
         // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
-        // 3.3.06/20231218/msGIS_FIWARE_rt_007: ProPluginDatasource_FiwareHttpClient.
         private static readonly string m_ModuleName = "Fusion";
 
         #region Common

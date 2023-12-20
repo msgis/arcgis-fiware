@@ -38,6 +38,8 @@ namespace msGIS.ProApp_FiwareTest
 {
     internal class Spring_EntityTypes
     {
+        // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
+        // 3.3.05/20231206/msGIS_FIWARE_rt_004: Expertise FIWARE Integration ArcGIS PRO.
         private readonly string m_ModuleName = "Spring_EntityTypes";
 
         private Grid Grid_EntityTypes;
@@ -501,6 +503,7 @@ namespace msGIS.ProApp_FiwareTest
 
         private async Task EntityToFileAsync()
         {
+            // 3.3.05/20231205/msGIS_FIWARE_rt_003: EntitiesToFile for use with SimplePointPlugin.
             Helper_Progress m_Helper_Progress = null;
             try
             {
@@ -536,7 +539,6 @@ namespace msGIS.ProApp_FiwareTest
                 if (listFeatures == null)
                     return;
 
-                // 3.3.05/20231205/msGIS_FIWARE_rt_003: EntitiesToFile for use with SimplePointPlugin.
                 string dirPath = TextBox_DataPath.Text;
                 if (!Directory.Exists(dirPath))
                 {
@@ -586,16 +588,12 @@ namespace msGIS.ProApp_FiwareTest
         {
             try
             {
+                // 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource Integration for SimplePoint File-Format.
                 if (!HasComboEntityTypeSelected)
                     throw new Exception("No entity type selected!");
                 string entityType = ComboBox_EntityTypes.SelectedItem.ToString();
                 if (string.IsNullOrEmpty(entityType))
                     throw new Exception("Empty entity type!");
-
-                // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
-                // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
-                // 3.3.05/20231206/msGIS_FIWARE_rt_004: Expertise FIWARE Integration ArcGIS PRO.
-                // 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource Integration for SimplePoint File-Format.
 
                 string dirPath = TextBox_DataPath.Text;
                 if (!Directory.Exists(dirPath))
@@ -649,10 +647,7 @@ namespace msGIS.ProApp_FiwareTest
         {
             try
             {
-                // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
-                // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
-                // 3.3.05/20231206/msGIS_FIWARE_rt_004: Expertise FIWARE Integration ArcGIS PRO.
-                // 3.3.06/20231218/msGIS_FIWARE_rt_007: ProPluginDatasource_FiwareHttpClient.
+                // 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource Integration for SimplePoint File-Format.
                 // await Fusion.m_Messages.MsNotImplementedAsync();
 
                 if (!HasComboEntityTypeSelected)

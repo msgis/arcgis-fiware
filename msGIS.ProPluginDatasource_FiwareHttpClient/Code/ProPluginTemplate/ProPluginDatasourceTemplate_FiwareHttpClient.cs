@@ -14,7 +14,6 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
     public class ProPluginDatasourceTemplate_FiwareHttpClient : PluginDatasourceTemplate
     {
         // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
-        // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
         // 3.3.06/20231218/msGIS_FIWARE_rt_007: ProPluginDatasource_FiwareHttpClient.
 
         private Uri m_UriDatasourcePath;
@@ -80,6 +79,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
             //data source
             // return tableNames;
 
+            // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
             // 3.3.06/20231218/msGIS_FIWARE_rt_007: ProPluginDatasource_FiwareHttpClient.
             List<string> tableNames = null;
             // Use asynchronous call due to lack of adequate synchronous "httpResponse.Content.ReadAsStringAsync" function, even if "esriHttpClient.Get(requestUri)" function is available.
