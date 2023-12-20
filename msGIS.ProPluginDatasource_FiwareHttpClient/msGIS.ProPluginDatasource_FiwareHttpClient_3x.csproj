@@ -19,6 +19,9 @@
       <CopyLocal>False</CopyLocal>
       <Private>False</Private>
     </Reference>
+    <Reference Include="ArcGIS.Desktop.Framework">
+      <HintPath>..\..\..\..\..\..\..\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Framework.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config.xml" />

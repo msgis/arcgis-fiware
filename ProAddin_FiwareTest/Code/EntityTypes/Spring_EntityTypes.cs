@@ -269,7 +269,8 @@ namespace msGIS.ProApp_FiwareTest
                 }
 
                 // Get entity types from JSON.
-                List<string> listEntityTypes = await Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(Fusion.m_DatasourcePath);
+                Uri uriDatasourcePath = new Uri(Fusion.m_DatasourcePath, UriKind.Absolute);
+                List<string> listEntityTypes = await Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(uriDatasourcePath);
 
                 // Populate combo wih entity types.
                 await PopulateEntityTypesAsync(listEntityTypes);
@@ -390,7 +391,7 @@ namespace msGIS.ProApp_FiwareTest
 
         private async void Button_EntityToLayer_Click(object sender, RoutedEventArgs e)
         {
-            await EntityToLayeAsync();
+            await EntityToLayerAsync();
         }
 
         private async void Button_EntityToFile_Click(object sender, RoutedEventArgs e)
@@ -413,7 +414,7 @@ namespace msGIS.ProApp_FiwareTest
 
         #region Processing
 
-        private async Task EntityToLayeAsync()
+        private async Task EntityToLayerAsync()
         {
             Helper_Progress m_Helper_Progress = null;
             try
@@ -431,13 +432,14 @@ namespace msGIS.ProApp_FiwareTest
                 await m_Helper_Progress.ShowProgressAsync("GetEntitiesFromRestApiAsync", 900000, false);
                 JArray jArrayEntities = await QueuedTask.Run(async () =>
                 {
-                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(Fusion.m_DatasourcePath, entityType);
+                    Uri uriDatasourcePath = new Uri(Fusion.m_DatasourcePath, UriKind.Absolute);
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(uriDatasourcePath, entityType);
                 }, m_Helper_Progress.ProgressAssistant);
 
                 if (jArrayEntities == null)
                     return;
                 if (jArrayEntities.Count == 0)
-                    await Fusion.m_Messages.AlertAsyncMsg("No entities acquired!", "EntityToLayeAsync");
+                    await Fusion.m_Messages.AlertAsyncMsg("No entities acquired!", "EntityToLayerAsync");
                 await ShowCountAsync(jArrayEntities.Count);
 
                 m_Helper_Progress = new Helper_Progress(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework, isProgressCancelable);
@@ -485,7 +487,7 @@ namespace msGIS.ProApp_FiwareTest
             }
             catch (Exception ex)
             {
-                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "EntityToLayeAsync");
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "EntityToLayerAsync");
             }
             finally
             {
@@ -515,7 +517,8 @@ namespace msGIS.ProApp_FiwareTest
                 await m_Helper_Progress.ShowProgressAsync("GetEntitiesFromRestApiAsync", 900000, false);
                 JArray jArrayEntities = await QueuedTask.Run(async () =>
                 {
-                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(Fusion.m_DatasourcePath, entityType);
+                    Uri uriDatasourcePath = new Uri(Fusion.m_DatasourcePath, UriKind.Absolute);
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(uriDatasourcePath, entityType);
                 }, m_Helper_Progress.ProgressAssistant);
 
                 if (jArrayEntities == null)
@@ -660,8 +663,6 @@ namespace msGIS.ProApp_FiwareTest
 
                 await CleanEntitiesCountAsync(true);
 
-                //if (!await ProPluginDatasource_FiwareHttpClient.Fusion.InitAsync(Fusion.m_DatasourcePath))
-                //    return;
                 if (!await ProPluginDatasource_FiwareHttpClient.Fusion.InitAsync())
                     return;
 
@@ -682,6 +683,13 @@ namespace msGIS.ProApp_FiwareTest
                             IReadOnlyList<string> tableNames = pluginDatastore.GetTableNames();
                             if ((tableNames != null) && (tableNames.Count > 0))
                             {
+                                bool isDeveloping = true;
+                                if (isDeveloping)
+                                {
+                                    _ = Fusion.m_Messages.MsNotImplementedAsync();
+                                    return;
+                                }
+
                                 foreach (var table_name in tableNames)
                                 {
                                     System.Diagnostics.Debug.Write($"Table: {table_name}\r\n");

@@ -1,6 +1,7 @@
 ﻿using ArcGIS.Core.Data;
 using ArcGIS.Core.Data.PluginDatastore;
 using ArcGIS.Core.Geometry;
+using ArcGIS.Desktop.Framework.Threading.Tasks;
 
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
         // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
         // 3.3.06/20231218/msGIS_FIWARE_rt_007: ProPluginDatasource_FiwareHttpClient.
 
-        private string m_DatasourcePath = "";
+        private Uri m_UriDatasourcePath;
         private Dictionary<string, PluginTableTemplate> m_DicTables;
 
         public override void Open(Uri connectionPath)
@@ -26,7 +27,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
             // throw new NotImplementedException();
 
             //initialize
-            m_DatasourcePath = connectionPath.ToString();
+            m_UriDatasourcePath = connectionPath;
             m_DicTables = new Dictionary<string, PluginTableTemplate>();
 
         }
@@ -65,7 +66,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 throw new Exception($"The table {tableName} is ambiguous!");
 
             SpatialReference spatialReference = SpatialReferences.WGS84;
-            ProPluginTableTemplate_FiwareHttpClient proPluginTableTemplate_FiwareHttpClient = new ProPluginTableTemplate_FiwareHttpClient(m_DatasourcePath, tableName, spatialReference);
+            ProPluginTableTemplate_FiwareHttpClient proPluginTableTemplate_FiwareHttpClient = new ProPluginTableTemplate_FiwareHttpClient(m_UriDatasourcePath, tableName, spatialReference);
             // m_DicTables.Add(tableName, proPluginTableTemplate_FiwareHttpClient);
             m_DicTables[tableName] = proPluginTableTemplate_FiwareHttpClient;
 
@@ -74,34 +75,28 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
 
         public override IReadOnlyList<string> GetTableNames()
         {
-            var tableNames = new List<string>();
-
+            //var tableNames = new List<string>();
             //TODO Return the names of all tables in the plugin
             //data source
             // return tableNames;
 
             // 3.3.06/20231218/msGIS_FIWARE_rt_007: ProPluginDatasource_FiwareHttpClient.
-            bool useAsyncTask = false;
-            if (useAsyncTask)
+            List<string> tableNames = null;
+            // Use asynchronous call due to lack of adequate synchronous "httpResponse.Content.ReadAsStringAsync" function, even if "esriHttpClient.Get(requestUri)" function is available.
+            // Esri QueuedTask.Run is not suitable in a synchronous routine with due to dead lock on desired "GetAwaiter().GetResult()" modality for fulfilled object to return.
+            // asyncTask.Wait();
+            // Use a separate thread to wait for the task to complete
+            Task.Run(async () =>
             {
-                // asyncTask.Wait();
-                // Use a separate thread to wait for the task to complete
-                Task.Run(async () =>
-                {
-                    Task<List<string>> asyncTask = Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(m_DatasourcePath);
-                    await asyncTask.ConfigureAwait(false);
+                Task<List<string>> asyncTask = Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(m_UriDatasourcePath);
+                await asyncTask.ConfigureAwait(false);
 
-                    // Continue with the rest of the code after the task has completed
-                    if (asyncTask.IsCompleted)
-                    {
-                        tableNames = asyncTask.Result;
-                    }
-                }).GetAwaiter().GetResult();
-            }
-            else
-            {
-                List<string> listTableNames = Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiSync(m_DatasourcePath);
-            }
+                // Continue with the rest of the code after the task has completed
+                if (asyncTask.IsCompleted)
+                {
+                    tableNames = asyncTask.Result;
+                }
+            }).GetAwaiter().GetResult();
 
             return tableNames;
         }

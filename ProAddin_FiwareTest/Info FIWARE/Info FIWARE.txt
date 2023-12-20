@@ -379,9 +379,6 @@ InstVer=ArcPro_3.0.3.36057 AddInX_3.3.06 PluginDatasource_FiwareTest_3.3.06 Comm
 3.3.06/20231218/msGIS_FIWARE_rt_007: ProPluginDatasource_FiwareHttpClient.
 Eval using Get Method (EsriHttpClient) instead of GetAsync (NetHttpClient).
 https://pro.arcgis.com/en/pro-app/latest/sdk/api-reference/topic9058.html
-Leider verhält sich EsriHttpClient genauso wie NetHttpClient (Bad Request).
-PluginDatasourceTemplate - override IReadOnlyList<string> GetTableNames() - EsriHttpResponseMessage esriHttpResponse = esriHttpClient.Get(apiUrl)
-Dieselbe Anwendung direkt (nicht aus PluginDatasourceTemplate) funktioniert fehlerfrei.
 
 - Configure ArcPro UI to manually add/manage the data (Catalog, AddData Button/Item, etc.).
 DAML: <updateCategory refID="esri_core_projectContainers"> --> ProDataProjectItemContainer : CustomProjectItemContainer<ProDataProjectItem>.

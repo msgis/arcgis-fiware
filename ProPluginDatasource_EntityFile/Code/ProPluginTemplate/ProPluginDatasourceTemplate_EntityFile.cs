@@ -234,6 +234,7 @@ namespace msGIS.ProPluginDatasource_EntityFile
         // The format of the strings returned is up to the developer; the only stipulation is that the strings returned by GetTableNames can be used in calls to OpenTable.
         public override IReadOnlyList<string> GetTableNames()
         {
+            //var tableNames = new List<string>();
             //TODO Return the names of all tables in the plugin
             //data source
             // return tableNames;

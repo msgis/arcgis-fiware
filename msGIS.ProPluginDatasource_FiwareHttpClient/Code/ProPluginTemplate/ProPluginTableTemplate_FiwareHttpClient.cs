@@ -14,14 +14,14 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
     public class ProPluginTableTemplate_FiwareHttpClient : PluginTableTemplate
     {
         // 3.3.06/20231218/msGIS_FIWARE_rt_007: ProPluginDatasource_FiwareHttpClient.
-        private string m_DatasourcePath;
+        private Uri m_UriDatasourcePath;
         private string m_TableName;
         private DataTable _table;
         private SpatialReference m_SpatialReference;
 
-        public ProPluginTableTemplate_FiwareHttpClient(string datasourcePath, string tableName, SpatialReference spatialReference = null) : base()
+        public ProPluginTableTemplate_FiwareHttpClient(Uri uriDatasourcePath, string tableName, SpatialReference spatialReference = null) : base()
         {
-            m_DatasourcePath = datasourcePath;
+            m_UriDatasourcePath = uriDatasourcePath;
             m_TableName = tableName;
             m_SpatialReference = spatialReference ?? SpatialReferences.WGS84;
             // Open();
@@ -70,7 +70,8 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
         public override string GetName()
         {
             //TODO Get the name of this currently opened plugin table/object
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            return m_TableName;
         }
 
         public override PluginCursorTemplate Search(QueryFilter queryFilter)
