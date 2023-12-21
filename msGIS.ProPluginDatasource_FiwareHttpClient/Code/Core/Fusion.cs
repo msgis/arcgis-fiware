@@ -21,23 +21,29 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
 
         #endregion Common
 
-        public static bool m_IsInitialized { get; set; }
+        internal static Fiware_RestApi_NetHttpClient.UriDatasource m_UriDatasource;
+        private static bool m_IsInitialized { get; set; }
 
-        public static async Task<bool> InitAsync()
+        public static async Task<bool> InitAsync(Fiware_RestApi_NetHttpClient.UriDatasource uriDatasource)
         {
             try
             {
-                if (m_IsInitialized)
+                if (!m_IsInitialized)
                 {
-                    if (!await Fusion.m_Messages.MsAskAsync($"The ProPluginDatasource is initialized already!{Environment.NewLine}Repeat initialisation?", "FIWARE"))
-                        return false;
+                    Fusion.m_Global = new Global();
+                    Fusion.m_Messages = new Messages(Fusion.m_Global);
+                    Fusion.m_Fiware_RestApi_NetHttpClient = new Fiware_RestApi_NetHttpClient(Fusion.m_Global, Fusion.m_Messages);
+
+                    // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
+                    m_UriDatasource = uriDatasource;
+                    m_IsInitialized = true;
+                }
+                else
+                {
+                    //if (!await Fusion.m_Messages.MsAskAsync($"The ProPluginDatasource is initialized already!{Environment.NewLine}Repeat initialisation?", "FIWARE"))
+                    //    return false;
                 }
 
-                Fusion.m_Global = new Global();
-                Fusion.m_Messages = new Messages(Fusion.m_Global);
-                Fusion.m_Fiware_RestApi_NetHttpClient = new Fiware_RestApi_NetHttpClient(Fusion.m_Global, Fusion.m_Messages);
-
-                m_IsInitialized = true;
                 return m_IsInitialized;
             }
             catch (Exception ex)

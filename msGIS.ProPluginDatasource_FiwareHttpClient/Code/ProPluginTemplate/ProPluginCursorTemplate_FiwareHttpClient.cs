@@ -1,4 +1,6 @@
-﻿using ArcGIS.Core.Data;
+﻿using msGIS.ProApp_Common_FIWARE_3x;
+
+using ArcGIS.Core.Data;
 using ArcGIS.Core.Data.PluginDatastore;
 using ArcGIS.Core.Geometry;
 
@@ -12,7 +14,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
 {
     public class ProPluginCursorTemplate_FiwareHttpClient : PluginCursorTemplate
     {
-        // 3.3.06/20231218/msGIS_FIWARE_rt_007: ProPluginDatasource_FiwareHttpClient.
+        // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
 
         public override PluginRow GetCurrentRow()
         {

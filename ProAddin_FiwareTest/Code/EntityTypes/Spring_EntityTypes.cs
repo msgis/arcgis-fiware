@@ -58,6 +58,10 @@ namespace msGIS.ProApp_FiwareTest
 
         private bool m_IsActivated_EntityTypes = false;
 
+        // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
+        private Uri m_UriDatasourcePath;
+        private Fiware_RestApi_NetHttpClient.UriDatasource m_UriDatasource;
+
         internal bool m_CanChangeBoard_EntityTypes = true;
         // private bool m_SuspendControlsEvents = false;
         //private bool m_SuspendSetLayersChk = false;
@@ -270,9 +274,14 @@ namespace msGIS.ProApp_FiwareTest
                     m_STMapMemberPropertiesChanged = MapMemberPropertiesChangedEvent.Subscribe(OnMapMemberPropertiesChanged);
                 }
 
+                // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
                 // Get entity types from JSON.
-                Uri uriDatasourcePath = new Uri(Fusion.m_DatasourcePath, UriKind.Absolute);
-                List<string> listEntityTypes = await Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(uriDatasourcePath);
+                m_UriDatasourcePath = new Uri(Fusion.m_DatasourcePath, UriKind.Absolute);
+                m_UriDatasource = new Fiware_RestApi_NetHttpClient.UriDatasource
+                {
+                    path = m_UriDatasourcePath, types = Fusion.m_DatasourceTypes, entities = Fusion.m_DatasourceEntities, eventsource = Fusion.m_DatasourceEventsource
+                };
+                List<string> listEntityTypes = await Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(m_UriDatasource);
 
                 // Populate combo wih entity types.
                 await PopulateEntityTypesAsync(listEntityTypes);
@@ -309,8 +318,12 @@ namespace msGIS.ProApp_FiwareTest
         {
             try
             {
-                Label_Count.Content = (isWorking) ? "..." : " ";
-                Label_Count.Visibility = (isWorking) ? Visibility.Visible : Visibility.Hidden;
+                // The calling thread cannot access this object because a different thread owns it.
+                Fusion.m_UserControl_EntityTypes.Dispatcher.Invoke(() =>
+                {
+                    Label_Count.Content = (isWorking) ? "..." : " ";
+                    Label_Count.Visibility = (isWorking) ? Visibility.Visible : Visibility.Hidden;
+                });
             }
             catch (Exception ex)
             {
@@ -323,8 +336,12 @@ namespace msGIS.ProApp_FiwareTest
             // Fusion.m_UserControl_EntityTypes
             try
             {
-                Label_Count.Content = $"{entitiesCount}";
-                Label_Count.Visibility = Visibility.Visible;
+                // The calling thread cannot access this object because a different thread owns it.
+                Fusion.m_UserControl_EntityTypes.Dispatcher.Invoke(() =>
+                {
+                    Label_Count.Content = $"{entitiesCount}";
+                    Label_Count.Visibility = Visibility.Visible;
+                });
             }
             catch (Exception ex)
             {
@@ -434,8 +451,7 @@ namespace msGIS.ProApp_FiwareTest
                 await m_Helper_Progress.ShowProgressAsync("GetEntitiesFromRestApiAsync", 900000, false);
                 JArray jArrayEntities = await QueuedTask.Run(async () =>
                 {
-                    Uri uriDatasourcePath = new Uri(Fusion.m_DatasourcePath, UriKind.Absolute);
-                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(uriDatasourcePath, entityType);
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(m_UriDatasource, entityType);
                 }, m_Helper_Progress.ProgressAssistant);
 
                 if (jArrayEntities == null)
@@ -520,8 +536,7 @@ namespace msGIS.ProApp_FiwareTest
                 await m_Helper_Progress.ShowProgressAsync("GetEntitiesFromRestApiAsync", 900000, false);
                 JArray jArrayEntities = await QueuedTask.Run(async () =>
                 {
-                    Uri uriDatasourcePath = new Uri(Fusion.m_DatasourcePath, UriKind.Absolute);
-                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(uriDatasourcePath, entityType);
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(m_UriDatasource, entityType);
                 }, m_Helper_Progress.ProgressAssistant);
 
                 if (jArrayEntities == null)
@@ -658,30 +673,40 @@ namespace msGIS.ProApp_FiwareTest
 
                 await CleanEntitiesCountAsync(true);
 
-                if (!await ProPluginDatasource_FiwareHttpClient.Fusion.InitAsync())
+                // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
+                // types: /ngsi-ld/v1/types
+                // entities: /ngsi-ld/v1/entities?type={entityType}&offset={offset}&limit={limit}
+                // eventsource: /ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3
+                // ConnectionPath of override PluginDatasourceTemplate.URI.Open is not suitable for FIWARE due to complexly build URI with parameters set while proceeding tasks on tables and entries.
+                if (!await ProPluginDatasource_FiwareHttpClient.Fusion.InitAsync(m_UriDatasource))
                     return;
 
-                // Types: /ngsi-ld/v1/types
-                // Entities: /ngsi-ld/v1/entities?type={entityType}&offset={offset}&limit={limit}
-                // Refresh: /ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3
-                Uri uriDatasourcePath = new Uri(Fusion.m_DatasourcePath, UriKind.Absolute);
-
-                await QueuedTask.Run(() =>
+                await QueuedTask.Run(async() =>
                 {
                     // PluginDatasourceConnectionPath : Connector
                     // Plugin identifier is corresponding to ProPluginDatasource Config.xml PluginDatasource ID
                     using (PluginDatastore pluginDatastore = new PluginDatastore(
-                     new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_FiwareHttpClient, uriDatasourcePath)))
+                     new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_FiwareHttpClient, m_UriDatasourcePath)))
                     {
                         if (pluginDatastore != null)
                         {
                             IReadOnlyList<string> tableNames = pluginDatastore.GetTableNames();
                             if ((tableNames != null) && (tableNames.Count > 0))
                             {
+                                await ShowCountAsync(tableNames.Count);
+
                                 bool isDeveloping = true;
                                 if (isDeveloping)
                                 {
-                                    _ = Fusion.m_Messages.MsNotImplementedAsync();
+                                    string tables = "";
+                                    foreach (var table_name in tableNames)
+                                    {
+                                        if (!string.IsNullOrEmpty(tables))
+                                            tables += Environment.NewLine;
+                                        tables += table_name;
+                                    }
+                                    await Fusion.m_Messages.AlertAsyncMsg(tables, "GetTableNames");
+                                    await Fusion.m_Messages.MsNotImplementedAsync();
                                     return;
                                 }
 

@@ -370,6 +370,7 @@ dass bei der Entwicklung teilweise SDK/Community Ansätze verwendet werden und d
 ...................................................................................................
 3.3.06/2023mmdd/rt: New Version.
 InstVer=ArcPro_3.0.3.36057 AddInX_3.3.06 PluginDatasource_FiwareTest_3.3.06 Common_3.3.32 MSI_
+https://app.asana.com/0/1203876411184345/1205999834711034/
 
 3.3.06/20231214/msGIS_FIWARE_rt_006: Rename FiwareSummit to FiwareTest/EntityFile (Project, Namespace, Module, ID, Plugin).
 
@@ -384,18 +385,21 @@ Der asynchrone Aufruf aus override Routine in der abstrakten Klasse vom Plugin D
 Zuvor hat sich bei der Übergabe von Uri über Plugin im Vergleich zu direktem Aufruf ein "/" eingeschlichen.
 Zusätzlich warte ich in der synchronen Routine auf die asynchrone Ausführung mittels System-Task, nachdem ich für Esri-QueuedTask keine entsprechende Möglichkeit gefunden habe (entweder blockiert oder wartet nicht).
 
+3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
+
 - Configure ArcPro UI to manually add/manage the data (Catalog, AddData Button/Item, etc.).
 DAML: <updateCategory refID="esri_core_projectContainers"> --> ProDataProjectItemContainer : CustomProjectItemContainer<ProDataProjectItem>.
 DAML: <updateCategory refID="esri_customItems"> --> ProDataProjectItem : CustomProjectItemBase, IMappableItem.
 Samples: Content_QuakeItem, Plugin_ProDataReader, Plugin_ProSqlExpress.
 
+- Dynamically update changes on entities (NGSI data).
+- Manage data extension filter.
 - NuGet NGSIBaseModel to convert the Json objects received in the NGSI format to C# Models.
 - Evaluate SqlExpress using MDF-Connection.
 - Convert FIWARE REST - CRUD Datasource.
-- Dynamically update changes on entities (NGSI data).
 
 
 ---------------------------------------------------------------------------------------------------
-rt: Next 3.3.06/2023mmdd/msGIS_FIWARE_rt_008: Xxx
+rt: Next 3.3.06/2023mmdd/msGIS_FIWARE_rt_009: Xxx
 To build an AddInX look for instructions at common folder.
 ---------------------------------------------------------------------------------------------------

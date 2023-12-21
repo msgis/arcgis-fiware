@@ -68,8 +68,12 @@ namespace msGIS.ProApp_FiwareTest
         internal const string m_ProPluginDatasourceID_EntityFile = "msGIS_ProPluginDatasourceID_EntityFile";
         internal const string m_ProPluginDatasourceID_FiwareHttpClient = "msGIS_ProPluginDatasourceID_FiwareHttpClient";
 
+        // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
         internal const string m_PathEntities = @"P:\MS\link\roman\fiware\ArcPro\Entities_FIW";            // "P:\\MS\\link\\roman\\fiware\\ArcPro\\Entities_FIW"
         internal const string m_DatasourcePath = "https://fiwaredev.msgis.net";
+        internal const string m_DatasourceTypes = "/ngsi-ld/v1/types";
+        internal const string m_DatasourceEntities = "/ngsi-ld/v1/entities?";
+        internal const string m_DatasourceEventsource = "/ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3";
 
 
         #endregion Def

@@ -1,4 +1,6 @@
-﻿using ArcGIS.Core.Data;
+﻿using msGIS.ProApp_Common_FIWARE_3x;
+
+using ArcGIS.Core.Data;
 using ArcGIS.Core.Data.PluginDatastore;
 using ArcGIS.Core.Geometry;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
@@ -14,9 +16,9 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
     public class ProPluginDatasourceTemplate_FiwareHttpClient : PluginDatasourceTemplate
     {
         // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
-        // 3.3.06/20231218/msGIS_FIWARE_rt_007: ProPluginDatasource_FiwareHttpClient.
 
-        private Uri m_UriDatasourcePath;
+        // private Uri m_UriDatasourcePath;
+        private Fiware_RestApi_NetHttpClient.UriDatasource m_UriDatasource;
         private Dictionary<string, PluginTableTemplate> m_DicTables;
 
         public override void Open(Uri connectionPath)
@@ -25,8 +27,11 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
             //of your plugin may be initialized on different threads
             // throw new NotImplementedException();
 
-            //initialize
-            m_UriDatasourcePath = connectionPath;
+            // Initialize
+            // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
+            // ConnectionPath of override PluginDatasourceTemplate.URI.Open is not suitable for FIWARE due to complexly build URI with parameters set while proceeding tasks on tables and entries.
+            // m_UriDatasourcePath = connectionPath;
+            m_UriDatasource = Fusion.m_UriDatasource;
             m_DicTables = new Dictionary<string, PluginTableTemplate>();
 
         }
@@ -65,7 +70,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 throw new Exception($"The table {tableName} is ambiguous!");
 
             SpatialReference spatialReference = SpatialReferences.WGS84;
-            ProPluginTableTemplate_FiwareHttpClient proPluginTableTemplate_FiwareHttpClient = new ProPluginTableTemplate_FiwareHttpClient(m_UriDatasourcePath, tableName, spatialReference);
+            ProPluginTableTemplate_FiwareHttpClient proPluginTableTemplate_FiwareHttpClient = new ProPluginTableTemplate_FiwareHttpClient(m_UriDatasource, tableName, spatialReference);
             // m_DicTables.Add(tableName, proPluginTableTemplate_FiwareHttpClient);
             m_DicTables[tableName] = proPluginTableTemplate_FiwareHttpClient;
 
@@ -81,6 +86,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
 
             // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
             // 3.3.06/20231218/msGIS_FIWARE_rt_007: ProPluginDatasource_FiwareHttpClient.
+            // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
             List<string> tableNames = null;
             // Use asynchronous call due to lack of adequate synchronous "httpResponse.Content.ReadAsStringAsync" function, even if "esriHttpClient.Get(requestUri)" function is available.
             // Esri QueuedTask.Run is not suitable in a synchronous routine with due to dead lock on desired "GetAwaiter().GetResult()" modality for fulfilled object to return.
@@ -88,7 +94,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
             // Use a separate thread to wait for the task to complete
             Task.Run(async () =>
             {
-                Task<List<string>> asyncTask = Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(m_UriDatasourcePath);
+                Task<List<string>> asyncTask = Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(m_UriDatasource);
                 await asyncTask.ConfigureAwait(false);
 
                 // Continue with the rest of the code after the task has completed
