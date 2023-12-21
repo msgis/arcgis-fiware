@@ -14,7 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "msGIS.ProApp_Common_FIWARE_
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "msGIS.ProPluginDatasource_EntityFile_3x", "..\ProPluginDatasource_EntityFile\msGIS.ProPluginDatasource_EntityFile_3x.csproj", "{352C76B6-4426-45CC-AC2B-85CABF7E9349}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "msGIS.ProPluginDatasource_FiwareHttpClient_3x", "..\msGIS.ProPluginDatasource_FiwareHttpClient\msGIS.ProPluginDatasource_FiwareHttpClient_3x.csproj", "{9C3C864C-BB7B-4679-AA93-775DEBFB0821}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "msGIS.ProPluginDatasource_FiwareHttpClient_3x", "..\ProPluginDatasource_FiwareHttpClient\msGIS.ProPluginDatasource_FiwareHttpClient_3x.csproj", "{9C3C864C-BB7B-4679-AA93-775DEBFB0821}"
 	ProjectSection(ProjectDependencies) = postProject
 		{07930940-E7A4-4B86-BCA8-218C3FFCF46A} = {07930940-E7A4-4B86-BCA8-218C3FFCF46A}
 	EndProjectSection

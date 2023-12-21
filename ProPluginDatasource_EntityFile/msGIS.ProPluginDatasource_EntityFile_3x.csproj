@@ -19,21 +19,21 @@
       <CopyLocal>False</CopyLocal>
       <Private>False</Private>
     </Reference>
-	  <Reference Include="ArcGIS.Desktop.Editing">
-		  <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Editing\ArcGIS.Desktop.Editing.dll</HintPath>
-		  <CopyLocal>False</CopyLocal>
-		  <Private>False</Private>
-	  </Reference>
-	  <Reference Include="ArcGIS.Desktop.Framework">
-		  <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Framework.dll</HintPath>
-		  <CopyLocal>False</CopyLocal>
-		  <Private>False</Private>
-	  </Reference>
-	  <Reference Include="ArcGIS.Desktop.Mapping">
-		  <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Mapping\ArcGIS.Desktop.Mapping.dll</HintPath>
-		  <CopyLocal>False</CopyLocal>
-		  <Private>False</Private>
-	  </Reference>
+    <Reference Include="ArcGIS.Desktop.Editing">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Editing\ArcGIS.Desktop.Editing.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Framework">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Framework.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Mapping">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Mapping\ArcGIS.Desktop.Mapping.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config.xml" />

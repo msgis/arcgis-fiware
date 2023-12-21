@@ -1,6 +1,7 @@
 ﻿using msGIS.ProApp_Common_FIWARE_3x;
 
 using ArcGIS.Core.Data;
+using ArcGIS.Core.Data.Exceptions;
 using ArcGIS.Core.Data.PluginDatastore;
 using ArcGIS.Core.Geometry;
 

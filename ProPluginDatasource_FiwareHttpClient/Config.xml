@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ESRI.Configuration xmlns="http://schemas.esri.com/DADF/Registry" 
                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
+                    xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
   <Name>msGIS.ProPluginDatasource_FiwareHttpClient</Name>
   <AddInID>{c366cedb-11bf-4438-bb71-98c7199ea333}</AddInID>
   <Description>msGIS.ProPluginDatasource_FiwareHttpClient description</Description>
   <Version>3.3.06</Version>
-	<Author>roman.trojan@msgis.com</Author>
-	<Company>ms.GIS</Company>
-	<Date>19.12.2023 12:00:00</Date>
-	<Targets>
+  <Author>roman.trojan@msgis.com</Author>
+  <Company>ms.GIS</Company>
+  <Date>21.12.2023 10:40:00</Date>
+  <Targets>
     <Target name="ArcGISPro" version="3.2" />
   </Targets>
   <!-- CLR should be set to the target framework set in the .csproj -->

@@ -10,6 +10,7 @@ echo ===========================================================================
 rem Build specific components if the dependency is set to reference (instead of project).
 Set BuildProApp_Common=0
 Set BuildProPluginDatasource_EntityFile=0
+Set BuildProPluginDatasource_FiwareHttpClient=0
 
 Set MakeInfo="MakeInfo.txt"
 echo on > %MakeInfo%
@@ -67,6 +68,19 @@ if "%BuildProPluginDatasource_EntityFile%" == 1 (
 	MsBuild.exe msGIS.ProPluginDatasource_EntityFile_3x.csproj -t:Clean -p:Configuration=Release >> %MakeInfo%
 	MSBuild.exe ProPluginDatasource_EntityFile_3x.sln -m -t:restore -property:Configuration=Release >> %MakeInfo%
 	MSBuild.exe ProPluginDatasource_EntityFile_3x.sln -m -t:rebuild -property:Configuration=Release >> %MakeInfo%
+)
+cd %MyDir%
+
+rem -----------------------------------------------------------------------------------------------------
+REM ProPluginDatasource_FiwareHttpClient_3x
+rem -----------------------------------------------------------------------------------------------------
+cd ..\ProPluginDatasource_FiwareHttpClient
+call :Delete_ObjBin
+if "%BuildProPluginDatasource_FiwareHttpClient%" == 1 (
+	rem devenv.exe ProPluginDatasource_FiwareHttpClient_3x.sln /rebuild Release /out %MakeInfo%
+	MsBuild.exe msGIS.ProPluginDatasource_FiwareHttpClient_3x.csproj -t:Clean -p:Configuration=Release >> %MakeInfo%
+	MSBuild.exe ProPluginDatasource_FiwareHttpClient_3x.sln -m -t:restore -property:Configuration=Release >> %MakeInfo%
+	MSBuild.exe ProPluginDatasource_FiwareHttpClient_3x.sln -m -t:rebuild -property:Configuration=Release >> %MakeInfo%
 )
 cd %MyDir%
 

@@ -368,8 +368,8 @@ dass bei der Entwicklung teilweise SDK/Community Ansätze verwendet werden und d
 + Build (Make + Install) modifications.
 
 ...................................................................................................
-3.3.06/2023mmdd/rt: New Version.
-InstVer=ArcPro_3.0.3.36057 AddInX_3.3.06 PluginDatasource_FiwareTest_3.3.06 Common_3.3.32 MSI_
+3.3.06/20231221/rt: New Version.
+InstVer=ArcPro_3.2.49743 AddInX_3.3.06 PluginDatasource_FiwareTest_3.3.06 Common_3.3.32 MSI_
 https://app.asana.com/0/1203876411184345/1205999834711034/
 
 3.3.06/20231214/msGIS_FIWARE_rt_006: Rename FiwareSummit to FiwareTest/EntityFile (Project, Namespace, Module, ID, Plugin).
@@ -386,6 +386,15 @@ Zuvor hat sich bei der Übergabe von Uri über Plugin im Vergleich zu direktem A
 Zusätzlich warte ich in der synchronen Routine auf die asynchrone Ausführung mittels System-Task, nachdem ich für Esri-QueuedTask keine entsprechende Möglichkeit gefunden habe (entweder blockiert oder wartet nicht).
 
 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
+ConnectionPath of override PluginDatasourceTemplate.URI.Open is not suitable for FIWARE due to complexly build URI with parameters set while proceeding tasks on tables and entries.
+Im PluginDatasourceTemplate override Open(Uri connectionPath) ist von ArcGIS Pro nur eine konstante URI vorgesehen.
+Damit für FIWARE die HTTP requests parametrisiert dynamisch aufgerufen werden können, habe ich eigene Struktur auf Plugin-Ebene etabliert.
+
+...................................................................................................
+3.3.07/2023mmdd/rt: New Version.
+InstVer=ArcPro_3.2.49743 AddInX_3.3.06 PluginDatasource_FiwareTest_3.3.06 Common_3.3.32 MSI_
+https://app.asana.com/0/1203876411184345/1205999834711034/
+
 
 - Configure ArcPro UI to manually add/manage the data (Catalog, AddData Button/Item, etc.).
 DAML: <updateCategory refID="esri_core_projectContainers"> --> ProDataProjectItemContainer : CustomProjectItemContainer<ProDataProjectItem>.
@@ -400,6 +409,6 @@ Samples: Content_QuakeItem, Plugin_ProDataReader, Plugin_ProSqlExpress.
 
 
 ---------------------------------------------------------------------------------------------------
-rt: Next 3.3.06/2023mmdd/msGIS_FIWARE_rt_009: Xxx
+rt: Next 3.3.07/2023mmdd/msGIS_FIWARE_rt_009: Xxx
 To build an AddInX look for instructions at common folder.
 ---------------------------------------------------------------------------------------------------

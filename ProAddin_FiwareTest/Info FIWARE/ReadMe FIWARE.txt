@@ -41,9 +41,10 @@ C:\Users\[user]\AppData\Local\ESRI\ArcGISPro\AssemblyCache
 esriPlugin
 ---------------------------------------------------------------------------------------------------
 Plugin "msGIS.ProPluginDatasource_EntityFile.esriPlugin" installieren.
+Plugin "msGIS.ProPluginDatasource_FiwareHttpClient.esriPlugin" installieren.
 (doppelklicken, aus ArcPro, per GUID, mit MSBuild oder Visual Studio)
 Sollte in folgendem Ordner ersichtlich sein:
-C:\Users\[user]\Documents\ArcGIS\AddIns\ArcGISPro3.0
+C:\Users\[user]\Documents\ArcGIS\AddIns\ArcGISPro3.[x]
 Nach einem Start von ArcPro sollten die Komponenten ersichtlich werden:
 C:\Users\[user]\AppData\Local\ESRI\ArcGISPro3.[x]\AssemblyCache
 
