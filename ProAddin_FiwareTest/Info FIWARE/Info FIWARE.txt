@@ -392,7 +392,7 @@ Damit für FIWARE die HTTP requests parametrisiert dynamisch aufgerufen werden k
 
 ...................................................................................................
 3.3.07/2023mmdd/rt: New Version.
-InstVer=ArcPro_3.2.49743 AddInX_3.3.06 PluginDatasource_FiwareTest_3.3.06 Common_3.3.32 MSI_
+InstVer=ArcPro_3.2.49743 AddInX_3.3.07 PluginDatasource_3.3.07 Common_3.3.32 MSI_
 https://app.asana.com/0/1203876411184345/1205999834711034/
 
 
