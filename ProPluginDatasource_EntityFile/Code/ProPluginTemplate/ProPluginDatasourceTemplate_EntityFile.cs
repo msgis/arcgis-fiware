@@ -13,9 +13,6 @@ using System.Threading.Tasks;
 
 namespace msGIS.ProPluginDatasource_EntityFile
 {
-    // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
-    // 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource Integration for SimplePoint File-Format.
-
     // Summary:
     //     This abstract class serves as one of the key extensibility points that comprise
     //     the Plugin Datastore Framework. Specifically, each instance of a concrete class
@@ -27,6 +24,9 @@ namespace msGIS.ProPluginDatasource_EntityFile
     // Class to implement a data store. This class must inherit from the PluginDatasourceTemplate base class.
     public class ProPluginDatasourceTemplate_EntityFile : PluginDatasourceTemplate
     {
+        // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
+        // 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource Integration for SimplePoint File-Format.
+
         // Initializes a new instance of the ArcGIS.Core.Data.PluginDatastore.PluginDatasourceTemplate class.
         public ProPluginDatasourceTemplate_EntityFile() : base()
         {
