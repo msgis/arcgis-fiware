@@ -397,6 +397,11 @@ https://app.asana.com/0/1203876411184345/1205999834711034/
 
 3.3.07/20231222/msGIS_FIWARE_rt_009: Plugin integration.
 
+3.3.07/20231222/msGIS_FIWARE_rt_010: Open Plugin table and read the data.
++++++
+
+- RBushCoord3D --> Common.
+
 - Configure ArcPro UI to manually add/manage the data (Catalog, AddData Button/Item, etc.).
 DAML: <updateCategory refID="esri_core_projectContainers"> --> ProDataProjectItemContainer : CustomProjectItemContainer<ProDataProjectItem>.
 DAML: <updateCategory refID="esri_customItems"> --> ProDataProjectItem : CustomProjectItemBase, IMappableItem.
@@ -410,6 +415,6 @@ Samples: Content_QuakeItem, Plugin_ProDataReader, Plugin_ProSqlExpress.
 
 
 ---------------------------------------------------------------------------------------------------
-rt: Next 3.3.07/2023mmdd/msGIS_FIWARE_rt_010: Xxx
+rt: Next 3.3.07/2023mmdd/msGIS_FIWARE_rt_011: Xxx
 To build an AddInX look for instructions at common folder.
 ---------------------------------------------------------------------------------------------------

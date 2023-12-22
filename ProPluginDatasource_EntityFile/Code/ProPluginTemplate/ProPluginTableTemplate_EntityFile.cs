@@ -17,6 +17,13 @@ using System.Threading.Tasks;
 namespace msGIS.ProPluginDatasource_EntityFile
 {
     // Summary:
+    // (Custom) interface the sample uses to extract row information from the plugin table
+    internal interface IPluginRowProvider
+    {
+        PluginRow FindRow(long oid, IEnumerable<string> columnFilter, SpatialReference sr);
+    }
+
+    // Summary:
     //     This abstract class serves as one of the key extensibility points that comprise
     //     the Plugin Datastore Framework. Specifically, each instance of concrete class
     //     that implements this abstraction acts as a conduit between a data structure in
@@ -28,13 +35,6 @@ namespace msGIS.ProPluginDatasource_EntityFile
     //     If the list of ArcGIS.Core.Data.PluginDatastore.PluginFields returned by ArcGIS.Core.Data.PluginDatastore.PluginTableTemplate.GetFields
     //     has a field whose type is ArcGIS.Core.Data.FieldType.Geometry, then this concrete
     //     implementation is considered a feature class; otherwise, a table.
-
-    // Summary:
-    // (Custom) interface the sample uses to extract row information from the plugin table
-    internal interface IPluginRowProvider
-    {
-        PluginRow FindRow(long oid, IEnumerable<string> columnFilter, SpatialReference sr);
-    }
 
     /// <summary>
     /// Implements a plugin table.

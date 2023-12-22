@@ -279,7 +279,11 @@ namespace msGIS.ProApp_FiwareTest
                 m_UriDatasourcePath = new Uri(Fusion.m_DatasourcePath, UriKind.Absolute);
                 m_UriDatasource = new Fiware_RestApi_NetHttpClient.UriDatasource
                 {
-                    path = m_UriDatasourcePath, types = Fusion.m_DatasourceTypes, entities = Fusion.m_DatasourceEntities, eventsource = Fusion.m_DatasourceEventsource
+                    path = m_UriDatasourcePath,
+                    types = Fusion.m_DatasourceTypes,
+                    entities = Fusion.m_DatasourceEntities,
+                    eventsource = Fusion.m_DatasourceEventsource,
+                    spatialReference = SpatialReferences.WGS84
                 };
                 List<string> listEntityTypes = await Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(m_UriDatasource);
 
@@ -331,7 +335,7 @@ namespace msGIS.ProApp_FiwareTest
             }
         }
 
-        private async Task ShowCountAsync(int entitiesCount)
+        private async Task ShowCountAsync(long entitiesCount)
         {
             // Fusion.m_UserControl_EntityTypes
             try
@@ -458,7 +462,6 @@ namespace msGIS.ProApp_FiwareTest
                     return;
                 if (jArrayEntities.Count == 0)
                     await Fusion.m_Messages.AlertAsyncMsg("No entities acquired!", "EntityToLayerAsync");
-                await ShowCountAsync(jArrayEntities.Count);
 
                 m_Helper_Progress = new Helper_Progress(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework, isProgressCancelable);
                 await m_Helper_Progress.ShowProgressAsync("BuildFeaturesFromJsonEntitiesAsync", (uint)jArrayEntities.Count, true);
@@ -501,6 +504,7 @@ namespace msGIS.ProApp_FiwareTest
                 if (!await Fusion.m_Helper_Op.ExecOpAsync(editOperation))
                     return;
 
+                await ShowCountAsync(listFeatures.Count);
                 await Fusion.m_Messages.AlertAsyncMsg($"{entityType} was exported to Layer.", m_LayerEntitiesPoints.Name, "Entities --> Layer Features");
             }
             catch (Exception ex)
@@ -543,7 +547,6 @@ namespace msGIS.ProApp_FiwareTest
                     return;
                 if (jArrayEntities.Count == 0)
                     await Fusion.m_Messages.AlertAsyncMsg("No entities acquired!", "EntityToFileAsync");
-                await ShowCountAsync(jArrayEntities.Count);
 
                 m_Helper_Progress = new Helper_Progress(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework, isProgressCancelable);
                 await m_Helper_Progress.ShowProgressAsync("BuildFeaturesFromJsonEntitiesAsync", (uint)jArrayEntities.Count, true);
@@ -583,6 +586,7 @@ namespace msGIS.ProApp_FiwareTest
                     }
                 }
 
+                await ShowCountAsync(listFeatures.Count);
                 await Fusion.m_Messages.AlertAsyncMsg($"{entityType} was exported to File.", filePath, "Entities --> File");
             }
             catch (Exception ex)
@@ -693,8 +697,8 @@ namespace msGIS.ProApp_FiwareTest
                             IReadOnlyList<string> tableNames = pluginDatastore.GetTableNames();
                             if ((tableNames != null) && (tableNames.Count > 0))
                             {
-                                await ShowCountAsync(tableNames.Count);
-
+                                // await ShowCountAsync(tableNames.Count);
+                                // +++++
                                 bool isDeveloping = true;
                                 if (isDeveloping)
                                 {
@@ -714,7 +718,10 @@ namespace msGIS.ProApp_FiwareTest
                                 {
                                     System.Diagnostics.Debug.Write($"Table: {table_name}\r\n");
                                     //open each table....use the returned table name
-                                    //or just pass in the name of a csv file in the workspace folder
+                                    //or just pass in the name of a table in the workspace folder
+                                    if (table_name != entityType)
+                                        continue;
+
                                     using (var table = pluginDatastore.OpenTable(table_name))
                                     {
                                         //get information about the table
@@ -753,6 +760,12 @@ namespace msGIS.ProApp_FiwareTest
                                                 }
                                             }
                                         }
+
+                                        long rowsCount = table.GetCount();
+                                        await ShowCountAsync(rowsCount);
+
+                                        //Add as a layer to the active map or scene
+                                        LayerFactory.Instance.CreateLayer<FeatureLayer>(new FeatureLayerCreationParams((FeatureClass)table), MapView.Active.Map);
                                     }
                                 }
                             }

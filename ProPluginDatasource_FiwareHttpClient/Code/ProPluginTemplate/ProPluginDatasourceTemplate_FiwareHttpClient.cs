@@ -15,13 +15,6 @@ using System.Threading.Tasks;
 
 namespace msGIS.ProPluginDatasource_FiwareHttpClient
 {
-    // Summary:
-    // (Custom) interface the sample uses to extract row information from the plugin table
-    internal interface IPluginRowProvider
-    {
-        PluginRow FindRow(long oid, IEnumerable<string> columnFilter, SpatialReference sr);
-    }
-
     public class ProPluginDatasourceTemplate_FiwareHttpClient : PluginDatasourceTemplate
     {
         // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
@@ -127,8 +120,8 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 if (m_DicTables.Keys.Contains(tableName))
                     throw new Exception($"The table {tableName} is ambiguous!");
 
-                SpatialReference spatialReference = SpatialReferences.WGS84;
-                ProPluginTableTemplate_FiwareHttpClient proPluginTableTemplate_FiwareHttpClient = new ProPluginTableTemplate_FiwareHttpClient(m_UriDatasource, tableName, spatialReference);
+                // 3.3.07/20231222/msGIS_FIWARE_rt_010: Open Plugin table and read the data.
+                ProPluginTableTemplate_FiwareHttpClient proPluginTableTemplate_FiwareHttpClient = new ProPluginTableTemplate_FiwareHttpClient(m_UriDatasource, tableName);
                 // m_DicTables.Add(tableName, proPluginTableTemplate_FiwareHttpClient);
                 m_DicTables[tableName] = proPluginTableTemplate_FiwareHttpClient;
 

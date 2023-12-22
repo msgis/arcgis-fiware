@@ -17,6 +17,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
 
         internal static Global m_Global { get; set; }
         internal static Messages m_Messages { get; set; }
+        internal static Helper_Framework m_Helper_Framework { get; set; }
         internal static Fiware_RestApi_NetHttpClient m_Fiware_RestApi_NetHttpClient { get; set; }
 
         #endregion Common
@@ -32,6 +33,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 {
                     Fusion.m_Global = new Global();
                     Fusion.m_Messages = new Messages(Fusion.m_Global);
+                    Fusion.m_Helper_Framework = new Helper_Framework(Fusion.m_Global, Fusion.m_Messages);
                     Fusion.m_Fiware_RestApi_NetHttpClient = new Fiware_RestApi_NetHttpClient(Fusion.m_Global, Fusion.m_Messages);
 
                     // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.

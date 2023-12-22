@@ -1,0 +1,14 @@
+https://fiwaredev.msgis.net/ngsi-ld/v1/types
+
+{"id":"urn:ngsi-ld:EntityTypeList:490ad7f0-9f18-11ee-91d3-0242ac120003","type":"EntityTypeList","typeList":["Hydrant","NgsiProxyConfig","Schwimmbad","Trinkbrunnen"]}
+
+{
+    "id": "urn:ngsi-ld:EntityTypeList:490ad7f0-9f18-11ee-91d3-0242ac120003",
+    "type": "EntityTypeList",
+    "typeList": [
+        "Hydrant",
+        "NgsiProxyConfig",
+        "Schwimmbad",
+        "Trinkbrunnen"
+    ]
+}

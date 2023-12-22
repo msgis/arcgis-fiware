@@ -39,6 +39,10 @@
     <Content Include="Config.xml" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="RBush" Version="3.2.0" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\..\ProApp-Common\msGIS.ProApp_Common_FIWARE_3x.csproj" />
   </ItemGroup>
   <PropertyGroup>
