@@ -17,7 +17,7 @@ Time:
 ---------------------------------------------------------------------------------------------------
 Entity-Types
 ---------------------------------------------------------------------------------------------------
-Die Daten werden aus Rest-Api übernommen (als JSON-Objekte).
+Die Daten werden aus Rest-Api Ã¼bernommen (als JSON-Objekte).
 
 ---------------------------------------------------------------------------------------------------
 APRX
@@ -52,11 +52,11 @@ C:\Users\[user]\AppData\Local\ESRI\ArcGISPro3.[x]\AssemblyCache
 ArcPro
 ---------------------------------------------------------------------------------------------------
 ArcPro starten.
-(aprx doppelklicken oder ArcGISPro.exe und aprx auswählen)
-Wenn alles korrekt abläuft müsste sich im Ribbon rechts eine Tab "FiwareTest" zeigen.
-Tab "FiwareTest" klicken, es müsste sich die Gruppe "FiwareTest" mit weiteren Controls zeigen.
+(aprx doppelklicken oder ArcGISPro.exe und aprx auswÃ¤hlen)
+Wenn alles korrekt ablÃ¤uft mÃ¼sste sich im Ribbon rechts eine Tab "FiwareTest" zeigen.
+Tab "FiwareTest" klicken, es mÃ¼sste sich die Gruppe "FiwareTest" mit weiteren Controls zeigen.
 Button "Info FiwareTest" ist nur informativ.
-Button "Entity Types" klicken, es müsste sich rechts eine Dockpane "FiwareTest-Board" zeigen.
+Button "Entity Types" klicken, es mÃ¼sste sich rechts eine Dockpane "FiwareTest-Board" zeigen.
 
-Nun kann per ComboBox "Entity type" ausgewählt werden und die Daten entsprechend Entities in ArcGIS Pro dargestellt werden.
+Nun kann per ComboBox "Entity type" ausgewÃ¤hlt werden und die Daten entsprechend Entities in ArcGIS Pro dargestellt werden.
 Je nach Version der Entwicklung kann es verschiedene Abweichungen oder Erweiterungen geben.

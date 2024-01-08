@@ -36,7 +36,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
         private string m_TableName;
         private DataTable _table;
         private RBush.RBush<RBushCoord3D> _rtree;
-        private RBush.Envelope _sr_extent;
+        private RBush.Envelope _extent;
         private Envelope _gisExtent;
         private SpatialReference _sr;
         private bool _hasZ = false;
@@ -51,17 +51,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 _rtree = new RBush.RBush<RBushCoord3D>();
                 _sr = uriDatasource.spatialReference ?? SpatialReferences.WGS84;
 
-                //For spatial data...
-                //Domain to verify coordinates (2D)
-                //default to the Spatial Reference domain
-                _sr_extent = new RBush.Envelope(
-                  MinX: _sr.Domain.XMin,
-                  MinY: _sr.Domain.YMin,
-                  MaxX: _sr.Domain.XMax,
-                  MaxY: _sr.Domain.YMax
-                );
-
-                Open();
+                OpenTableData();
             }
             catch (Exception ex)
             {
@@ -183,7 +173,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 // return GeometryType.Unknown;
 
                 //Note: empty tables treated as non-geometry
-                return _table.Columns.Contains("SHAPE") ? GeometryType.Point : GeometryType.Unknown;
+                return _table.Columns.Contains(Fusion.m_DataColumn_Geom) ? GeometryType.Point : GeometryType.Unknown;
             }
             catch (Exception ex)
             {
@@ -200,7 +190,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 {
                     if (_gisExtent == null)
                     {
-                        _gisExtent = _sr_extent.ToEsriEnvelope(_sr, _hasZ);
+                        _gisExtent = _extent.ToEsriEnvelope(_sr, _hasZ);
                     }
                 }
                 return _gisExtent;
@@ -217,61 +207,27 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
             try
             {
                 var pluginFields = new List<PluginField>();
-                //TODO Get the list of PluginFields for this currently opened 
-                //plugin table/object
-
-                //special handling for OBJECTID and SHAPE
-                /*
-                string fieldName = "OBJECTID";
-                string fieldAlias = "OID";
-                FieldType fieldType = FieldType.OID;        // e.g. Geometry, String, Double, Integer, Date, etc.
-
-                pluginFields.Add(new PluginField()
-                {
-                    Name = fieldName,
-                    AliasName = fieldAlias,
-                    FieldType = fieldType
-                });
-
-                fieldName = "SHAPE";
-                fieldAlias = "Geometry";
-                fieldType = FieldType.Geometry;
-
-                pluginFields.Add(new PluginField()
-                {
-                    Name = fieldName,
-                    AliasName = fieldAlias,
-                    FieldType = fieldType
-                });
-                */
+                // TODO Get the list of PluginFields for this currently opened 
+                // plugin table/object
 
                 foreach (var col in _table.Columns.Cast<DataColumn>())
                 {
                     var fieldType = ArcGIS.Core.Data.FieldType.String;
-                    //special handling for OBJECTID and SHAPE
-                    if (col.ColumnName == "OBJECTID")
+                    // special handling for OBJECTID and SHAPE
+                    if (col.ColumnName == Fusion.m_DataColumn_ID)
                     {
                         fieldType = ArcGIS.Core.Data.FieldType.OID;
                     }
-                    else if (col.ColumnName == "SHAPE")
+                    else if (col.ColumnName == Fusion.m_DataColumn_Geom)
                     {
                         fieldType = ArcGIS.Core.Data.FieldType.Geometry;
                     }
-                    else if (col.ColumnName.Length == 1 || col.ColumnName.StartsWith("POINT_"))
+                    else if ((col.ColumnName == Fusion.m_DataColumn_X) || (col.ColumnName == Fusion.m_DataColumn_Y))
                     {
                         // columns: X or Y
                         fieldType = ArcGIS.Core.Data.FieldType.Double;
                     }
-                    else if (col.ColumnName.StartsWith("LONG_"))
-                    {
-                        // Long datatype
-                        fieldType = ArcGIS.Core.Data.FieldType.Integer;
-                    }
-                    else if (col.ColumnName.StartsWith("DATE_"))
-                    {
-                        // DateTime datatype
-                        fieldType = ArcGIS.Core.Data.FieldType.Date;
-                    }
+
                     pluginFields.Add(new PluginField()
                     {
                         Name = col.ColumnName,
@@ -311,10 +267,10 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 {
                     if (columnFilter.Contains(colName))
                     {
-                        //special handling for shape
-                        if (colName == "SHAPE")
+                        // special handling for shape
+                        if (colName == Fusion.m_DataColumn_Geom)
                         {
-                            var buffer = row["SHAPE"] as Byte[];
+                            var buffer = row[Fusion.m_DataColumn_Geom] as Byte[];
                             shape = MapPointBuilderEx.FromEsriShape(buffer, _sr);
                             if (srout != null)
                             {
@@ -374,7 +330,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
         {
             try
             {
-                //are we empty?
+                // are we empty?
                 if (_table.Rows.Count == 0)
                     return new List<long>();
 
@@ -387,19 +343,19 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 List<long> result = new List<long>();
                 bool emptyQuery = true;
 
-                //fidset - this takes precedence over anything else in
-                //the query. If a fid set is specified then all selections
-                //for the given query are intersections from the fidset
+                // fidset - this takes precedence over anything else in
+                // the query. If a fid set is specified then all selections
+                // for the given query are intersections from the fidset
                 if (qf.ObjectIDs.Count() > 0)
                 {
                     emptyQuery = false;
 
                     result = null;
                     result = _table.AsEnumerable().Where(
-                      row => qf.ObjectIDs.Contains((long)row["OBJECTID"]))
-                      .Select(row => (long)row["OBJECTID"]).ToList();
+                      row => qf.ObjectIDs.Contains((long)row[Fusion.m_DataColumn_ID]))
+                      .Select(row => (long)row[Fusion.m_DataColumn_ID]).ToList();
 
-                    //anything selected?
+                    // anything selected?
                     if (result.Count() == 0)
                     {
                         //no - specifying a fidset trumps everything. The client
@@ -408,25 +364,25 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                     }
                 }
 
-                //where clause
+                // where clause
                 if (!string.IsNullOrEmpty(qf.WhereClause))
                 {
                     emptyQuery = false;
-                    var sort = "OBJECTID";//default
+                    var sort = Fusion.m_DataColumn_ID;          // default
                     if (!string.IsNullOrEmpty(qf.PostfixClause))
                     {
-                        //The underlying System.Data.DataTable used by the sample supports "ORDER BY"
-                        //It should be a comma-separated list of column names and a default direction
-                        //COL1 ASC, COL2 DESC  (note: "ASC" is not strictly necessary)
-                        //Anything else and there will be an exception
+                        // The underlying System.Data.DataTable used by the sample supports "ORDER BY"
+                        // It should be a comma-separated list of column names and a default direction
+                        // COL1 ASC, COL2 DESC  (note: "ASC" is not strictly necessary)
+                        // Anything else and there will be an exception
                         sort = qf.PostfixClause;
                     }
 
-                    //do the selection
+                    // do the selection
                     var oids = _table.Select(qf.WhereClause, sort)
-                                 .Select(row => (long)row["OBJECTID"]).ToList();
+                                 .Select(row => (long)row[Fusion.m_DataColumn_ID]).ToList();
 
-                    //consolidate whereclause selection with fidset
+                    // consolidate whereclause selection with fidset
                     if (result.Count > 0 && oids.Count() > 0)
                     {
                         var temp = result.Intersect(oids).ToList();
@@ -439,7 +395,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                         result = oids;
                     }
 
-                    //anything selected?
+                    // anything selected?
                     if (result.Count() == 0)
                     {
                         //no - where clause returned no rows or returned no rows
@@ -448,7 +404,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                     }
                 }
 
-                //filter geometry for spatial select
+                // filter geometry for spatial select
                 if (sqf != null)
                 {
                     if (sqf.FilterGeometry != null)
@@ -456,36 +412,36 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                         emptyQuery = false;
 
                         bool filterIsEnvelope = sqf.FilterGeometry is Envelope;
-                        //search spatial index first
+                        // search spatial index first
                         var extent = sqf.FilterGeometry.Extent;
                         var candidates = _rtree.Search(extent.ToRBushEnvelope());
 
-                        //consolidate filter selection with current fidset
+                        // consolidate filter selection with current fidset
                         if (result.Count > 0 && candidates.Count > 0)
                         {
                             var temp = candidates.Where(pt => result.Contains(pt.ObjectID)).ToList();
                             candidates = null;
                             candidates = temp;
                         }
-                        //anything selected?
+                        // anything selected?
                         if (candidates.Count == 0)
                         {
-                            //no - filter query returned no rows or returned no rows
-                            //common to the specified fidset
+                            // no - filter query returned no rows or returned no rows
+                            // common to the specified fidset
                             return new List<long>();
                         }
 
-                        //do we need to refine the spatial search?
+                        // o we need to refine the spatial search?
                         if (filterIsEnvelope &&
                           (sqf.SpatialRelationship == SpatialRelationship.Intersects ||
                           sqf.SpatialRelationship == SpatialRelationship.IndexIntersects ||
                           sqf.SpatialRelationship == SpatialRelationship.EnvelopeIntersects))
                         {
-                            //no. This is our final list
+                            // no. This is our final list
                             return candidates.Select(pt => pt.ObjectID).OrderBy(oid => oid).ToList();
                         }
 
-                        //refine based on the exact geometry and relationship
+                        // refine based on the exact geometry and relationship
                         List<long> oids = new List<long>();
                         foreach (var candidate in candidates)
                         {
@@ -496,26 +452,26 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                                 oids.Add(candidate.ObjectID);
                             }
                         }
-                        //anything selected?
+                        // anything selected?
                         if (oids.Count == 0)
                         {
-                            //no - further processing of the filter geometry query
-                            //returned no rows
+                            // no - further processing of the filter geometry query
+                            // returned no rows
                             return new List<long>();
                         }
                         result = null;
-                        //oids has already been consolidated with any specified fidset
+                        // oids has already been consolidated with any specified fidset
                         result = oids;
                     }
                 }
 
-                //last chance - did we execute any type of query?
+                // last chance - did we execute any type of query?
                 if (emptyQuery)
                 {
-                    //no - the default is to return all rows
+                    // no - the default is to return all rows
                     result = null;
                     result = _table.Rows.Cast<DataRow>()
-                      .Select(row => (long)row["OBJECTID"]).OrderBy(x => x).ToList();
+                      .Select(row => (long)row[Fusion.m_DataColumn_ID]).OrderBy(x => x).ToList();
                 }
                 return result;
             }
@@ -556,7 +512,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
 
         #region Open
 
-        private void Open()
+        private void OpenTableData()
         {
             try
             {
@@ -573,29 +529,28 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                     }
                 }).GetAwaiter().GetResult();
                 if (!taskResult)
-                    throw new Exception("Open has failed!");
+                    throw new Exception("Failed to get table data!");
             }
             catch (Exception ex)
             {
-                Fusion.m_Messages.PushEx(ex, m_ModuleName, "GetQuerySubFields");
+                Fusion.m_Messages.PushEx(ex, m_ModuleName, "OpenTableData");
             }
         }
 
         private async Task<bool> GetTableDataAsync()
         {
-            Helper_Progress m_Helper_Progress = null;
-            Helper_Working m_Helper_Working = null;
+            //Helper_Progress m_Helper_Progress = null;
+            //Helper_Working m_Helper_Working = null;
             try
             {
                 // 3.3.07/20231222/msGIS_FIWARE_rt_010: Open Plugin table and read the data.
                 string entityType = m_TableName;
 
                 // QueuedTask blocks the asyncTask!
-                m_Helper_Working = new Helper_Working(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework);
-                // await m_Helper_Working.ShowDelayedWorkingAsync(entityType);
+                // m_Helper_Working = new Helper_Working(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework);
                 // ERROR: The calling thread must be STA, because many UI components require this.
                 // Single-Threaded Apartments (STAs) In an STA, only the thread that created the apartment may access the objects in it. A thread can't access other apartments or alter the concurrency model of an apartment it created.
-                m_Helper_Working.ShowDelayedWorkingAsyncVoid(entityType);
+                // m_Helper_Working.ShowDelayedWorkingAsyncVoid(entityType);
 
                 JArray jArrayEntities = await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(m_UriDatasource, entityType);
                 if (jArrayEntities == null)
@@ -609,9 +564,10 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
 
 
                 // Initialize our data table
+                // Columns (0=OBJECTID, 1=POINT_X, 2=POINT_Y)
                 _table = new DataTable();
-                //dataTable.PrimaryKey = new DataColumn("OBJECTID", typeof(long));
-                var oid = new DataColumn("OBJECTID", typeof(long))
+                //dataTable.PrimaryKey = new DataColumn(Fusion.m_DataColumn_ID, typeof(long));
+                var oid = new DataColumn(Fusion.m_DataColumn_ID, typeof(long))
                 {
                     AutoIncrement = true,
                     AutoIncrementSeed = 1
@@ -619,14 +575,68 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 _table.Columns.Add(oid);
                 _table.PrimaryKey = new DataColumn[] { oid };
 
-                // Get data entries
-                // +++++ Change ProPluginTableTemplate_EntityFile.Open to suit your purposes as needed
-                int ind = 0;
+                // We have spatial data (the X and Y coordinates of a point), therefore the data can be treated as a feature class (not as a table).
+                _table.Columns.Add(new DataColumn(Fusion.m_DataColumn_X, typeof(double)));
+                _table.Columns.Add(new DataColumn(Fusion.m_DataColumn_Y, typeof(double)));
+
+                // Add a shape column to treat the data as a feature class.
+                _table.Columns.Add(new DataColumn(Fusion.m_DataColumn_Geom, typeof(System.Byte[])));
+                //do we have a Z?
+                _hasZ = false;
+
+                //For spatial data...
+                //Domain to verify coordinates (2D)
+                //default to the Spatial Reference domain
+                RBush.Envelope sr_extent = new RBush.Envelope(
+                  MinX: _sr.Domain.XMin,
+                  MinY: _sr.Domain.YMin,
+                  MaxX: _sr.Domain.XMax,
+                  MaxY: _sr.Domain.YMax
+                );
+
+                //default to the Spatial Reference domain
+                _extent = sr_extent;
+
+                // Get data entries and load the datatable
+                // int ind = 0;
                 foreach (MapPoint mapPoint in listFeatures)
                 {
-                    string x = Convert.ToString(mapPoint.X, CultureInfo.InvariantCulture);
-                    string y = Convert.ToString(mapPoint.Y, CultureInfo.InvariantCulture);
-                    ind++;
+                    //string x = Convert.ToString(mapPoint.X, CultureInfo.InvariantCulture);
+                    //string y = Convert.ToString(mapPoint.Y, CultureInfo.InvariantCulture);
+
+                    var row = _table.NewRow();
+                    //row[1] = System.DBNull.Value;
+                    //row[2] = System.DBNull.Value;
+                    row[1] = mapPoint.X;
+                    row[2] = mapPoint.Y;
+
+                    // ensure the coordinate is within bounds
+                    var coord = new ArcGIS.Core.Geometry.Coordinate3D(mapPoint.X, mapPoint.Y, mapPoint.Z);
+                    if (!sr_extent.Contains2D(coord))
+                        throw new GeodatabaseFeatureException(
+                          "The feature falls outside the defined spatial reference!");
+
+                    // store it
+                    row[Fusion.m_DataColumn_Geom] = coord.ToMapPoint().ToEsriShape();
+
+                    // add it to the index
+                    var rbushCoord = new RBushCoord3D(coord, (long)row[Fusion.m_DataColumn_ID]);
+                    _rtree.Insert(rbushCoord);
+
+                    // update max and min for use in the extent
+                    if (_rtree.Count == 1)
+                    {
+                        // first record
+                        _extent = rbushCoord.Envelope;
+                    }
+                    else
+                    {
+                        _extent = rbushCoord.Envelope.Union2D(_extent);
+                    }
+
+                    _table.Rows.Add(row);
+
+                    // ind++;
                 }
 
                 return true;
@@ -638,16 +648,20 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
             }
             finally
             {
+                /*
                 if (m_Helper_Progress != null)
                 {
                     await m_Helper_Progress.FinishProgressAsync();
                     m_Helper_Progress = null;
                 }
+                */
+                /*
                 if (m_Helper_Working != null)
                 {
                     await m_Helper_Working.FinishWorkingAsync();
                     m_Helper_Working = null;
                 }
+                */
             }
         }
 

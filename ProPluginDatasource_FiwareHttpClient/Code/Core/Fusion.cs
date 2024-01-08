@@ -24,6 +24,11 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
 
         internal static Fiware_RestApi_NetHttpClient.UriDatasource m_UriDatasource;
         private static bool m_IsInitialized { get; set; }
+        
+        internal const string m_DataColumn_ID = "OBJECTID";
+        internal const string m_DataColumn_Geom = "SHAPE";
+        internal const string m_DataColumn_X = "POINT_X";
+        internal const string m_DataColumn_Y = "POINT_Y";
 
         public static async Task<bool> InitAsync(Fiware_RestApi_NetHttpClient.UriDatasource uriDatasource)
         {

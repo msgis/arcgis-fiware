@@ -398,7 +398,6 @@ https://app.asana.com/0/1203876411184345/1205999834711034/
 3.3.07/20231222/msGIS_FIWARE_rt_009: Plugin integration.
 
 3.3.07/20231222/msGIS_FIWARE_rt_010: Open Plugin table and read the data.
-+++++
 
 - RBushCoord3D --> Common.
 
@@ -407,11 +406,12 @@ DAML: <updateCategory refID="esri_core_projectContainers"> --> ProDataProjectIte
 DAML: <updateCategory refID="esri_customItems"> --> ProDataProjectItem : CustomProjectItemBase, IMappableItem.
 Samples: Content_QuakeItem, Plugin_ProDataReader, Plugin_ProSqlExpress.
 
+- Query/Search table rows.
 - Dynamically update changes on entities (NGSI data).
-- Manage data extension filter.
-- NuGet NGSIBaseModel to convert the Json objects received in the NGSI format to C# Models.
+- Manage current loaded data using extension filter to reduce memory consumption.
+- Use NuGet NGSIBaseModel to convert the Json objects received in the NGSI format to C# models.
 - Evaluate SqlExpress using MDF-Connection.
-- Convert FIWARE REST - CRUD Datasource.
+- Convert FIWARE REST - CRUD Datasource (not possible using Pro Plugin Datasource).
 
 
 ---------------------------------------------------------------------------------------------------

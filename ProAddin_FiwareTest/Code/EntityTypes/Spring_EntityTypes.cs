@@ -698,8 +698,7 @@ namespace msGIS.ProApp_FiwareTest
                             if ((tableNames != null) && (tableNames.Count > 0))
                             {
                                 // await ShowCountAsync(tableNames.Count);
-                                // +++++
-                                bool isDeveloping = true;
+                                bool isDeveloping = false;
                                 if (isDeveloping)
                                 {
                                     string tables = "";
@@ -717,20 +716,21 @@ namespace msGIS.ProApp_FiwareTest
                                 foreach (var table_name in tableNames)
                                 {
                                     System.Diagnostics.Debug.Write($"Table: {table_name}\r\n");
-                                    //open each table....use the returned table name
-                                    //or just pass in the name of a table in the workspace folder
+                                    // open each table....use the returned table name
+                                    // or just pass in the name of a table in the workspace folder
                                     if (table_name != entityType)
                                         continue;
 
+                                    // 3.3.07/20231222/msGIS_FIWARE_rt_010: Open Plugin table and read the data.
                                     using (var table = pluginDatastore.OpenTable(table_name))
                                     {
-                                        //get information about the table
+                                        // get information about the table
                                         using (var def = table.GetDefinition() as FeatureClassDefinition)
                                         {
 
                                         }
-                                        //query and return all rows
-                                        //TODO - use a QueryFilter and Whereclause
+                                        // query and return all rows
+                                        // TODO - use a QueryFilter and Whereclause
                                         //var qf = new QueryFilter()
                                         //{
                                         //  WhereClause = "OBJECTID > 0"
@@ -764,7 +764,7 @@ namespace msGIS.ProApp_FiwareTest
                                         long rowsCount = table.GetCount();
                                         await ShowCountAsync(rowsCount);
 
-                                        //Add as a layer to the active map or scene
+                                        // Add as a layer to the active map or scene
                                         LayerFactory.Instance.CreateLayer<FeatureLayer>(new FeatureLayerCreationParams((FeatureClass)table), MapView.Active.Map);
                                     }
                                 }
