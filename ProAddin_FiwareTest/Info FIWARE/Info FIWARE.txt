@@ -391,13 +391,18 @@ Im PluginDatasourceTemplate override Open(Uri connectionPath) ist von ArcGIS Pro
 Damit für FIWARE die HTTP requests parametrisiert dynamisch aufgerufen werden können, habe ich eigene Struktur auf Plugin-Ebene etabliert.
 
 ...................................................................................................
-3.3.07/2023mmdd/rt: New Version.
+3.3.07/20240108/rt: New Version.
 InstVer=ArcPro_3.2.49743 AddInX_3.3.07 PluginDatasource_3.3.07 Common_3.3.32 MSI_
 https://app.asana.com/0/1203876411184345/1205999834711034/
 
 3.3.07/20231222/msGIS_FIWARE_rt_009: Plugin integration.
 
 3.3.07/20231222/msGIS_FIWARE_rt_010: Open Plugin table and read the data.
+
+...................................................................................................
+3.3.08/2024mmdd/rt: New Version.
+InstVer=ArcPro_3.2.49743 AddInX_3.3.08 PluginDatasource_3.3.08 Common_3.3.32 MSI_
+https://app.asana.com/0/1203876411184345/1205999834711034/
 
 - RBushCoord3D --> Common.
 
@@ -415,6 +420,6 @@ Samples: Content_QuakeItem, Plugin_ProDataReader, Plugin_ProSqlExpress.
 
 
 ---------------------------------------------------------------------------------------------------
-rt: Next 3.3.07/2023mmdd/msGIS_FIWARE_rt_011: Xxx
+rt: Next 3.3.08/2024mmdd/msGIS_FIWARE_rt_011: Xxx
 To build an AddInX look for instructions at common folder.
 ---------------------------------------------------------------------------------------------------
