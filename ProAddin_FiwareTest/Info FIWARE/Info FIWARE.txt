@@ -398,6 +398,7 @@ https://app.asana.com/0/1203876411184345/1205999834711034/
 3.3.07/20231222/msGIS_FIWARE_rt_009: Plugin integration.
 
 3.3.07/20231222/msGIS_FIWARE_rt_010: Open Plugin table and read the data.
+Neuer Layer wird aus FIWARE Daten mittels HTTP Client erstellt (ohne Umweg über File).
 
 ...................................................................................................
 3.3.08/2024mmdd/rt: New Version.

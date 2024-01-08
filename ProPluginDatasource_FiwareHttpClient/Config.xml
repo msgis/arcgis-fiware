@@ -5,10 +5,10 @@
   <Name>msGIS.ProPluginDatasource_FiwareHttpClient</Name>
   <AddInID>{c366cedb-11bf-4438-bb71-98c7199ea333}</AddInID>
   <Description>msGIS.ProPluginDatasource_FiwareHttpClient description</Description>
-  <Version>3.3.07</Version>
+  <Version>3.3.08</Version>
   <Author>roman.trojan@msgis.com</Author>
   <Company>ms.GIS</Company>
-  <Date>08.01.2024 18:40:00</Date>
+  <Date>08.01.2024 19:00:00</Date>
   <Targets>
     <Target name="ArcGISPro" version="3.2" />
   </Targets>

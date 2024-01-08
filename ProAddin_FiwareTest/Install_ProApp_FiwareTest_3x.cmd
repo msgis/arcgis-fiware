@@ -7,7 +7,7 @@ echo Authors:
 echo roman.trojan@msgis.com 20231001-
 echo =====================================================================================================
 
-Set InstVer=ArcPro_3.2.49743 AddInX_3.3.07 PluginDatasource_3.3.07 Common_3.3.32 MSI_
+Set InstVer=ArcPro_3.2.49743 AddInX_3.3.08 PluginDatasource_3.3.08 Common_3.3.32 MSI_
 
 rem -----------------------------------------------------------------------------------------------------
 rem Testing %date% %time% by %username% on %computername%
