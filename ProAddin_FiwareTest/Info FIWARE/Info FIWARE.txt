@@ -401,7 +401,7 @@ https://app.asana.com/0/1203876411184345/1205999834711034/
 Neuer Layer wird aus FIWARE Daten mittels Datasource Plugin erstellt (ohne Umweg über File).
 
 ...................................................................................................
-3.3.08/2024mmdd/rt: New Version.
+3.3.08/20240109/rt: New Version.
 InstVer=ArcPro_3.2.49743 AddInX_3.3.08 PluginDatasource_3.3.08 Common_3.3.32 MSI_
 https://app.asana.com/0/1203876411184345/1205999834711034/
 
@@ -409,6 +409,12 @@ https://app.asana.com/0/1203876411184345/1205999834711034/
 STA error typically occurs when trying to access UI components from a thread that isn't marked as STA (Single Threaded Apartment).
 
 3.3.08/20240109/msGIS_FIWARE_rt_012: Init Fiware_RestApi_NetHttpClient before Plugin Datasource OpenTable/GetTableNames.
+In dieser Version werden beim Öffnen von Projekt die bereits vorhandene Layers mittels Datasource Framework anhand von Plugin Spezifikation entsprechend den FIWARE Daten befüllt.
+
+...................................................................................................
+3.3.09/2024mmdd/rt: New Version.
+InstVer=ArcPro_3.2.49743 AddInX_3.3.09 PluginDatasource_3.3.09 Common_3.3.32 MSI_
+https://app.asana.com/0/1203876411184345/1205999834711034/
 
 - RBushCoord3D --> Common.
 
@@ -426,6 +432,6 @@ Samples: Content_QuakeItem, Plugin_ProDataReader, Plugin_ProSqlExpress.
 
 
 ---------------------------------------------------------------------------------------------------
-rt: Next 3.3.08/2024mmdd/msGIS_FIWARE_rt_013: Xxx
+rt: Next 3.3.09/2024mmdd/msGIS_FIWARE_rt_013: Xxx
 To build an AddInX look for instructions at common folder.
 ---------------------------------------------------------------------------------------------------

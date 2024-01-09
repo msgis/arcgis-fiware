@@ -5,12 +5,12 @@
   <Name>msGIS.ProPluginDatasource_EntityFile</Name>
   <AddInID>{0d10cbaf-86da-4952-90d8-618a573119c7}</AddInID>
   <Description>msGIS.ProPluginDatasource_EntityFile description</Description>
-  <Version>3.3.07</Version>
+  <Version>3.3.08</Version>
   <Author>roman.trojan@msgis.com</Author>
   <Company>ms.GIS</Company>
-  <Date>21.12.2023 12:10:00</Date>
+  <Date>21.12.2023 12:00:00</Date>
   <Targets>
-    <Target name="ArcGISPro" version="3.0" />
+    <Target name="ArcGISPro" version="3.2" />
   </Targets>
   <!-- CLR should be set to the target framework set in the .csproj -->
   <AddIn language="CLR:PluginDS" library="msGIS.ProPluginDatasource_EntityFile.dll" namespace="msGIS.ProPluginDatasource_EntityFile">
