@@ -44,6 +44,13 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
             }
         }
 
+        /// <summary>
+        /// Open the specified workspace
+        /// </summary>
+        /// <param name="connectionPath">The path to the workspace</param>
+        /// <remarks>
+        /// .NET Clients access Open via the ArcGIS.Core.Data.PluginDatastore.PluginDatastore class
+        /// whereas Native clients (Pro internals) access via IWorkspaceFactory</remarks>
         public override void Open(Uri connectionPath)
         {
             try
@@ -80,6 +87,18 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                     }
                 }).GetAwaiter().GetResult();
 
+                if (!isInitialized)
+                    throw new Exception("Datasource couldn't be initialized!");
+                if (connectionPath == null)
+                    throw new Exception("Empty connection!");
+                if (connectionPath != Fusion.m_UriDatasource.path)
+                {
+                    /// <remarks>
+                    /// .NET Clients access Open via the ArcGIS.Core.Data.PluginDatastore.PluginDatastore class
+                    /// whereas Native clients (Pro internals) access via IWorkspaceFactory</remarks>
+                    // e.g. Data Source = Feature Class, Location = P:\MS\link\roman\fiware\ArcPro\APRX_WGS84\https:\fiwaredev.msgis.net\ (instead of stored https://fiwaredev.msgis.net/)
+                    // throw new Exception($"Connection doesn't match intended datasource!{Environment.NewLine}{connectionPath.OriginalString}{Environment.NewLine}{Fusion.m_UriDatasource.path.OriginalString}");
+                }
             }
             catch (Exception ex)
             {
