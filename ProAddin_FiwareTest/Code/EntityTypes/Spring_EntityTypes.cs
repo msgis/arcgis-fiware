@@ -59,7 +59,6 @@ namespace msGIS.ProApp_FiwareTest
         private bool m_IsActivated_EntityTypes = false;
 
         // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
-        private Uri m_UriDatasourcePath;
         private Fiware_RestApi_NetHttpClient.UriDatasource m_UriDatasource;
 
         internal bool m_CanChangeBoard_EntityTypes = true;
@@ -275,16 +274,16 @@ namespace msGIS.ProApp_FiwareTest
                 }
 
                 // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
-                // Get entity types from JSON.
-                m_UriDatasourcePath = new Uri(Fusion.m_DatasourcePath, UriKind.Absolute);
+                // 3.3.08/20240109/msGIS_FIWARE_rt_012: Init Fiware_RestApi_NetHttpClient before Plugin Datasource OpenTable/GetTableNames.
                 m_UriDatasource = new Fiware_RestApi_NetHttpClient.UriDatasource
                 {
-                    path = m_UriDatasourcePath,
+                    path = new Uri(Fusion.m_DatasourcePath, UriKind.Absolute),
                     types = Fusion.m_DatasourceTypes,
                     entities = Fusion.m_DatasourceEntities,
                     eventsource = Fusion.m_DatasourceEventsource,
                     spatialReference = SpatialReferences.WGS84
                 };
+                // Get entity types from JSON.
                 List<string> listEntityTypes = await Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(m_UriDatasource);
 
                 // Populate combo wih entity types.
@@ -678,11 +677,12 @@ namespace msGIS.ProApp_FiwareTest
                 await CleanEntitiesCountAsync(true);
 
                 // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
+                // 3.3.08/20240109/msGIS_FIWARE_rt_012: Init Fiware_RestApi_NetHttpClient before Plugin Datasource OpenTable/GetTableNames.
                 // types: /ngsi-ld/v1/types
                 // entities: /ngsi-ld/v1/entities?type={entityType}&offset={offset}&limit={limit}
                 // eventsource: /ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3
                 // ConnectionPath of override PluginDatasourceTemplate.URI.Open is not suitable for FIWARE due to complexly build URI with parameters set while proceeding tasks on tables and entries.
-                if (!await ProPluginDatasource_FiwareHttpClient.Fusion.InitAsync(m_UriDatasource))
+                if (!await ProPluginDatasource_FiwareHttpClient.Fusion.InitAsync())
                     return;
 
                 await QueuedTask.Run(async() =>
@@ -690,7 +690,7 @@ namespace msGIS.ProApp_FiwareTest
                     // PluginDatasourceConnectionPath : Connector
                     // Plugin identifier is corresponding to ProPluginDatasource Config.xml PluginDatasource ID
                     using (PluginDatastore pluginDatastore = new PluginDatastore(
-                     new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_FiwareHttpClient, m_UriDatasourcePath)))
+                     new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_FiwareHttpClient, m_UriDatasource.path)))
                     {
                         if (pluginDatastore != null)
                         {

@@ -405,6 +405,11 @@ Neuer Layer wird aus FIWARE Daten mittels Datasource Plugin erstellt (ohne Umweg
 InstVer=ArcPro_3.2.49743 AddInX_3.3.08 PluginDatasource_3.3.08 Common_3.3.32 MSI_
 https://app.asana.com/0/1203876411184345/1205999834711034/
 
+3.3.08/20240109/msGIS_FIWARE_rt_011: Progress ERROR: The calling thread must be STA, because many UI components require this.
+STA error typically occurs when trying to access UI components from a thread that isn't marked as STA (Single Threaded Apartment).
+
+3.3.08/20240109/msGIS_FIWARE_rt_012: Init Fiware_RestApi_NetHttpClient before Plugin Datasource OpenTable/GetTableNames.
+
 - RBushCoord3D --> Common.
 
 - Configure ArcPro UI to manually add/manage the data (Catalog, AddData Button/Item, etc.).
@@ -421,6 +426,6 @@ Samples: Content_QuakeItem, Plugin_ProDataReader, Plugin_ProSqlExpress.
 
 
 ---------------------------------------------------------------------------------------------------
-rt: Next 3.3.08/2024mmdd/msGIS_FIWARE_rt_011: Xxx
+rt: Next 3.3.08/2024mmdd/msGIS_FIWARE_rt_013: Xxx
 To build an AddInX look for instructions at common folder.
 ---------------------------------------------------------------------------------------------------

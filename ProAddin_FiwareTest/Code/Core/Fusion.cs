@@ -70,6 +70,8 @@ namespace msGIS.ProApp_FiwareTest
 
         // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
         internal const string m_PathEntities = @"P:\MS\link\roman\fiware\ArcPro\Entities_FIW";            // "P:\\MS\\link\\roman\\fiware\\ArcPro\\Entities_FIW"
+
+        // 3.3.08/20240109/msGIS_FIWARE_rt_012: Init Fiware_RestApi_NetHttpClient before Plugin Datasource OpenTable/GetTableNames.
         internal const string m_DatasourcePath = "https://fiwaredev.msgis.net";
         internal const string m_DatasourceTypes = "/ngsi-ld/v1/types";
         internal const string m_DatasourceEntities = "/ngsi-ld/v1/entities?";

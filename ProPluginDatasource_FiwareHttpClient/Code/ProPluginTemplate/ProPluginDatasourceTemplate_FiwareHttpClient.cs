@@ -27,7 +27,6 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
         private uint _thread_id;
 
         // private Uri m_UriDatasourcePath;
-        private Fiware_RestApi_NetHttpClient.UriDatasource m_UriDatasource;
         private Dictionary<string, PluginTableTemplate> m_DicTables;
 
         // Initializes a new instance of the ArcGIS.Core.Data.PluginDatastore.PluginDatasourceTemplate class.
@@ -61,8 +60,26 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
                 // ConnectionPath of override PluginDatasourceTemplate.URI.Open is not suitable for FIWARE due to complexly build URI with parameters set while proceeding tasks on tables and entries.
                 // m_UriDatasourcePath = connectionPath;
-                m_UriDatasource = Fusion.m_UriDatasource;
                 m_DicTables = new Dictionary<string, PluginTableTemplate>();
+
+                bool isInitialized = false;
+                Task.Run(async () =>
+                {
+                    // 3.3.08/20240109/msGIS_FIWARE_rt_012: Init Fiware_RestApi_NetHttpClient before Plugin Datasource OpenTable/GetTableNames.
+                    // If a datasource table exists OpenTable/GetTableNames is called from Pro Plugin on project start.
+                    if (!await Fusion.InitAsync())
+                        return;
+
+                    Task<bool> asyncTask = Fusion.InitAsync();
+                    await asyncTask.ConfigureAwait(false);
+
+                    // Continue with the rest of the code after the task has completed
+                    if (asyncTask.IsCompleted)
+                    {
+                        isInitialized = asyncTask.Result;
+                    }
+                }).GetAwaiter().GetResult();
+
             }
             catch (Exception ex)
             {
@@ -121,7 +138,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                     throw new Exception($"The table {tableName} is ambiguous!");
 
                 // 3.3.07/20231222/msGIS_FIWARE_rt_010: Open Plugin table and read the data.
-                ProPluginTableTemplate_FiwareHttpClient proPluginTableTemplate_FiwareHttpClient = new ProPluginTableTemplate_FiwareHttpClient(m_UriDatasource, tableName);
+                ProPluginTableTemplate_FiwareHttpClient proPluginTableTemplate_FiwareHttpClient = new ProPluginTableTemplate_FiwareHttpClient(Fusion.m_UriDatasource, tableName);
                 // m_DicTables.Add(tableName, proPluginTableTemplate_FiwareHttpClient);
                 m_DicTables[tableName] = proPluginTableTemplate_FiwareHttpClient;
 
@@ -153,7 +170,8 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 // Use a separate thread to wait for the task to complete
                 Task.Run(async () =>
                 {
-                    Task<List<string>> asyncTask = Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(m_UriDatasource);
+                    // Get entity types from JSON.
+                    Task<List<string>> asyncTask = Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(Fusion.m_UriDatasource);
                     await asyncTask.ConfigureAwait(false);
 
                     // Continue with the rest of the code after the task has completed

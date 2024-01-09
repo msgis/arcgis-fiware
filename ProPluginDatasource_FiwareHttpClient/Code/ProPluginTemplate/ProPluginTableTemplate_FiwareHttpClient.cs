@@ -539,24 +539,27 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
 
         private async Task<bool> GetTableDataAsync()
         {
-            //Helper_Progress m_Helper_Progress = null;
-            //Helper_Working m_Helper_Working = null;
+            Helper_Working m_Helper_Working = null;
             try
             {
                 // 3.3.07/20231222/msGIS_FIWARE_rt_010: Open Plugin table and read the data.
                 string entityType = m_TableName;
 
-                // QueuedTask blocks the asyncTask!
-                // m_Helper_Working = new Helper_Working(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework);
+                // 3.3.08/20240109/msGIS_FIWARE_rt_011: Progress ERROR: The calling thread must be STA, because many UI components require this.
+                // Can't use Helper_Progress - QueuedTask blocks the asyncTask!
                 // ERROR: The calling thread must be STA, because many UI components require this.
                 // Single-Threaded Apartments (STAs) In an STA, only the thread that created the apartment may access the objects in it. A thread can't access other apartments or alter the concurrency model of an apartment it created.
-                // m_Helper_Working.ShowDelayedWorkingAsyncVoid(entityType);
+                Fusion.m_Global.AppDispatcher.Invoke(() =>
+                {
+                    m_Helper_Working = new Helper_Working(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework);
+                    m_Helper_Working.ShowDelayedWorkingAsyncVoid(entityType);
+                });
 
                 JArray jArrayEntities = await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(m_UriDatasource, entityType);
                 if (jArrayEntities == null)
                     return false;
                 if (jArrayEntities.Count == 0)
-                    await Fusion.m_Messages.AlertAsyncMsg("No entities acquired!", "EntityToFileAsync");
+                    await Fusion.m_Messages.AlertAsyncMsg("No entities acquired!", "GetTableDataAsync");
 
                 List<MapPoint> listFeatures = await Fusion.m_Fiware_RestApi_NetHttpClient.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities);
                 if (listFeatures == null)
@@ -648,20 +651,14 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
             }
             finally
             {
-                /*
-                if (m_Helper_Progress != null)
-                {
-                    await m_Helper_Progress.FinishProgressAsync();
-                    m_Helper_Progress = null;
-                }
-                */
-                /*
                 if (m_Helper_Working != null)
                 {
-                    await m_Helper_Working.FinishWorkingAsync();
-                    m_Helper_Working = null;
+                    await Fusion.m_Global.AppDispatcher.Invoke(async() =>
+                    {
+                        await m_Helper_Working.FinishWorkingAsync();
+                        m_Helper_Working = null;
+                    });
                 }
-                */
             }
         }
 
