@@ -409,7 +409,18 @@ https://app.asana.com/0/1203876411184345/1205999834711034/
 STA error typically occurs when trying to access UI components from a thread that isn't marked as STA (Single Threaded Apartment).
 
 3.3.08/20240109/msGIS_FIWARE_rt_012: Init Fiware_RestApi_NetHttpClient before Plugin Datasource OpenTable/GetTableNames.
-In dieser Version werden beim Öffnen von Projekt die bereits vorhandene Layers mittels Datasource Framework anhand von Plugin Spezifikation entsprechend den FIWARE Daten befüllt.
+In dieser Version werden beim Öffnen von Projekt die bereits vorhandenen Layers mittels Datasource Framework anhand von Plugin Spezifikation entsprechend den FIWARE Daten befüllt.
+---
+Currently, the ArcGIS Pro Plugin Datastore Framework only supports ArcGIS.Core.Data.DatasetType.Tables and ArcGIS.Core.Data.DatasetType.FeatureClasss in a read-only manner.
+.NET Clients access Open via the ArcGIS.Core.Data.PluginDatastore.PluginDatastore class whereas Native clients (Pro internals) access via IWorkspaceFactory
+e.g. Data Source = Feature Class
+- Native clients (Pro internals) access via IWorkspaceFactory
+(Layer ist beim Öffnen von Projekt bereits vorhanden)
+Data Source Location: P:\MS\link\roman\fiware\ArcPro\APRX_WGS84\https:\fiwaredev.msgis.net\
+- NET Clients access Open via the ArcGIS.Core.Data.PluginDatastore.PluginDatastore class
+(Layer wird erstellt)
+Data Source Location: https://fiwaredev.msgis.net/
+
 
 ...................................................................................................
 3.3.09/2024mmdd/rt: New Version.
@@ -418,12 +429,13 @@ https://app.asana.com/0/1203876411184345/1205999834711034/
 
 - RBushCoord3D --> Common.
 
+- Query/Search table rows.
+
 - Configure ArcPro UI to manually add/manage the data (Catalog, AddData Button/Item, etc.).
 DAML: <updateCategory refID="esri_core_projectContainers"> --> ProDataProjectItemContainer : CustomProjectItemContainer<ProDataProjectItem>.
 DAML: <updateCategory refID="esri_customItems"> --> ProDataProjectItem : CustomProjectItemBase, IMappableItem.
 Samples: Content_QuakeItem, Plugin_ProDataReader, Plugin_ProSqlExpress.
 
-- Query/Search table rows.
 - Dynamically update changes on entities (NGSI data).
 - Manage current loaded data using extension filter to reduce memory consumption.
 - Use NuGet NGSIBaseModel to convert the Json objects received in the NGSI format to C# models.

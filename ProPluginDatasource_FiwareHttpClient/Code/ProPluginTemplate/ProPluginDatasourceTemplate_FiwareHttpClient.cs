@@ -17,6 +17,14 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
 {
     public class ProPluginDatasourceTemplate_FiwareHttpClient : PluginDatasourceTemplate
     {
+        // Summary:
+        //     This abstract class serves as one of the key extensibility points that comprise
+        //     the Plugin Datastore Framework. Specifically, each instance of a concrete class
+        //     that implements this abstraction acts as a conduit between a third-party data
+        //     source and ArcGIS Pro via the deployment of a plug-in data source add-in.
+        //     Currently, the framework only supports ArcGIS.Core.Data.DatasetType.Tables and
+        //     ArcGIS.Core.Data.DatasetType.FeatureClasss in a read-only manner.
+
         // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
         // 3.3.07/20231222/msGIS_FIWARE_rt_009: Plugin integration.
         private readonly string m_ModuleName = "ProPluginDatasourceTemplate_FiwareHttpClient";
@@ -50,7 +58,8 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
         /// <param name="connectionPath">The path to the workspace</param>
         /// <remarks>
         /// .NET Clients access Open via the ArcGIS.Core.Data.PluginDatastore.PluginDatastore class
-        /// whereas Native clients (Pro internals) access via IWorkspaceFactory</remarks>
+        /// whereas Native clients (Pro internals) access via IWorkspaceFactory
+        /// </remarks>
         public override void Open(Uri connectionPath)
         {
             try
@@ -93,10 +102,6 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                     throw new Exception("Empty connection!");
                 if (connectionPath != Fusion.m_UriDatasource.path)
                 {
-                    /// <remarks>
-                    /// .NET Clients access Open via the ArcGIS.Core.Data.PluginDatastore.PluginDatastore class
-                    /// whereas Native clients (Pro internals) access via IWorkspaceFactory</remarks>
-                    // e.g. Data Source = Feature Class, Location = P:\MS\link\roman\fiware\ArcPro\APRX_WGS84\https:\fiwaredev.msgis.net\ (instead of stored https://fiwaredev.msgis.net/)
                     // throw new Exception($"Connection doesn't match intended datasource!{Environment.NewLine}{connectionPath.OriginalString}{Environment.NewLine}{Fusion.m_UriDatasource.path.OriginalString}");
                 }
             }
