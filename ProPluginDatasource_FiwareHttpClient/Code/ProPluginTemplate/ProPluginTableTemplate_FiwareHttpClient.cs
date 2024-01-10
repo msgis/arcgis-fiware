@@ -30,6 +30,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
     {
         // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
         // 3.3.07/20231222/msGIS_FIWARE_rt_009: Plugin integration.
+        // 3.3.33/20240110/msGIS_ProApp_Common_rt_058: Fiware RBush Helper.
         private readonly string m_ModuleName = "ProPluginTableTemplate_FiwareHttpClient";
 
         private Fiware_RestApi_NetHttpClient.UriDatasource m_UriDatasource;
