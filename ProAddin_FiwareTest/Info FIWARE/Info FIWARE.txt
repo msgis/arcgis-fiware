@@ -429,6 +429,15 @@ https://app.asana.com/0/1203876411184345/1205999834711034/
 3.3.33/20240110/msGIS_ProApp_Common_rt_058: Fiware RBush Helper.
 + RBushCoord3D --> Common.
 
++ VS not active (dashed) labels?
+Bookmarks window, Disable or delete bookmarks.
+https://learn.microsoft.com/en-us/visualstudio/ide/setting-bookmarks-in-code?view=vs-2022
+
++ VS Output Window configuration on Build.
+To display the Output window whenever you build a project, in the Options dialog box, on the Projects and Solutions > General page, select Show Output window when build starts.
+
+3.3.09/20240110/msGIS_FIWARE_rt_013: Adaptations for correct data calculating on any language system settings (Windows EN/DE) using CultureInfo.InvariantCulture.
+
 - Query/Search table rows.
 
 - Configure ArcPro UI to manually add/manage the data (Catalog, AddData Button/Item, etc.).
@@ -444,6 +453,6 @@ Samples: Content_QuakeItem, Plugin_ProDataReader, Plugin_ProSqlExpress.
 
 
 ---------------------------------------------------------------------------------------------------
-rt: Next 3.3.09/2024mmdd/msGIS_FIWARE_rt_013: Xxx
+rt: Next 3.3.09/2024mmdd/msGIS_FIWARE_rt_014: Xxx
 To build an AddInX look for instructions at common folder.
 ---------------------------------------------------------------------------------------------------

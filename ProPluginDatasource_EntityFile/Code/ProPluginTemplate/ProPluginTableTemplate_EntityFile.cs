@@ -11,6 +11,7 @@ using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -496,10 +497,11 @@ namespace msGIS.ProPluginDatasource_EntityFile
                 {
                     if (values.Count() >= 2)
                     {
+                        // 3.3.09/20240110/msGIS_FIWARE_rt_013: Adaptations for correct data calculating on any language system settings (Windows EN/DE) using CultureInfo.InvariantCulture.
                         double test = 0;
-                        if (Double.TryParse(values[0], out test))
+                        if (Double.TryParse(values[0], NumberStyles.Any, CultureInfo.InvariantCulture, out test))
                         {
-                            hasSpatialData = Double.TryParse(values[1], out test);
+                            hasSpatialData = Double.TryParse(values[1], NumberStyles.Any, CultureInfo.InvariantCulture, out test);
                             if (hasSpatialData)
                             {
                                 //add a shape column
@@ -509,7 +511,7 @@ namespace msGIS.ProPluginDatasource_EntityFile
                                 _hasZ = false;
                                 if (values.Count() >= 3)
                                 {
-                                    _hasZ = Double.TryParse(values[2], out z);
+                                    _hasZ = Double.TryParse(values[2], NumberStyles.Any, CultureInfo.InvariantCulture, out z);
                                 }
                             }
                         }
@@ -521,13 +523,14 @@ namespace msGIS.ProPluginDatasource_EntityFile
                 var row = _table.NewRow();
                 for (int c = 0; c < values.Length; c++)
                 {
+                    // 3.3.09/20240110/msGIS_FIWARE_rt_013: Adaptations for correct data calculating on any language system settings (Windows EN/DE) using CultureInfo.InvariantCulture.
                     //TODO Deal with nulls!!
                     // check double types 
                     if (lstDoubleFields.Contains(c))
                     {
                         row[c + 1] = System.DBNull.Value;
                         // field value is double
-                        if (Double.TryParse(values[c], out double dValue))
+                        if (Double.TryParse(values[c], NumberStyles.Any, CultureInfo.InvariantCulture, out double dValue))
                         {
                             row[c + 1] = dValue;//Column "0" is our objectid
                         }
@@ -558,16 +561,20 @@ namespace msGIS.ProPluginDatasource_EntityFile
 
                 if (hasSpatialData)
                 {
+                    // 3.3.09/20240110/msGIS_FIWARE_rt_013: Adaptations for correct data calculating on any language system settings (Windows EN/DE) using CultureInfo.InvariantCulture.
                     double x = 0, y = 0, z = 0;
                     //TODO Deal with nulls!
-                    Double.TryParse(values[0], out x);
-                    Double.TryParse(values[1], out y);
+                    Double.TryParse(values[0], NumberStyles.Any, CultureInfo.InvariantCulture, out x);
+                    Double.TryParse(values[1], NumberStyles.Any, CultureInfo.InvariantCulture, out y);
+                    //x = Convert.ToDouble(values[0], CultureInfo.InvariantCulture);
+                    //y = Convert.ToDouble(values[1], CultureInfo.InvariantCulture);
 
                     //do we have a Z?
                     if (_hasZ)
                     {
                         //TODO Deal with nulls!
-                        Double.TryParse(values[2], out z);
+                        Double.TryParse(values[2], NumberStyles.Any, CultureInfo.InvariantCulture, out z);
+                        //z = Convert.ToDouble(values[2], CultureInfo.InvariantCulture);
                     }
 
                     //ensure the coordinate is within bounds
