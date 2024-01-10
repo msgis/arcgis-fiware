@@ -438,7 +438,14 @@ To display the Output window whenever you build a project, in the Options dialog
 
 3.3.09/20240110/msGIS_FIWARE_rt_013: Adaptations for correct data calculating on any language system settings (Windows EN/DE) using CultureInfo.InvariantCulture.
 
-- Query/Search table rows.
++ Query/Search table rows.
+- Cache, Refresh?
+- Rename Layer?
+
+- Save and Manage URI, Entity and other metadata as JSON string in Data Source Path (read only).
+- AddInX UI must have configurable URI (Main, Entity All/Particular).
+- AddInX for FIWARE Http Client only (without other Tests, for any APRX).
+- New Version for presentations.
 
 - Configure ArcPro UI to manually add/manage the data (Catalog, AddData Button/Item, etc.).
 DAML: <updateCategory refID="esri_core_projectContainers"> --> ProDataProjectItemContainer : CustomProjectItemContainer<ProDataProjectItem>.
