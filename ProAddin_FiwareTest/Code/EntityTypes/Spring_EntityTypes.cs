@@ -275,6 +275,7 @@ namespace msGIS.ProApp_FiwareTest
 
                 // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
                 // 3.3.08/20240109/msGIS_FIWARE_rt_012: Init Fiware_RestApi_NetHttpClient before Plugin Datasource OpenTable/GetTableNames.
+                // 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
                 m_UriDatasource = new Fiware_RestApi_NetHttpClient.UriDatasource
                 {
                     path = new Uri(Fusion.m_DatasourcePath, UriKind.Absolute),
@@ -685,12 +686,18 @@ namespace msGIS.ProApp_FiwareTest
                 if (!await ProPluginDatasource_FiwareHttpClient.Fusion.InitAsync())
                     return;
 
+                // 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
+                Uri connectionPath = m_UriDatasource.path;
+                connectionPath = new Uri(connectionPath.OriginalString, UriKind.Absolute);
+                connectionPath = new Uri($"{connectionPath.OriginalString}/TableName={entityType}", UriKind.Absolute);
+
+
                 await QueuedTask.Run(async() =>
                 {
                     // PluginDatasourceConnectionPath : Connector
                     // Plugin identifier is corresponding to ProPluginDatasource Config.xml PluginDatasource ID
                     using (PluginDatastore pluginDatastore = new PluginDatastore(
-                     new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_FiwareHttpClient, m_UriDatasource.path)))
+                     new PluginDatasourceConnectionPath(Fusion.m_ProPluginDatasourceID_FiwareHttpClient, connectionPath)))
                     {
                         if (pluginDatastore != null)
                         {
@@ -724,11 +731,22 @@ namespace msGIS.ProApp_FiwareTest
                                     // 3.3.07/20231222/msGIS_FIWARE_rt_010: Open Plugin table and read the data.
                                     using (var table = pluginDatastore.OpenTable(table_name))
                                     {
+                                        if (table == null)
+                                            throw new Exception("Empty table!");
+                                        if (table.Type != DatasetType.FeatureClass)
+                                            throw new Exception("Table type is not a feature class!");
+
                                         // get information about the table
                                         using (var def = table.GetDefinition() as FeatureClassDefinition)
                                         {
-
+                                            if (def == null)
+                                                throw new Exception("Empty table definition!");
+                                            if (def.DatasetType != DatasetType.FeatureClass)
+                                                throw new Exception("Dataset type is not a feature class!");
+                                            string name = def.GetName();
+                                            string aliasName = def.GetAliasName();
                                         }
+
                                         // query and return all rows
                                         // TODO - use a QueryFilter and Whereclause
                                         //var qf = new QueryFilter()

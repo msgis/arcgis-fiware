@@ -26,6 +26,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
         private static bool m_IsInitialized { get; set; }
 
         // 3.3.08/20240109/msGIS_FIWARE_rt_012: Init Fiware_RestApi_NetHttpClient before Plugin Datasource OpenTable/GetTableNames.
+        // 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
         internal const string m_DatasourcePath = "https://fiwaredev.msgis.net";
         internal const string m_DatasourceTypes = "/ngsi-ld/v1/types";
         internal const string m_DatasourceEntities = "/ngsi-ld/v1/entities?";
@@ -49,6 +50,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
 
                     // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
                     // 3.3.08/20240109/msGIS_FIWARE_rt_012: Init Fiware_RestApi_NetHttpClient before Plugin Datasource OpenTable/GetTableNames.
+                    // 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
                     Uri uriDatasourcePath = new Uri(Fusion.m_DatasourcePath, UriKind.Absolute);
                     m_UriDatasource = new Fiware_RestApi_NetHttpClient.UriDatasource
                     {

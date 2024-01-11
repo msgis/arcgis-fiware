@@ -438,28 +438,60 @@ To display the Output window whenever you build a project, in the Options dialog
 
 3.3.09/20240110/msGIS_FIWARE_rt_013: Adaptations for correct data calculating on any language system settings (Windows EN/DE) using CultureInfo.InvariantCulture.
 
-+ Query/Search table rows.
-- Cache, Refresh?
-- Rename Layer?
++ Evaluate SqlExpress using MDF-Connection.
+Betreffend Evaluierung Video zu Plugin Datasources basierend auf SqlExpress
+https://mediaspace.esri.com/media/t/1_gpsfiskh
+SqlExpress.sqlexpress
+Server=localhost\sqlexpress;Database=TestSqlExpress;Integrated Security=SSPI;
+Server=localhost\sqlexpress;Database=FdTestSqlExpress;Integrated Security=SSPI;
+---
+Die Connection konnte mit Jürgen Zornig hergestellt werden.
+Unter Windows sind Berechtigungen zu beachten und einige Schritte bei der Konfiguration vorzunehmen.
+https://teams.microsoft.com/l/message/19:4c4d6429e9114cbbab8f8246fe88c201@thread.tacv2/1701867142158?tenantId=080b5d1b-8662-46e8-a975-a4485f9f4cc2&groupId=53a2a971-07e9-44b9-8944-5862cdeb72c1&parentMessageId=1701867142158&teamName=GeoSolutions&channelName=Hilfe%20bei%20GIS%20Problemen&createdTime=1701867142158
+https://www.microsoft.com/en-us/sql-server/sql-server-downloads
+C:\Data\PluginData\SQLExpressData
+TestSqlExpress.mdf, TestSqlExpress_log.ldf
+FDTestSQLExpress.mdf, FDTestSQLExpress_log.ldf
+---
+Look at Services App for "SQL Server (SQLEXPRESS)" - MSSQL$SQLEXPRESS - must be running.
+Or start SQL Server Configuration Manager - SQL Server Services - SQL Server (SQLEXPRESS) - Properties - NT Service\MSSQL$SQLEXPRESS - Service must be running.
+Copy sample connection data (*.?df) to SQLExpress folder.
+C:\Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\DATA
+Due to inheritance the file permissions - security should now gain MSSQL$SQLEXPRESS user with full access control.
+The required permissions may not succeed on other folder (?)
+On Microsoft SQL Server Management Studio make the connection.
+Server Type: Database Engine
+Server Name: localhost\SQLExpress (localhost may be computer name like "NB536-11")
+Authentication: Windows Authentication (connection like "MD\roman")
+Attach Database - Add - navigate to *.mdf
+C:\Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\DATA
 
-- Save and Manage URI, Entity and other metadata as JSON string in Data Source Path (read only).
+
++ ArcPro Version.
++ Rename Layer doesn't impact created table name.
++ Query/Search table rows on create.
+
+3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
+- Save and Manage URI, Entity (table name) and other metadata as JSON string in Data Source Path (read only).
 - AddInX UI must have configurable URI (Main, Entity All/Particular).
-- AddInX for FIWARE Http Client only (without other Tests, for any APRX).
-- New Version for presentations.
 
-- Configure ArcPro UI to manually add/manage the data (Catalog, AddData Button/Item, etc.).
+- AddInX for FIWARE Http Client only (without other Tests, for any APRX).
+- More dynamic attributes with types.
+- Cache, Refresh, Extent?
+- New Version for presentations (Pro=3.2.1 desktopVersion="3.2.49743").
+
+- Configure ArcPro UI to manually add/manage the data (Catalog, AddData Button/Item, Set Data Source, etc.).
 DAML: <updateCategory refID="esri_core_projectContainers"> --> ProDataProjectItemContainer : CustomProjectItemContainer<ProDataProjectItem>.
 DAML: <updateCategory refID="esri_customItems"> --> ProDataProjectItem : CustomProjectItemBase, IMappableItem.
 Samples: Content_QuakeItem, Plugin_ProDataReader, Plugin_ProSqlExpress.
 
-- Dynamically update changes on entities (NGSI data).
-- Manage current loaded data using extension filter to reduce memory consumption.
+- Dynamically update changes on entities (NGSI data) - not possible in a datasource read-only manner, therefore all data has to be re-read.
+- Manage current loaded data using extent-filter to reduce memory consumption.
 - Use NuGet NGSIBaseModel to convert the Json objects received in the NGSI format to C# models.
-- Evaluate SqlExpress using MDF-Connection.
 - Convert FIWARE REST - CRUD Datasource (not possible using Pro Plugin Datasource).
 
 
 ---------------------------------------------------------------------------------------------------
-rt: Next 3.3.09/2024mmdd/msGIS_FIWARE_rt_014: Xxx
+rt: Next 3.3.09/2024mmdd/msGIS_FIWARE_rt_015: Xxx
 To build an AddInX look for instructions at common folder.
 ---------------------------------------------------------------------------------------------------

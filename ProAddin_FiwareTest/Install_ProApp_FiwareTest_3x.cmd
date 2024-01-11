@@ -7,7 +7,17 @@ echo Authors:
 echo roman.trojan@msgis.com 20231001-
 echo =====================================================================================================
 
-Set InstVer=ArcPro_3.2.49743 AddInX_3.3.09 PluginDatasource_3.3.09 Common_3.3.33 MSI_
+rem powershell.exe -command "& {Get-ItemProperty -Path 'HKLM:\SOFTWARE\ESRI\ArcGISPro' -Name 'Version'}" ^| Select-Object -ExpandProperty Version
+Set ProVer=
+for /f "tokens=1,2 delims=: " %%a in ('powershell.exe -command "& {Get-ItemProperty -Path 'HKLM:\SOFTWARE\ESRI\ArcGISPro' -Name 'Version'}"') do (
+	rem echo %%a
+	if "%%a" == "Version" (
+		set "ProVer=%%b"
+	)
+)
+rem echo %ProVer%
+
+Set InstVer=ArcProReg_%ProVer% DamlDesktop_3.2.49743 AddInX_3.3.09 ProPluginDatasource_FiwareHttpClient_3.3.09 Common_3.3.33 MSI_
 
 rem -----------------------------------------------------------------------------------------------------
 rem Testing %date% %time% by %username% on %computername%
