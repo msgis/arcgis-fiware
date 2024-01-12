@@ -17,12 +17,12 @@ for /f "tokens=1,2 delims=: " %%a in ('powershell.exe -command "& {Get-ItemPrope
 )
 rem echo %ProVer%
 
-Set InstVer=ArcProReg_%ProVer% DamlDesktop_3.2.49743 AddInX_3.3.09 ProPluginDatasource_FiwareHttpClient_3.3.09 Common_3.3.33 MSI_
+Set InstVer=ArcPro_3.2.49743 AddInX_3.3.09 ProPlugin_3.3.09 Common_3.3.33 MSI_
 
 rem -----------------------------------------------------------------------------------------------------
 rem Testing %date% %time% by %username% on %computername%
 rem -----------------------------------------------------------------------------------------------------
-Set PathTest="\\md.local\p$\MS\Testhouse\arcgispro\FIWARE-arcgispro\%InstVer% (%username% %computername%)"
+Set PathTest="\\md.local\p$\MS\Testhouse\arcgispro\FIWARE-arcgispro\%InstVer% (%username% %computername% ArcGISPro_%ProVer%)"
 if exist %PathTest% (
 	rmdir /S /Q %PathTest%
 )

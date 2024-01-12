@@ -46,6 +46,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
         {
             try
             {
+                // 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
                 m_UriDatasource = uriDatasource;
                 m_TableName = tableName;
 
@@ -521,16 +522,19 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 Task.Run(async () =>
                 {
                     Task<bool> asyncTask = GetTableDataAsync();
-                    await asyncTask.ConfigureAwait(false);
+                    if (!await asyncTask.ConfigureAwait(false))
+                        return;
 
                     // Continue with the rest of the code after the task has completed
                     if (asyncTask.IsCompleted)
-                    {
                         taskResult = asyncTask.Result;
+
+                    if (!taskResult)
+                    {
+                        await Fusion.m_Messages.AlertAsyncMsg("Failed to get table data!", "OpenTableData");
+                        return;
                     }
                 }).GetAwaiter().GetResult();
-                if (!taskResult)
-                    throw new Exception("Failed to get table data!");
             }
             catch (Exception ex)
             {
@@ -544,7 +548,10 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
             try
             {
                 // 3.3.07/20231222/msGIS_FIWARE_rt_010: Open Plugin table and read the data.
+                // 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
                 string entityType = m_TableName;
+                if (entityType != m_UriDatasource.entityType)
+                    throw new GeodatabaseFeatureException($"Table name {m_TableName} <> {m_UriDatasource.entityType}!");
 
                 // 3.3.08/20240109/msGIS_FIWARE_rt_011: Progress ERROR: The calling thread must be STA, because many UI components require this.
                 // Can't use Helper_Progress - QueuedTask blocks the asyncTask!
@@ -556,7 +563,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                     m_Helper_Working.ShowDelayedWorkingAsyncVoid(entityType);
                 });
 
-                JArray jArrayEntities = await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(m_UriDatasource, entityType);
+                JArray jArrayEntities = await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(m_UriDatasource);
                 if (jArrayEntities == null)
                     return false;
                 if (jArrayEntities.Count == 0)
@@ -617,8 +624,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                     // ensure the coordinate is within bounds
                     var coord = new ArcGIS.Core.Geometry.Coordinate3D(mapPoint.X, mapPoint.Y, mapPoint.Z);
                     if (!sr_extent.Contains2D(coord))
-                        throw new GeodatabaseFeatureException(
-                          "The feature falls outside the defined spatial reference!");
+                        throw new GeodatabaseFeatureException("The feature falls outside the defined spatial reference!");
 
                     // store it
                     row[Fusion.m_DataColumn_Geom] = coord.ToMapPoint().ToEsriShape();

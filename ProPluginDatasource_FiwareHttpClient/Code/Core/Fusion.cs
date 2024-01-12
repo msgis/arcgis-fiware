@@ -22,15 +22,12 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
 
         #endregion Common
 
-        internal static Fiware_RestApi_NetHttpClient.UriDatasource m_UriDatasource;
         private static bool m_IsInitialized { get; set; }
 
+        // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
         // 3.3.08/20240109/msGIS_FIWARE_rt_012: Init Fiware_RestApi_NetHttpClient before Plugin Datasource OpenTable/GetTableNames.
         // 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
-        internal const string m_DatasourcePath = "https://fiwaredev.msgis.net";
-        internal const string m_DatasourceTypes = "/ngsi-ld/v1/types";
-        internal const string m_DatasourceEntities = "/ngsi-ld/v1/entities?";
-        internal const string m_DatasourceEventsource = "/ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3";
+        internal static Fiware_RestApi_NetHttpClient.UriDatasource m_UriDatasource;
 
         internal const string m_DataColumn_ID = "OBJECTID";
         internal const string m_DataColumn_Geom = "SHAPE";
@@ -47,19 +44,6 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                     Fusion.m_Messages = new Messages(Fusion.m_Global);
                     Fusion.m_Helper_Framework = new Helper_Framework(Fusion.m_Global, Fusion.m_Messages);
                     Fusion.m_Fiware_RestApi_NetHttpClient = new Fiware_RestApi_NetHttpClient(Fusion.m_Global, Fusion.m_Messages);
-
-                    // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
-                    // 3.3.08/20240109/msGIS_FIWARE_rt_012: Init Fiware_RestApi_NetHttpClient before Plugin Datasource OpenTable/GetTableNames.
-                    // 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
-                    Uri uriDatasourcePath = new Uri(Fusion.m_DatasourcePath, UriKind.Absolute);
-                    m_UriDatasource = new Fiware_RestApi_NetHttpClient.UriDatasource
-                    {
-                        path = uriDatasourcePath,
-                        types = Fusion.m_DatasourceTypes,
-                        entities = Fusion.m_DatasourceEntities,
-                        eventsource = Fusion.m_DatasourceEventsource,
-                        spatialReference = ArcGIS.Core.Geometry.SpatialReferences.WGS84
-                    };
 
                     m_IsInitialized = true;
                 }

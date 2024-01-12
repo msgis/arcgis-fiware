@@ -1,5 +1,6 @@
 ﻿using msGIS.ProApp_Common_FIWARE_3x;
 
+using ArcGIS.Core.Geometry;
 using ArcGIS.Desktop.Editing.Templates;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Mapping;
@@ -70,6 +71,7 @@ namespace msGIS.ProApp_FiwareTest
 
         // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
         internal const string m_PathEntities = @"P:\MS\link\roman\fiware\ArcPro\Entities_FIW";            // "P:\\MS\\link\\roman\\fiware\\ArcPro\\Entities_FIW"
+        internal const string m_FileSuffix = "fiw";     // "csv";
 
         // 3.3.08/20240109/msGIS_FIWARE_rt_012: Init Fiware_RestApi_NetHttpClient before Plugin Datasource OpenTable/GetTableNames.
         // 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
@@ -77,6 +79,9 @@ namespace msGIS.ProApp_FiwareTest
         internal const string m_DatasourceTypes = "/ngsi-ld/v1/types";
         internal const string m_DatasourceEntities = "/ngsi-ld/v1/entities?";
         internal const string m_DatasourceEventsource = "/ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3";
+        internal static SpatialReference m_DatasourceSpatialReference = SpatialReferences.WGS84;
+        internal const int m_DatasourceLimit = 60;          // Limit > 0 max 2000 e.g. 60
+        internal const int m_DatasourceOffset = 0;          // Start from e.g. 0 max <= limit
 
 
         #endregion Def

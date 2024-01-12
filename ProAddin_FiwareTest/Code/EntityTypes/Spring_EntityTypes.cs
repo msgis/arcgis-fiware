@@ -282,7 +282,10 @@ namespace msGIS.ProApp_FiwareTest
                     types = Fusion.m_DatasourceTypes,
                     entities = Fusion.m_DatasourceEntities,
                     eventsource = Fusion.m_DatasourceEventsource,
-                    spatialReference = SpatialReferences.WGS84
+                    spatialReference = Fusion.m_DatasourceSpatialReference,
+                    entityType = "",
+                    limit = Fusion.m_DatasourceLimit,
+                    offset = Fusion.m_DatasourceOffset,
                 };
                 // Get entity types from JSON.
                 List<string> listEntityTypes = await Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(m_UriDatasource);
@@ -455,7 +458,8 @@ namespace msGIS.ProApp_FiwareTest
                 await m_Helper_Progress.ShowProgressAsync("GetEntitiesFromRestApiAsync", 900000, false);
                 JArray jArrayEntities = await QueuedTask.Run(async () =>
                 {
-                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(m_UriDatasource, entityType);
+                    m_UriDatasource.entityType = entityType;
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(m_UriDatasource);
                 }, m_Helper_Progress.ProgressAssistant);
 
                 if (jArrayEntities == null)
@@ -540,7 +544,8 @@ namespace msGIS.ProApp_FiwareTest
                 await m_Helper_Progress.ShowProgressAsync("GetEntitiesFromRestApiAsync", 900000, false);
                 JArray jArrayEntities = await QueuedTask.Run(async () =>
                 {
-                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(m_UriDatasource, entityType);
+                    m_UriDatasource.entityType = entityType;
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(m_UriDatasource);
                 }, m_Helper_Progress.ProgressAssistant);
 
                 if (jArrayEntities == null)
@@ -563,7 +568,7 @@ namespace msGIS.ProApp_FiwareTest
                     await Fusion.m_Messages.AlertAsyncMsg($"Datasource path not found!", dirPath, "Pro Datasource");
                     return;
                 }
-                string filePath = Path.Combine(dirPath, $"{entityType}.{ProPluginDatasource_EntityFile.Fusion.m_FileSuffix}");
+                string filePath = Path.Combine(dirPath, $"{entityType}.{Fusion.m_FileSuffix}");
                 if (File.Exists(filePath))
                 {
                     if (!await Fusion.m_Messages.MsAskAsync($"File already exists!{Environment.NewLine}{filePath}{Environment.NewLine}Overwrite File?", "Entities --> File"))
@@ -636,7 +641,7 @@ namespace msGIS.ProApp_FiwareTest
                         */
 
                         //or just pass in the name of a csv file in the workspace folder
-                        string table_name = $"{entityType}.{ProPluginDatasource_EntityFile.Fusion.m_FileSuffix}";
+                        string table_name = $"{entityType}.{Fusion.m_FileSuffix}";
                         string table_path = Path.Combine(dirPath, table_name);
                         if (!File.Exists(table_path))
                         {
@@ -679,18 +684,18 @@ namespace msGIS.ProApp_FiwareTest
 
                 // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
                 // 3.3.08/20240109/msGIS_FIWARE_rt_012: Init Fiware_RestApi_NetHttpClient before Plugin Datasource OpenTable/GetTableNames.
+                // 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
+                // ConnectionPath of override PluginDatasourceTemplate.URI.Open may be used for delivery complex parameters to proceed with tasks on tables and entries.
                 // types: /ngsi-ld/v1/types
                 // entities: /ngsi-ld/v1/entities?type={entityType}&offset={offset}&limit={limit}
                 // eventsource: /ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3
-                // ConnectionPath of override PluginDatasourceTemplate.URI.Open is not suitable for FIWARE due to complexly build URI with parameters set while proceeding tasks on tables and entries.
-                if (!await ProPluginDatasource_FiwareHttpClient.Fusion.InitAsync())
+                m_UriDatasource.entityType = entityType;
+                Uri connectionPath = await Fusion.m_Fiware_RestApi_NetHttpClient.PopulateConnectionAsync(m_UriDatasource);
+                if (connectionPath == null)
+                {
+                    await Fusion.m_Messages.AlertAsyncMsg("Connection couldn't be established!", m_UriDatasource.path.OriginalString, "EntityToDsfLayerAsync");
                     return;
-
-                // 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
-                Uri connectionPath = m_UriDatasource.path;
-                connectionPath = new Uri(connectionPath.OriginalString, UriKind.Absolute);
-                connectionPath = new Uri($"{connectionPath.OriginalString}/TableName={entityType}", UriKind.Absolute);
-
+                }
 
                 await QueuedTask.Run(async() =>
                 {

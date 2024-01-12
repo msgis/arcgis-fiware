@@ -386,13 +386,12 @@ Zuvor hat sich bei der Übergabe von Uri über Plugin im Vergleich zu direktem A
 Zusätzlich warte ich in der synchronen Routine auf die asynchrone Ausführung mittels System-Task, nachdem ich für Esri-QueuedTask keine entsprechende Möglichkeit gefunden habe (entweder blockiert oder wartet nicht).
 
 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
-ConnectionPath of override PluginDatasourceTemplate.URI.Open is not suitable for FIWARE due to complexly build URI with parameters set while proceeding tasks on tables and entries.
 Im PluginDatasourceTemplate override Open(Uri connectionPath) ist von ArcGIS Pro nur eine konstante URI vorgesehen.
 Damit für FIWARE die HTTP requests parametrisiert dynamisch aufgerufen werden können, habe ich eigene Struktur auf Plugin-Ebene etabliert.
 
 ...................................................................................................
 3.3.07/20240108/rt: New Version.
-InstVer=ArcPro_3.2.49743 AddInX_3.3.07 PluginDatasource_3.3.07 Common_3.3.32 MSI_
+InstVer=ArcPro_3.2.49743 AddInX_3.3.07 ProPlugin_3.3.07 Common_3.3.32 MSI_
 https://app.asana.com/0/1203876411184345/1205999834711034/
 
 3.3.07/20231222/msGIS_FIWARE_rt_009: Plugin integration.
@@ -402,7 +401,7 @@ Neuer Layer wird aus FIWARE Daten mittels Datasource Plugin erstellt (ohne Umweg
 
 ...................................................................................................
 3.3.08/20240109/rt: New Version.
-InstVer=ArcPro_3.2.49743 AddInX_3.3.08 PluginDatasource_3.3.08 Common_3.3.32 MSI_
+InstVer=ArcPro_3.2.49743 AddInX_3.3.08 ProPlugin_3.3.08 Common_3.3.32 MSI_
 https://app.asana.com/0/1203876411184345/1205999834711034/
 
 3.3.08/20240109/msGIS_FIWARE_rt_011: Progress ERROR: The calling thread must be STA, because many UI components require this.
@@ -423,7 +422,7 @@ Data Source Location: https://fiwaredev.msgis.net/
 
 ...................................................................................................
 3.3.09/2024mmdd/rt: New Version.
-InstVer=ArcPro_3.2.49743 AddInX_3.3.09 PluginDatasource_3.3.09 Common_3.3.33 MSI_
+InstVer=ArcPro_3.2.49743 AddInX_3.3.09 ProPlugin_3.3.09 Common_3.3.33 MSI_
 https://app.asana.com/0/1203876411184345/1205999834711034/
 
 3.3.33/20240110/msGIS_ProApp_Common_rt_058: Fiware RBush Helper.
@@ -472,8 +471,10 @@ C:\Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\DATA
 + Query/Search table rows on create.
 
 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
-- Save and Manage URI, Entity (table name) and other metadata as JSON string in Data Source Path (read only).
-- AddInX UI must have configurable URI (Main, Entity All/Particular).
+ConnectionPath of override PluginDatasourceTemplate.URI.Open may be used for delivery complex parameters to proceed with tasks on tables and entries.
++ Manage URI parameters as JSON string in Data Source Path (configurable on AddInX, read only on Plugin).
+- JSON string is not suitable for connection string.
+- AddInX UI must have configurable URI parameters.
 
 - AddInX for FIWARE Http Client only (without other Tests, for any APRX).
 - More dynamic attributes with types.

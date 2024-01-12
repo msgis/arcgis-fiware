@@ -56,8 +56,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\ProApp-Common\msGIS.ProApp_Common_FIWARE_3x.csproj" />
-    <ProjectReference Include="..\ProPluginDatasource_EntityFile\msGIS.ProPluginDatasource_EntityFile_3x.csproj" />
-    <ProjectReference Include="..\ProPluginDatasource_FiwareHttpClient\msGIS.ProPluginDatasource_FiwareHttpClient_3x.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ArcGIS.Desktop.Framework">

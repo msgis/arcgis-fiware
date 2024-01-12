@@ -34,7 +34,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
         internal static extern uint GetCurrentThreadId();
         private uint _thread_id;
 
-        // private Uri m_UriDatasourcePath;
+        bool m_IsInitialized = false;
         private Dictionary<string, PluginTableTemplate> m_DicTables;
 
         // Initializes a new instance of the ArcGIS.Core.Data.PluginDatastore.PluginDatasourceTemplate class.
@@ -68,42 +68,46 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 //of your plugin may be initialized on different threads
                 // throw new NotImplementedException();
 
-                // Initialize
                 //Strictly speaking, tracking your thread id is only necessary if
                 //your implementation uses internals that have thread affinity.
                 _thread_id = GetCurrentThreadId();
 
-                // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
-                // ConnectionPath of override PluginDatasourceTemplate.URI.Open is not suitable for FIWARE due to complexly build URI with parameters set while proceeding tasks on tables and entries.
-                // m_UriDatasourcePath = connectionPath;
+                // Datasource tables are populated by GetTableNames.
                 m_DicTables = new Dictionary<string, PluginTableTemplate>();
 
-                bool isInitialized = false;
+                // Initialize
+                // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
+                // 3.3.08/20240109/msGIS_FIWARE_rt_012: Init Fiware_RestApi_NetHttpClient before Plugin Datasource OpenTable/GetTableNames.
+                // 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
+                // ConnectionPath of override PluginDatasourceTemplate.URI.Open may be used for delivery complex parameters to proceed with tasks on tables and entries.
+                m_IsInitialized = false;
                 Task.Run(async () =>
                 {
-                    // 3.3.08/20240109/msGIS_FIWARE_rt_012: Init Fiware_RestApi_NetHttpClient before Plugin Datasource OpenTable/GetTableNames.
+                    if (connectionPath == null)
+                    {
+                        await Fusion.m_Messages.AlertAsyncMsg("Empty connection!", "Open");
+                        return;
+                    }
+
                     // If a datasource table exists OpenTable/GetTableNames is called from Pro Plugin on project start.
-                    if (!await Fusion.InitAsync())
+                    Task<bool> asyncTask = Fusion.InitAsync();
+                    if (!await asyncTask.ConfigureAwait(false))
                         return;
 
-                    Task<bool> asyncTask = Fusion.InitAsync();
-                    await asyncTask.ConfigureAwait(false);
+                    Fusion.m_UriDatasource = await Fusion.m_Fiware_RestApi_NetHttpClient.DecodeConnectionAsync(connectionPath);
+                    if (Fusion.m_UriDatasource.path == null)
+                        return;
 
                     // Continue with the rest of the code after the task has completed
                     if (asyncTask.IsCompleted)
+                        m_IsInitialized = asyncTask.Result;
+
+                    if (!m_IsInitialized)
                     {
-                        isInitialized = asyncTask.Result;
+                        await Fusion.m_Messages.AlertAsyncMsg("Failed to initialize the datasource!", "Open");
+                        return;
                     }
                 }).GetAwaiter().GetResult();
-
-                if (!isInitialized)
-                    throw new Exception("Datasource couldn't be initialized!");
-                if (connectionPath == null)
-                    throw new Exception("Empty connection!");
-                if (connectionPath != Fusion.m_UriDatasource.path)
-                {
-                    // throw new Exception($"Connection doesn't match intended datasource!{Environment.NewLine}{connectionPath.OriginalString}{Environment.NewLine}{Fusion.m_UriDatasource.path.OriginalString}");
-                }
             }
             catch (Exception ex)
             {
@@ -129,6 +133,8 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                     m_DicTables.Clear();
                     m_DicTables = null;
                 }
+
+                m_IsInitialized = false;
             }
             catch (Exception ex)
             {
@@ -149,22 +155,34 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 //If you are using shared data (eg "static") it is your responsibility
                 //to manage access to it across multiple threads.
                 if (_thread_id != GetCurrentThreadId())
-                {
                     throw new ArcGIS.Core.CalledOnWrongThreadException();
-                }
+
+                if (!m_IsInitialized)
+                    return null;
 
                 string tableName = name;
                 if (!this.GetTableNames().Contains(tableName))
-                    throw new Exception($"The table {tableName} was not found!");
+                {
+                    Task.Run(async () =>
+                    {
+                        await Fusion.m_Messages.AlertAsyncMsg($"The table {tableName} was not found!", "OpenTable");
+                    }).GetAwaiter().GetResult();
+                }
 
                 // if (m_DicTables.ContainsKey(tableName))
                 if (m_DicTables.Keys.Contains(tableName))
-                    throw new Exception($"The table {tableName} is ambiguous!");
+                {
+                    Task.Run(async () =>
+                    {
+                        await Fusion.m_Messages.AlertAsyncMsg($"The table {tableName} is ambiguous!", "OpenTable");
+                    }).GetAwaiter().GetResult();
+                }
 
                 // 3.3.07/20231222/msGIS_FIWARE_rt_010: Open Plugin table and read the data.
+                // 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
                 ProPluginTableTemplate_FiwareHttpClient proPluginTableTemplate_FiwareHttpClient = new ProPluginTableTemplate_FiwareHttpClient(Fusion.m_UriDatasource, tableName);
                 // m_DicTables.Add(tableName, proPluginTableTemplate_FiwareHttpClient);
-                m_DicTables[tableName] = proPluginTableTemplate_FiwareHttpClient;
+                m_DicTables[tableName] = proPluginTableTemplate_FiwareHttpClient;           // works adequate to Add method. 
 
                 return m_DicTables[tableName];      // proPluginTableTemplate_FiwareHttpClient;
             }
@@ -184,6 +202,9 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 //data source
                 // return tableNames;
 
+                if (!m_IsInitialized)
+                    return null;
+
                 // 3.3.05/20231201/msGIS_FIWARE_rt_002: Nicht überwindbare Komplikation auf HttpClient mittels GetAsync(apiUrl) aus der abstrakten Klasse ArcPro PluginDatasourceTemplate zuzugreifen.
                 // 3.3.06/20231218/msGIS_FIWARE_rt_007: ProPluginDatasource_FiwareHttpClient.
                 // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
@@ -196,13 +217,15 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 {
                     // Get entity types from JSON.
                     Task<List<string>> asyncTask = Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(Fusion.m_UriDatasource);
-                    await asyncTask.ConfigureAwait(false);
+                    if (await asyncTask.ConfigureAwait(false) == null)
+                        return;
 
                     // Continue with the rest of the code after the task has completed
                     if (asyncTask.IsCompleted)
-                    {
                         tableNames = asyncTask.Result;
-                    }
+
+                    if (tableNames == null)
+                        await Fusion.m_Messages.AlertAsyncMsg("Failed to get table names!", "GetTableNames");
                 }).GetAwaiter().GetResult();
 
                 return tableNames;
@@ -221,7 +244,10 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 //default is false
                 //bool isQueryLanguageSupported = base.IsQueryLanguageSupported();
                 //return isQueryLanguageSupported;
-                return true;
+                if (!m_IsInitialized)
+                    return false;
+                else
+                    return true;
             }
             catch (Exception ex)
             {
