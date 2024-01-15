@@ -94,7 +94,10 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                     if (!await asyncTask.ConfigureAwait(false))
                         return;
 
-                    Fusion.m_UriDatasource = await Fusion.m_Fiware_RestApi_NetHttpClient.DecodeConnectionAsync(connectionPath);
+                    Tuple<bool, Fiware_RestApi_NetHttpClient.UriDatasource> tupleConn = await Fusion.m_Fiware_RestApi_NetHttpClient.DecodeConnectionAsync(connectionPath);
+                    if ((tupleConn == null) || (!tupleConn.Item1))
+                        return;
+                    Fusion.m_UriDatasource = tupleConn.Item2;
                     if (Fusion.m_UriDatasource.path == null)
                         return;
 

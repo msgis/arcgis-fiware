@@ -473,7 +473,8 @@ C:\Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\DATA
 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
 ConnectionPath of override PluginDatasourceTemplate.URI.Open may be used for delivery complex parameters to proceed with tasks on tables and entries.
 + Manage URI parameters as JSON string in Data Source Path (configurable on AddInX, read only on Plugin).
-- JSON string is not suitable for connection string.
++ JSON string is not suitable for connection string.
++ Reduce not recognized connection 3x Error.
 - AddInX UI must have configurable URI parameters.
 
 - AddInX for FIWARE Http Client only (without other Tests, for any APRX).

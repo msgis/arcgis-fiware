@@ -34,7 +34,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
         private readonly string m_ModuleName = "ProPluginTableTemplate_FiwareHttpClient";
 
         private Fiware_RestApi_NetHttpClient.UriDatasource m_UriDatasource;
-        private string m_TableName;
+        // private string m_TableName;
         private DataTable _table;
         private RBush.RBush<RBushCoord3D> _rtree;
         private RBush.Envelope _extent;
@@ -48,7 +48,9 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
             {
                 // 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
                 m_UriDatasource = uriDatasource;
-                m_TableName = tableName;
+                // m_TableName = tableName;
+                if (tableName != m_UriDatasource.entityType)
+                    throw new Exception($"Table name {tableName} <> {m_UriDatasource.entityType}!");
 
                 _rtree = new RBush.RBush<RBushCoord3D>();
                 _sr = uriDatasource.spatialReference ?? SpatialReferences.WGS84;
@@ -115,7 +117,8 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
             {
                 //TODO Get the name of this currently opened plugin table/object
                 //throw new NotImplementedException();
-                return m_TableName;
+                // return m_TableName;
+                return m_UriDatasource.entityType;
             }
             catch (Exception ex)
             {
@@ -549,9 +552,10 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
             {
                 // 3.3.07/20231222/msGIS_FIWARE_rt_010: Open Plugin table and read the data.
                 // 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
-                string entityType = m_TableName;
-                if (entityType != m_UriDatasource.entityType)
-                    throw new GeodatabaseFeatureException($"Table name {m_TableName} <> {m_UriDatasource.entityType}!");
+                //if (m_TableName != m_UriDatasource.entityType)
+                //    throw new GeodatabaseException($"Table name {m_TableName} <> {m_UriDatasource.entityType}!");
+                // string entityType = m_TableName;
+                string entityType = m_UriDatasource.entityType;
 
                 // 3.3.08/20240109/msGIS_FIWARE_rt_011: Progress ERROR: The calling thread must be STA, because many UI components require this.
                 // Can't use Helper_Progress - QueuedTask blocks the asyncTask!

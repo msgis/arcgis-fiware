@@ -43,7 +43,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                     Fusion.m_Global = new Global();
                     Fusion.m_Messages = new Messages(Fusion.m_Global);
                     Fusion.m_Helper_Framework = new Helper_Framework(Fusion.m_Global, Fusion.m_Messages);
-                    Fusion.m_Fiware_RestApi_NetHttpClient = new Fiware_RestApi_NetHttpClient(Fusion.m_Global, Fusion.m_Messages);
+                    Fusion.m_Fiware_RestApi_NetHttpClient = new Fiware_RestApi_NetHttpClient(Fusion.m_Messages);
 
                     m_IsInitialized = true;
                 }
