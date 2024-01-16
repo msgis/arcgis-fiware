@@ -178,7 +178,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 // return GeometryType.Unknown;
 
                 //Note: empty tables treated as non-geometry
-                return _table.Columns.Contains(Fusion.m_DataColumn_Geom) ? GeometryType.Point : GeometryType.Unknown;
+                return _table.Columns.Contains(Fiware_RestApi_NetHttpClient.m_DataColumn_Geom) ? GeometryType.Point : GeometryType.Unknown;
             }
             catch (Exception ex)
             {
@@ -219,15 +219,15 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 {
                     var fieldType = ArcGIS.Core.Data.FieldType.String;
                     // special handling for OBJECTID and SHAPE
-                    if (col.ColumnName == Fusion.m_DataColumn_ID)
+                    if (col.ColumnName == Fiware_RestApi_NetHttpClient.m_DataColumn_ID)
                     {
                         fieldType = ArcGIS.Core.Data.FieldType.OID;
                     }
-                    else if (col.ColumnName == Fusion.m_DataColumn_Geom)
+                    else if (col.ColumnName == Fiware_RestApi_NetHttpClient.m_DataColumn_Geom)
                     {
                         fieldType = ArcGIS.Core.Data.FieldType.Geometry;
                     }
-                    else if ((col.ColumnName == Fusion.m_DataColumn_X) || (col.ColumnName == Fusion.m_DataColumn_Y) || (col.ColumnName == Fusion.m_DataColumn_Z))
+                    else if ((col.ColumnName == Fiware_RestApi_NetHttpClient.m_DataColumn_X) || (col.ColumnName == Fiware_RestApi_NetHttpClient.m_DataColumn_Y) || (col.ColumnName == Fiware_RestApi_NetHttpClient.m_DataColumn_Z))
                     {
                         fieldType = ArcGIS.Core.Data.FieldType.Double;
                     }
@@ -272,9 +272,9 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                     if (columnFilter.Contains(colName))
                     {
                         // special handling for shape
-                        if (colName == Fusion.m_DataColumn_Geom)
+                        if (colName == Fiware_RestApi_NetHttpClient.m_DataColumn_Geom)
                         {
-                            var buffer = row[Fusion.m_DataColumn_Geom] as Byte[];
+                            var buffer = row[Fiware_RestApi_NetHttpClient.m_DataColumn_Geom] as Byte[];
                             shape = MapPointBuilderEx.FromEsriShape(buffer, _sr);
                             if (srout != null)
                             {
@@ -356,8 +356,8 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
 
                     result = null;
                     result = _table.AsEnumerable().Where(
-                      row => qf.ObjectIDs.Contains((long)row[Fusion.m_DataColumn_ID]))
-                      .Select(row => (long)row[Fusion.m_DataColumn_ID]).ToList();
+                      row => qf.ObjectIDs.Contains((long)row[Fiware_RestApi_NetHttpClient.m_DataColumn_ID]))
+                      .Select(row => (long)row[Fiware_RestApi_NetHttpClient.m_DataColumn_ID]).ToList();
 
                     // anything selected?
                     if (result.Count() == 0)
@@ -372,7 +372,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 if (!string.IsNullOrEmpty(qf.WhereClause))
                 {
                     emptyQuery = false;
-                    var sort = Fusion.m_DataColumn_ID;          // default
+                    var sort = Fiware_RestApi_NetHttpClient.m_DataColumn_ID;          // default
                     if (!string.IsNullOrEmpty(qf.PostfixClause))
                     {
                         // The underlying System.Data.DataTable used by the sample supports "ORDER BY"
@@ -384,7 +384,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
 
                     // do the selection
                     var oids = _table.Select(qf.WhereClause, sort)
-                                 .Select(row => (long)row[Fusion.m_DataColumn_ID]).ToList();
+                                 .Select(row => (long)row[Fiware_RestApi_NetHttpClient.m_DataColumn_ID]).ToList();
 
                     // consolidate whereclause selection with fidset
                     if (result.Count > 0 && oids.Count() > 0)
@@ -475,7 +475,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                     // no - the default is to return all rows
                     result = null;
                     result = _table.Rows.Cast<DataRow>()
-                      .Select(row => (long)row[Fusion.m_DataColumn_ID]).OrderBy(x => x).ToList();
+                      .Select(row => (long)row[Fiware_RestApi_NetHttpClient.m_DataColumn_ID]).OrderBy(x => x).ToList();
                 }
                 return result;
             }
@@ -580,8 +580,8 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 // Initialize our data table
                 // Columns (0=OBJECTID, 1=POINT_X, 2=POINT_Y)
                 _table = new DataTable();
-                //dataTable.PrimaryKey = new DataColumn(Fusion.m_DataColumn_ID, typeof(long));
-                var oid = new DataColumn(Fusion.m_DataColumn_ID, typeof(long))
+                //dataTable.PrimaryKey = new DataColumn(Fiware_RestApi_NetHttpClient.m_DataColumn_ID, typeof(long));
+                var oid = new DataColumn(Fiware_RestApi_NetHttpClient.m_DataColumn_ID, typeof(long))
                 {
                     AutoIncrement = true,
                     AutoIncrementSeed = 1
@@ -591,16 +591,16 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
 
                 // We have spatial data (the X and Y coordinates of a point), therefore the data can be treated as a feature class (not as a table).
                 // Add a shape column to treat the data as a feature class.
-                _table.Columns.Add(new DataColumn(Fusion.m_DataColumn_Geom, typeof(System.Byte[])));
+                _table.Columns.Add(new DataColumn(Fiware_RestApi_NetHttpClient.m_DataColumn_Geom, typeof(System.Byte[])));
                 //do we have a Z?
                 _hasZ = false;
 
                 // Optional add X/Y/Z as attributes columns to friendly display coordinates or search purposes.
-                if (Fusion.m_DisplayXYZ)
+                if (Fiware_RestApi_NetHttpClient.m_DisplayXYZ)
                 {
-                    _table.Columns.Add(new DataColumn(Fusion.m_DataColumn_X, typeof(double)));
-                    _table.Columns.Add(new DataColumn(Fusion.m_DataColumn_Y, typeof(double)));
-                    _table.Columns.Add(new DataColumn(Fusion.m_DataColumn_Z, typeof(double)));
+                    _table.Columns.Add(new DataColumn(Fiware_RestApi_NetHttpClient.m_DataColumn_X, typeof(double)));
+                    _table.Columns.Add(new DataColumn(Fiware_RestApi_NetHttpClient.m_DataColumn_Y, typeof(double)));
+                    _table.Columns.Add(new DataColumn(Fiware_RestApi_NetHttpClient.m_DataColumn_Z, typeof(double)));
                 }
 
                 // Add other attributes columns
@@ -625,7 +625,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                     var row = _table.NewRow();
 
                     // Optional add X/Y/Z as attributes columns to friendly display coordinates or search purposes.
-                    if (Fusion.m_DisplayXYZ)
+                    if (Fiware_RestApi_NetHttpClient.m_DisplayXYZ)
                     {
                         //string x = Convert.ToString(mapPoint.X, CultureInfo.InvariantCulture);
                         //string y = Convert.ToString(mapPoint.Y, CultureInfo.InvariantCulture);
@@ -635,9 +635,9 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                         //row[1] = mapPoint.X;
                         //row[2] = mapPoint.Y;
                         //row[3] = mapPoint.Z;
-                        row[Fusion.m_DataColumn_X] = mapPoint.X;
-                        row[Fusion.m_DataColumn_Y] = mapPoint.Y;
-                        row[Fusion.m_DataColumn_Z] = mapPoint.Z;
+                        row[Fiware_RestApi_NetHttpClient.m_DataColumn_X] = mapPoint.X;
+                        row[Fiware_RestApi_NetHttpClient.m_DataColumn_Y] = mapPoint.Y;
+                        row[Fiware_RestApi_NetHttpClient.m_DataColumn_Z] = mapPoint.Z;
                     }
 
                     // ensure the coordinate is within bounds
@@ -646,10 +646,10 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                         throw new GeodatabaseFeatureException("The feature falls outside the defined spatial reference!");
 
                     // store it
-                    row[Fusion.m_DataColumn_Geom] = coord.ToMapPoint().ToEsriShape();
+                    row[Fiware_RestApi_NetHttpClient.m_DataColumn_Geom] = coord.ToMapPoint().ToEsriShape();
 
                     // add it to the index
-                    var rbushCoord = new RBushCoord3D(coord, (long)row[Fusion.m_DataColumn_ID]);
+                    var rbushCoord = new RBushCoord3D(coord, (long)row[Fiware_RestApi_NetHttpClient.m_DataColumn_ID]);
                     _rtree.Insert(rbushCoord);
 
                     // update max and min for use in the extent

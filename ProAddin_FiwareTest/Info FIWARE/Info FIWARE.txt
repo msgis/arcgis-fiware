@@ -476,11 +476,11 @@ ConnectionPath of override PluginDatasourceTemplate.URI.Open may be used for del
 + JSON string is not suitable for connection string.
 + Reduce not recognized connection 3x Error.
 - AddInX UI must have configurable URI parameters.
+- New Version for presentations (Pro=3.2.1 desktopVersion="3.2.49743").
 
-- AddInX for FIWARE Http Client only (without other Tests, for any APRX).
+- AddInX for FIWARE Http Client only on BitBucket (without other Tests, for any APRX).
 - More dynamic attributes with types.
 - Cache, Refresh, Extent?
-- New Version for presentations (Pro=3.2.1 desktopVersion="3.2.49743").
 
 - Configure ArcPro UI to manually add/manage the data (Catalog, AddData Button/Item, Set Data Source, etc.).
 DAML: <updateCategory refID="esri_core_projectContainers"> --> ProDataProjectItemContainer : CustomProjectItemContainer<ProDataProjectItem>.

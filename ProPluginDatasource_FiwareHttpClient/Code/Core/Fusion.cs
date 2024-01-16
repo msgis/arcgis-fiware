@@ -29,13 +29,6 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
         // 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
         internal static Fiware_RestApi_NetHttpClient.ConnDatasource m_ConnDatasource;
 
-        internal const string m_DataColumn_ID = "OBJECTID";
-        internal const string m_DataColumn_Geom = "SHAPE";
-        internal const bool m_DisplayXYZ = true;
-        internal const string m_DataColumn_X = "POINT_X";
-        internal const string m_DataColumn_Y = "POINT_Y";
-        internal const string m_DataColumn_Z = "POINT_Z";
-
         public static async Task<bool> InitAsync()
         {
             try
