@@ -75,11 +75,18 @@ namespace msGIS.ProApp_FiwareTest
 
         // 3.3.08/20240109/msGIS_FIWARE_rt_012: Init Fiware_RestApi_NetHttpClient before Plugin Datasource OpenTable/GetTableNames.
         // 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
+        // Get all entities:
+        // https://fiwaredev.msgis.net/ngsi-ld/v1/types 
+        // {"id":"urn:ngsi-ld:EntityTypeList:490ad7f0-9f18-11ee-91d3-0242ac120003","type":"EntityTypeList","typeList":["Hydrant","NgsiProxyConfig","Schwimmbad","Trinkbrunnen"]}
+        // Get entity type:
+        // https://fiwaredev.msgis.net/ngsi-ld/v1/entities?type=Hydrant&offset=0&limit=1
+        // [{"id":"urn:ngsi-ld:Hydrant:HYDRANTOGD.36612499","type":"Hydrant","OBJECTID":{"type":"Property","value":36612499},"location":{"type":"GeoProperty","value":{"type":"Point","coordinates":[16.45231,48.157012,161.78]}}}]
+        internal const int m_Datasource_Version = 3;
         internal const string m_DatasourcePath = "https://fiwaredev.msgis.net";
         internal const string m_DatasourceTypes = "/ngsi-ld/v1/types";
         internal const string m_DatasourceEntities = "/ngsi-ld/v1/entities?";
         internal const string m_DatasourceEventsource = "/ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3";
-        internal static SpatialReference m_DatasourceSpatialReference = SpatialReferences.WGS84;
+        internal static SpatialReference m_DatasourceSR = SpatialReferences.WGS84;
         internal const int m_DatasourceLimit = 60;          // Limit > 0 max 2000 e.g. 60
         internal const int m_DatasourceOffset = 0;          // Start from e.g. 0 max <= limit
 

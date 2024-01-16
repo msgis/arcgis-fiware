@@ -33,7 +33,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
         // 3.3.33/20240110/msGIS_ProApp_Common_rt_058: Fiware RBush Helper.
         private readonly string m_ModuleName = "ProPluginTableTemplate_FiwareHttpClient";
 
-        private Fiware_RestApi_NetHttpClient.UriDatasource m_UriDatasource;
+        private Fiware_RestApi_NetHttpClient.ConnDatasource m_ConnDatasource;
         // private string m_TableName;
         private DataTable _table;
         private RBush.RBush<RBushCoord3D> _rtree;
@@ -42,18 +42,18 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
         private SpatialReference _sr;
         private bool _hasZ = false;
 
-        public ProPluginTableTemplate_FiwareHttpClient(Fiware_RestApi_NetHttpClient.UriDatasource uriDatasource, string tableName) : base()
+        public ProPluginTableTemplate_FiwareHttpClient(Fiware_RestApi_NetHttpClient.ConnDatasource connDatasource, string tableName) : base()
         {
             try
             {
                 // 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
-                m_UriDatasource = uriDatasource;
+                m_ConnDatasource = connDatasource;
                 // m_TableName = tableName;
-                if (tableName != m_UriDatasource.entityType)
-                    throw new Exception($"Table name {tableName} <> {m_UriDatasource.entityType}!");
+                if (tableName != m_ConnDatasource.tableName)
+                    throw new Exception($"Table name {tableName} <> {m_ConnDatasource.tableName}!");
 
                 _rtree = new RBush.RBush<RBushCoord3D>();
-                _sr = uriDatasource.spatialReference ?? SpatialReferences.WGS84;
+                _sr = connDatasource.sr_default ?? SpatialReferences.WGS84;
 
                 OpenTableData();
             }
@@ -118,7 +118,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 //TODO Get the name of this currently opened plugin table/object
                 //throw new NotImplementedException();
                 // return m_TableName;
-                return m_UriDatasource.entityType;
+                return m_ConnDatasource.tableName;
             }
             catch (Exception ex)
             {
@@ -227,9 +227,8 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                     {
                         fieldType = ArcGIS.Core.Data.FieldType.Geometry;
                     }
-                    else if ((col.ColumnName == Fusion.m_DataColumn_X) || (col.ColumnName == Fusion.m_DataColumn_Y))
+                    else if ((col.ColumnName == Fusion.m_DataColumn_X) || (col.ColumnName == Fusion.m_DataColumn_Y) || (col.ColumnName == Fusion.m_DataColumn_Z))
                     {
-                        // columns: X or Y
                         fieldType = ArcGIS.Core.Data.FieldType.Double;
                     }
 
@@ -552,10 +551,10 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
             {
                 // 3.3.07/20231222/msGIS_FIWARE_rt_010: Open Plugin table and read the data.
                 // 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
-                //if (m_TableName != m_UriDatasource.entityType)
-                //    throw new GeodatabaseException($"Table name {m_TableName} <> {m_UriDatasource.entityType}!");
-                // string entityType = m_TableName;
-                string entityType = m_UriDatasource.entityType;
+                //if (m_TableName != m_ConnDatasource.tableName)
+                //    throw new GeodatabaseException($"Table name {m_TableName} <> {m_ConnDatasource.tableName}!");
+                // string tableName = m_TableName;
+                string tableName = m_ConnDatasource.tableName;
 
                 // 3.3.08/20240109/msGIS_FIWARE_rt_011: Progress ERROR: The calling thread must be STA, because many UI components require this.
                 // Can't use Helper_Progress - QueuedTask blocks the asyncTask!
@@ -564,10 +563,10 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 Fusion.m_Global.AppDispatcher.Invoke(() =>
                 {
                     m_Helper_Working = new Helper_Working(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework);
-                    m_Helper_Working.ShowDelayedWorkingAsyncVoid(entityType);
+                    m_Helper_Working.ShowDelayedWorkingAsyncVoid(tableName);
                 });
 
-                JArray jArrayEntities = await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(m_UriDatasource);
+                JArray jArrayEntities = await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(m_ConnDatasource);
                 if (jArrayEntities == null)
                     return false;
                 if (jArrayEntities.Count == 0)
@@ -591,13 +590,20 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 _table.PrimaryKey = new DataColumn[] { oid };
 
                 // We have spatial data (the X and Y coordinates of a point), therefore the data can be treated as a feature class (not as a table).
-                _table.Columns.Add(new DataColumn(Fusion.m_DataColumn_X, typeof(double)));
-                _table.Columns.Add(new DataColumn(Fusion.m_DataColumn_Y, typeof(double)));
-
                 // Add a shape column to treat the data as a feature class.
                 _table.Columns.Add(new DataColumn(Fusion.m_DataColumn_Geom, typeof(System.Byte[])));
                 //do we have a Z?
                 _hasZ = false;
+
+                // Optional add X/Y/Z as attributes columns to friendly display coordinates or search purposes.
+                if (Fusion.m_DisplayXYZ)
+                {
+                    _table.Columns.Add(new DataColumn(Fusion.m_DataColumn_X, typeof(double)));
+                    _table.Columns.Add(new DataColumn(Fusion.m_DataColumn_Y, typeof(double)));
+                    _table.Columns.Add(new DataColumn(Fusion.m_DataColumn_Z, typeof(double)));
+                }
+
+                // Add other attributes columns
 
                 //For spatial data...
                 //Domain to verify coordinates (2D)
@@ -616,14 +622,23 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 // int ind = 0;
                 foreach (MapPoint mapPoint in listFeatures)
                 {
-                    //string x = Convert.ToString(mapPoint.X, CultureInfo.InvariantCulture);
-                    //string y = Convert.ToString(mapPoint.Y, CultureInfo.InvariantCulture);
-
                     var row = _table.NewRow();
-                    //row[1] = System.DBNull.Value;
-                    //row[2] = System.DBNull.Value;
-                    row[1] = mapPoint.X;
-                    row[2] = mapPoint.Y;
+
+                    // Optional add X/Y/Z as attributes columns to friendly display coordinates or search purposes.
+                    if (Fusion.m_DisplayXYZ)
+                    {
+                        //string x = Convert.ToString(mapPoint.X, CultureInfo.InvariantCulture);
+                        //string y = Convert.ToString(mapPoint.Y, CultureInfo.InvariantCulture);
+                        //row[1] = System.DBNull.Value;
+                        //row[2] = System.DBNull.Value;
+                        //row[3] = System.DBNull.Value;
+                        //row[1] = mapPoint.X;
+                        //row[2] = mapPoint.Y;
+                        //row[3] = mapPoint.Z;
+                        row[Fusion.m_DataColumn_X] = mapPoint.X;
+                        row[Fusion.m_DataColumn_Y] = mapPoint.Y;
+                        row[Fusion.m_DataColumn_Z] = mapPoint.Z;
+                    }
 
                     // ensure the coordinate is within bounds
                     var coord = new ArcGIS.Core.Geometry.Coordinate3D(mapPoint.X, mapPoint.Y, mapPoint.Z);

@@ -94,11 +94,11 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                     if (!await asyncTask.ConfigureAwait(false))
                         return;
 
-                    Tuple<bool, Fiware_RestApi_NetHttpClient.UriDatasource> tupleConn = await Fusion.m_Fiware_RestApi_NetHttpClient.DecodeConnectionAsync(connectionPath);
+                    Tuple<bool, Fiware_RestApi_NetHttpClient.ConnDatasource> tupleConn = await Fusion.m_Fiware_RestApi_NetHttpClient.DecodeConnectionAsync(connectionPath);
                     if ((tupleConn == null) || (!tupleConn.Item1))
                         return;
-                    Fusion.m_UriDatasource = tupleConn.Item2;
-                    if (Fusion.m_UriDatasource.path == null)
+                    Fusion.m_ConnDatasource = tupleConn.Item2;
+                    if (Fusion.m_ConnDatasource.path == null)
                         return;
 
                     // Continue with the rest of the code after the task has completed
@@ -183,7 +183,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
 
                 // 3.3.07/20231222/msGIS_FIWARE_rt_010: Open Plugin table and read the data.
                 // 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
-                ProPluginTableTemplate_FiwareHttpClient proPluginTableTemplate_FiwareHttpClient = new ProPluginTableTemplate_FiwareHttpClient(Fusion.m_UriDatasource, tableName);
+                ProPluginTableTemplate_FiwareHttpClient proPluginTableTemplate_FiwareHttpClient = new ProPluginTableTemplate_FiwareHttpClient(Fusion.m_ConnDatasource, tableName);
                 // m_DicTables.Add(tableName, proPluginTableTemplate_FiwareHttpClient);
                 m_DicTables[tableName] = proPluginTableTemplate_FiwareHttpClient;           // works adequate to Add method. 
 
@@ -219,7 +219,7 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 Task.Run(async () =>
                 {
                     // Get entity types from JSON.
-                    Task<List<string>> asyncTask = Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(Fusion.m_UriDatasource);
+                    Task<List<string>> asyncTask = Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(Fusion.m_ConnDatasource);
                     if (await asyncTask.ConfigureAwait(false) == null)
                         return;
 

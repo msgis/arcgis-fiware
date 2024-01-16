@@ -59,7 +59,7 @@ namespace msGIS.ProApp_FiwareTest
         private bool m_IsActivated_EntityTypes = false;
 
         // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
-        private Fiware_RestApi_NetHttpClient.UriDatasource m_UriDatasource;
+        private Fiware_RestApi_NetHttpClient.ConnDatasource m_ConnDatasource;
 
         internal bool m_CanChangeBoard_EntityTypes = true;
         // private bool m_SuspendControlsEvents = false;
@@ -276,19 +276,21 @@ namespace msGIS.ProApp_FiwareTest
                 // 3.3.06/20231221/msGIS_FIWARE_rt_008: Datasource URI.
                 // 3.3.08/20240109/msGIS_FIWARE_rt_012: Init Fiware_RestApi_NetHttpClient before Plugin Datasource OpenTable/GetTableNames.
                 // 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
-                m_UriDatasource = new Fiware_RestApi_NetHttpClient.UriDatasource
+                // ConnectionPath of override PluginDatasourceTemplate.URI.Open may be used for delivery complex parameters to proceed with tasks on tables and entries.
+                m_ConnDatasource = new Fiware_RestApi_NetHttpClient.ConnDatasource
                 {
+                    version = Fusion.m_Datasource_Version,
                     path = new Uri(Fusion.m_DatasourcePath, UriKind.Absolute),
                     types = Fusion.m_DatasourceTypes,
                     entities = Fusion.m_DatasourceEntities,
                     eventsource = Fusion.m_DatasourceEventsource,
-                    spatialReference = Fusion.m_DatasourceSpatialReference,
-                    entityType = "",
+                    sr_default = Fusion.m_DatasourceSR,
                     limit = Fusion.m_DatasourceLimit,
                     offset = Fusion.m_DatasourceOffset,
+                    tableName = "",
                 };
                 // Get entity types from JSON.
-                List<string> listEntityTypes = await Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(m_UriDatasource);
+                List<string> listEntityTypes = await Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(m_ConnDatasource);
 
                 // Populate combo wih entity types.
                 await PopulateEntityTypesAsync(listEntityTypes);
@@ -458,8 +460,8 @@ namespace msGIS.ProApp_FiwareTest
                 await m_Helper_Progress.ShowProgressAsync("GetEntitiesFromRestApiAsync", 900000, false);
                 JArray jArrayEntities = await QueuedTask.Run(async () =>
                 {
-                    m_UriDatasource.entityType = entityType;
-                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(m_UriDatasource);
+                    m_ConnDatasource.tableName = entityType;
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(m_ConnDatasource);
                 }, m_Helper_Progress.ProgressAssistant);
 
                 if (jArrayEntities == null)
@@ -544,8 +546,8 @@ namespace msGIS.ProApp_FiwareTest
                 await m_Helper_Progress.ShowProgressAsync("GetEntitiesFromRestApiAsync", 900000, false);
                 JArray jArrayEntities = await QueuedTask.Run(async () =>
                 {
-                    m_UriDatasource.entityType = entityType;
-                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(m_UriDatasource);
+                    m_ConnDatasource.tableName = entityType;
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(m_ConnDatasource);
                 }, m_Helper_Progress.ProgressAssistant);
 
                 if (jArrayEntities == null)
@@ -641,15 +643,15 @@ namespace msGIS.ProApp_FiwareTest
                         */
 
                         //or just pass in the name of a csv file in the workspace folder
-                        string table_name = $"{entityType}.{Fusion.m_FileSuffix}";
-                        string table_path = Path.Combine(dirPath, table_name);
-                        if (!File.Exists(table_path))
+                        string fileName = $"{entityType}.{Fusion.m_FileSuffix}";
+                        string filePath = Path.Combine(dirPath, fileName);
+                        if (!File.Exists(filePath))
                         {
-                            await Fusion.m_Messages.AlertAsyncMsg($"Entity data not found!", table_path, "File-Layer");
+                            await Fusion.m_Messages.AlertAsyncMsg($"Entity data not found!", filePath, "File-Layer");
                         }
                         else
                         {
-                            using (var table = pluginws.OpenTable(table_name))
+                            using (var table = pluginws.OpenTable(fileName))
                             {
                                 //Add as a layer to the active map or scene
                                 LayerFactory.Instance.CreateLayer<FeatureLayer>(new FeatureLayerCreationParams((FeatureClass)table), MapView.Active.Map);
@@ -689,11 +691,11 @@ namespace msGIS.ProApp_FiwareTest
                 // types: /ngsi-ld/v1/types
                 // entities: /ngsi-ld/v1/entities?type={entityType}&offset={offset}&limit={limit}
                 // eventsource: /ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3
-                m_UriDatasource.entityType = entityType;
-                Uri connectionPath = await Fusion.m_Fiware_RestApi_NetHttpClient.PopulateConnectionAsync(m_UriDatasource);
+                m_ConnDatasource.tableName = entityType;
+                Uri connectionPath = await Fusion.m_Fiware_RestApi_NetHttpClient.PopulateConnectionAsync(m_ConnDatasource);
                 if (connectionPath == null)
                 {
-                    await Fusion.m_Messages.AlertAsyncMsg("Connection couldn't be established!", m_UriDatasource.path.OriginalString, "EntityToDsfLayerAsync");
+                    await Fusion.m_Messages.AlertAsyncMsg("Connection couldn't be established!", m_ConnDatasource.path.OriginalString, "EntityToDsfLayerAsync");
                     return;
                 }
 
