@@ -810,7 +810,7 @@ namespace msGIS.ProApp_FiwareTest
                                         tables += Environment.NewLine;
                                     tables += table_name;
                                 }
-                                await Fusion.m_Messages.AlertAsyncMsg($"{m_ConnDatasource.tableName} not found!", tables, "GetTableNames");
+                                await Fusion.m_Messages.AlertAsyncMsg($"{m_ConnDatasource.tableName} not found!", tables, "EntityToDsfLayerAsync");
                                 return;
                             }
 
@@ -828,7 +828,10 @@ namespace msGIS.ProApp_FiwareTest
                                     if (table == null)
                                         throw new Exception("Empty table!");
                                     if (table.Type != DatasetType.FeatureClass)
-                                        throw new Exception("Table type is not a feature class!");
+                                    {
+                                        await Fusion.m_Messages.AlertAsyncMsg($"Table type <{table.Type}> is not a feature class!", table_name, "EntityToDsfLayerAsync");
+                                        return;
+                                    }
 
                                     // get information about the table
                                     using (var def = table.GetDefinition() as FeatureClassDefinition)

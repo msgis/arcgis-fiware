@@ -421,8 +421,8 @@ Data Source Location: P:\MS\link\roman\fiware\ArcPro\APRX_WGS84\https:\fiwaredev
 Data Source Location: https://fiwaredev.msgis.net/
 
 ...................................................................................................
-3.3.09/2024mmdd/rt: New Version.
-InstVer=ArcPro_3.2.49743 AddInX_3.3.09 ProPlugin_3.3.09 Common_3.3.33 MSI_
+3.3.09/20240117/rt: New Version.
+InstVer=ArcPro_3.2.49743 AddInX_3.3.09 ProPlugin_3.3.09 Common_3.3.34 MSI_
 https://app.asana.com/0/1203876411184345/1205999834711034/
 
 3.3.33/20240110/msGIS_ProApp_Common_rt_058: Fiware RBush Helper.
@@ -476,7 +476,12 @@ ConnectionPath of override PluginDatasourceTemplate.URI.Open may be used for del
 + JSON string is not suitable for connection string.
 + Reduce not recognized connection 3x Error.
 + AddInX UI must have configurable URI parameters.
-- New Version for presentations (Pro=3.2.1 desktopVersion="3.2.49743").
++ New Version for presentations.
+
+...................................................................................................
+3.3.10/2024mmdd/rt: New Version.
+InstVer=ArcPro_3.2.49743 AddInX_3.3.09 ProPlugin_3.3.09 Common_3.3.33 MSI_
+https://app.asana.com/0/1203876411184345/1205999834711034/
 
 - Configurable URI to get tables?
 - Message Version on unrecognized table?
@@ -497,6 +502,6 @@ Samples: Content_QuakeItem, Plugin_ProDataReader, Plugin_ProSqlExpress.
 
 
 ---------------------------------------------------------------------------------------------------
-rt: Next 3.3.09/2024mmdd/msGIS_FIWARE_rt_015: Xxx
+rt: Next 3.3.10/2024mmdd/msGIS_FIWARE_rt_015: Xxx
 To build an AddInX look for instructions at common folder.
 ---------------------------------------------------------------------------------------------------
