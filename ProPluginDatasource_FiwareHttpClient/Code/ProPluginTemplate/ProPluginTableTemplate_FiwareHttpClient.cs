@@ -215,6 +215,8 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 // TODO Get the list of PluginFields for this currently opened 
                 // plugin table/object
 
+                if (_table == null)
+                    return null;
                 foreach (var col in _table.Columns.Cast<DataColumn>())
                 {
                     var fieldType = ArcGIS.Core.Data.FieldType.String;

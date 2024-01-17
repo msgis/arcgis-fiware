@@ -19,6 +19,10 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -26,30 +30,29 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Label Grid.Row="0" Grid.Column="0" Content="Entity type" Margin="6,0,6,0" VerticalAlignment="Center"/>
-        <ComboBox x:Name="ComboBox_EntityTypes" Grid.Row="0" Grid.Column="1" Margin="6" VerticalAlignment="Center" IsReadOnly="True"/>
+        <Label Grid.Row="0" Content="Entity type" ToolTip="Fiware entity type" Margin="6,0,6,0" Padding="0,6,0,6" VerticalAlignment="Center"/>
+        <ComboBox x:Name="ComboBox_EntityTypes" Grid.Row="0" Grid.Column="1" Margin="6" VerticalAlignment="Center" MinWidth="80" IsReadOnly="True"/>
 
-        <Label Grid.Row="1" Content="Count" Margin="6,0,6,0" VerticalContentAlignment="Center"/>
-        <!--<TextBlock Grid.Row="1" Grid.Column="1" Text="0" Margin="6" VerticalAlignment="Center"/>-->
-        <Label Grid.Row="1" Grid.Column="1" x:Name="Label_Count" Content="Count" Margin="6,0,6,0" VerticalContentAlignment="Center"/>
+        <Label x:Name="Label_Count" Grid.Row="1" Grid.ColumnSpan="2" Content="Count" ToolTip="Entity objects count" Margin="6,0,6,0" Padding="0,6,0,2" VerticalContentAlignment="Center"/>
 
-        <Label Grid.Row="2" Grid.Column="0" Content="Entity-Layer" Margin="6,0,6,0" VerticalAlignment="Center"/>
-        <Button x:Name="Button_EntityToLayer" Grid.Row="2" Grid.Column="1" Content="Entity->Layer" ToolTip="Create layer features of this entity type (without Datasource Framework)" Margin="6"/>
+        <Button x:Name="Button_EntityToLayer" Grid.Row="2" Grid.ColumnSpan="2" Content="Entity -> Layer" ToolTip="Create layer features of this entity type (without Datasource Framework)" Margin="6"/>
 
-        <Label Grid.Row="3" Content="Data Path" Margin="6,0,6,0" ToolTip="Entitiy path" VerticalContentAlignment="Center"/>
-        <TextBox Grid.Row="3" x:Name="TextBox_DataPath" Grid.Column="1" Text="" IsReadOnly="False" Margin="6" VerticalAlignment="Center"/>
+        <!--<TextBlock Grid.Row="3" Text="" Margin="6" VerticalAlignment="Center"/>-->
+        <Label Grid.Row="3" Grid.ColumnSpan="2" Content="Data Path" ToolTip="Data file path" Margin="6,0,6,0" Padding="0,6,0,2" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="TextBox_DataPath" Grid.Row="4" Grid.ColumnSpan="2" Text="" IsReadOnly="False" Margin="6" VerticalAlignment="Center"/>
 
-        <Label Grid.Row="4" Grid.Column="0" Content="Entity-File" Margin="6,0,6,0" VerticalAlignment="Center"/>
-        <Button x:Name="Button_EntityToFile" Grid.Row="4" Grid.Column="1" Content="Entity->File" ToolTip="Populate file of this entity type" Margin="6"/>
+        <Button x:Name="Button_EntityToFile" Grid.Row="5" Grid.ColumnSpan="2" Content="Entity -> File" ToolTip="Populate file of this entity type" Margin="6"/>
 
-        <Label Grid.Row="5" Grid.Column="0" Content="File-DSF-Layer" Margin="6,0,6,0" VerticalAlignment="Center"/>
-        <Button x:Name="Button_FileToDsfLayer" Grid.Row="5" Grid.Column="1" Content="File->DSF->Layer" ToolTip="Create feature layer from file using Pro Datasource Framework" Margin="6"/>
+        <Label Grid.Row="6" Grid.ColumnSpan="2" Content="ArcGIS Pro Datasource Framework (DSF)" ToolTip="ArcGIS Pro Datasource Framework (DSF)" Margin="6,0,6,0" Padding="0,6,0,6" VerticalAlignment="Center" Foreground="Orange"/>
 
-        <Label Grid.Row="6" Grid.Column="0" Content="Entity-DSF-Layer" Margin="6,0,6,0" VerticalAlignment="Center"/>
-        <Button x:Name="Button_EntityToDsfLayer" Grid.Row="6" Grid.Column="1" Content="Entity->DSF->Layer" ToolTip="Create feature layer of this entity type using Pro Datasource Framework" Margin="6"/>
+        <Label Grid.Row="7" Grid.ColumnSpan="2" Content="Connection Datasource" ToolTip="Connection Datasource" Margin="6,0,6,0" Padding="0,6,0,2" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="TextBox_ConnDs" Grid.Row="8" Grid.ColumnSpan="2" Text="" IsReadOnly="False" Margin="6" VerticalAlignment="Center"/>
 
-        <!--<Label Grid.Row="7" Grid.Column="0" Content="To Do" Margin="6,0,6,0" VerticalAlignment="Center"/>-->
-        <Label Content="Ask for more!" ToolTip="roman.trojan@msgis.com" Grid.Row="7" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Orange"/>
+        <Button x:Name="Button_FileToDsfLayer" Grid.Row="9" Grid.ColumnSpan="2" Content="File (entity objects) -> DSF -> Layer" ToolTip="Create feature layer from file using Pro Datasource Framework" Margin="6"/>
+
+        <Button x:Name="Button_EntityToDsfLayer" Grid.Row="10" Grid.ColumnSpan="2" Content="Entity -> DSF -> Layer" ToolTip="Create feature layer of this entity type using Pro Datasource Framework" Margin="6"/>
+
+        <!--<Label Content="Ask for more!" ToolTip="roman.trojan@msgis.com" Grid.Row="11" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Orange"/>-->
 
     </Grid>
 

@@ -53,7 +53,7 @@ namespace msGIS.ProApp_FiwareTest
                 _ = InitImagesAsync();
 
                 // Spring code
-                m_Spring_EntityTypes = new Spring_EntityTypes(Grid_EntityTypes, ComboBox_EntityTypes, Label_Count, Button_EntityToLayer, TextBox_DataPath, Button_EntityToFile, Button_FileToDsfLayer, Button_EntityToDsfLayer);
+                m_Spring_EntityTypes = new Spring_EntityTypes(Grid_EntityTypes, ComboBox_EntityTypes, Label_Count, Button_EntityToLayer, TextBox_DataPath, Button_EntityToFile, Button_FileToDsfLayer, TextBox_ConnDs, Button_EntityToDsfLayer);
             }
             catch (Exception ex)
             {

@@ -49,6 +49,7 @@ namespace msGIS.ProApp_FiwareTest
         private TextBox TextBox_DataPath;
         private Button Button_EntityToFile;
         private Button Button_FileToDsfLayer;
+        private TextBox TextBox_ConnDs;
         private Button Button_EntityToDsfLayer;
 
         private Layer m_LayerEntitiesPoints = null;
@@ -67,7 +68,7 @@ namespace msGIS.ProApp_FiwareTest
         private bool m_HasSpecialEvents_EntityTypes = false;
 
         internal Spring_EntityTypes(Grid grid_EntityTypes, ComboBox comboBox_EntityTypes, Label label_Count, Button button_EntityToLayer,
-            TextBox textBox_DataPath, Button button_EntityToFile, Button button_FileToDsfLayer, Button button_EntityToDsfLayer)
+            TextBox textBox_DataPath, Button button_EntityToFile, Button button_FileToDsfLayer, TextBox textBox_ConnDs, Button button_EntityToDsfLayer)
         {
             Grid_EntityTypes = grid_EntityTypes;
             Grid_EntityTypes.IsEnabled = false;
@@ -101,6 +102,10 @@ namespace msGIS.ProApp_FiwareTest
             Button_FileToDsfLayer = button_FileToDsfLayer;
             Button_FileToDsfLayer.IsEnabled = false;
             Button_FileToDsfLayer.Click += Button_FileToDsfLayer_Click;
+
+            TextBox_ConnDs = textBox_ConnDs;
+            TextBox_ConnDs.IsEnabled = false;
+            TextBox_ConnDs.Text = "";
 
             Button_EntityToDsfLayer = button_EntityToDsfLayer;
             Button_EntityToDsfLayer.IsEnabled = false;
@@ -348,7 +353,7 @@ namespace msGIS.ProApp_FiwareTest
                 // The calling thread cannot access this object because a different thread owns it.
                 Fusion.m_UserControl_EntityTypes.Dispatcher.Invoke(() =>
                 {
-                    Label_Count.Content = $"{entitiesCount}";
+                    Label_Count.Content = $"Count = {entitiesCount}";
                     Label_Count.Visibility = Visibility.Visible;
                 });
             }
@@ -368,7 +373,10 @@ namespace msGIS.ProApp_FiwareTest
                 TextBox_DataPath.IsEnabled = false;
                 Button_EntityToFile.IsEnabled = false;
                 Button_FileToDsfLayer.IsEnabled = false;
+                TextBox_ConnDs.IsEnabled = false;
+                TextBox_ConnDs.Text = "";
                 Button_EntityToDsfLayer.IsEnabled = false;
+
                 await CleanEntitiesCountAsync(false);
             }
             catch (Exception ex)
@@ -403,18 +411,38 @@ namespace msGIS.ProApp_FiwareTest
         {
             get
             {
-                return ((ComboBox_EntityTypes != null) && (ComboBox_EntityTypes.Items.Count > 0) && (ComboBox_EntityTypes.SelectedIndex >= 0) && (!string.IsNullOrEmpty(ComboBox_EntityTypes.SelectedItem.ToString())));
+                try
+                {
+                    return ((ComboBox_EntityTypes != null) && (ComboBox_EntityTypes.Items.Count > 0) && (ComboBox_EntityTypes.SelectedIndex >= 0) && (!string.IsNullOrEmpty(ComboBox_EntityTypes.SelectedItem.ToString())));
+                }
+                catch (Exception ex)
+                {
+                    Fusion.m_Messages.PushEx(ex, m_ModuleName, "HasComboEntityTypeSelected");
+                    return false;
+                }
             }
         }
 
         private async void ComboBox_EntityTypes_DropDownClosed(object sender, EventArgs e)
         {
-            await CleanEntitiesCountAsync(false);
-            Button_EntityToLayer.IsEnabled = HasComboEntityTypeSelected;
-            TextBox_DataPath.IsEnabled = HasComboEntityTypeSelected;
-            Button_EntityToFile.IsEnabled = HasComboEntityTypeSelected;
-            Button_FileToDsfLayer.IsEnabled = HasComboEntityTypeSelected;
-            Button_EntityToDsfLayer.IsEnabled = HasComboEntityTypeSelected;
+            try
+            {
+                await CleanEntitiesCountAsync(false);
+
+                Button_EntityToLayer.IsEnabled = HasComboEntityTypeSelected;
+                TextBox_DataPath.IsEnabled = HasComboEntityTypeSelected;
+                Button_EntityToFile.IsEnabled = HasComboEntityTypeSelected;
+
+                if ((HasComboEntityTypeSelected) && (await MakeConnDsAsync()))
+                {
+                    Button_FileToDsfLayer.IsEnabled = HasComboEntityTypeSelected;
+                    Button_EntityToDsfLayer.IsEnabled = HasComboEntityTypeSelected;
+                }
+            }
+            catch (Exception ex)
+            {
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "ComboBox_EntityTypes_DropDownClosed");
+            }
         }
 
         private async void Button_EntityToLayer_Click(object sender, RoutedEventArgs e)
@@ -447,11 +475,10 @@ namespace msGIS.ProApp_FiwareTest
             Helper_Progress m_Helper_Progress = null;
             try
             {
-                if (!HasComboEntityTypeSelected)
-                    throw new Exception("No entity type selected!");
-                string entityType = ComboBox_EntityTypes.SelectedItem.ToString();
-                if (string.IsNullOrEmpty(entityType))
-                    throw new Exception("Empty entity type!");
+                if (!await ExtractConnDsAsync())
+                    return;
+                if (string.IsNullOrEmpty(m_ConnDatasource.tableName))
+                    throw new Exception("Empty table name!");
 
                 await CleanEntitiesCountAsync(true);
 
@@ -460,7 +487,6 @@ namespace msGIS.ProApp_FiwareTest
                 await m_Helper_Progress.ShowProgressAsync("GetEntitiesFromRestApiAsync", 900000, false);
                 JArray jArrayEntities = await QueuedTask.Run(async () =>
                 {
-                    m_ConnDatasource.tableName = entityType;
                     return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(m_ConnDatasource);
                 }, m_Helper_Progress.ProgressAssistant);
 
@@ -480,7 +506,7 @@ namespace msGIS.ProApp_FiwareTest
 
 
                 // Op - Prepare
-                string opName = $"BuildFeaturesFromJsonEntitiesAsync {entityType}";
+                string opName = $"BuildFeaturesFromJsonEntitiesAsync {m_ConnDatasource.tableName}";
                 bool selectNewFeatures = false;
                 EditOperation editOperation = await Fusion.m_Helper_Op.PrepareOpAsync(opName, selectNewFeatures);
                 if (editOperation == null)
@@ -511,7 +537,7 @@ namespace msGIS.ProApp_FiwareTest
                     return;
 
                 await ShowCountAsync(listFeatures.Count);
-                await Fusion.m_Messages.AlertAsyncMsg($"{entityType} was exported to Layer.", m_LayerEntitiesPoints.Name, "Entities --> Layer Features");
+                await Fusion.m_Messages.AlertAsyncMsg($"{m_ConnDatasource.tableName} was exported to Layer.", m_LayerEntitiesPoints.Name, "Entities --> Layer Features");
             }
             catch (Exception ex)
             {
@@ -533,11 +559,10 @@ namespace msGIS.ProApp_FiwareTest
             Helper_Progress m_Helper_Progress = null;
             try
             {
-                if (!HasComboEntityTypeSelected)
-                    throw new Exception("No entity type selected!");
-                string entityType = ComboBox_EntityTypes.SelectedItem.ToString();
-                if (string.IsNullOrEmpty(entityType))
-                    throw new Exception("Empty entity type!");
+                if (!await ExtractConnDsAsync())
+                    return;
+                if (string.IsNullOrEmpty(m_ConnDatasource.tableName))
+                    throw new Exception("Empty table name!");
 
                 await CleanEntitiesCountAsync(true);
 
@@ -546,7 +571,6 @@ namespace msGIS.ProApp_FiwareTest
                 await m_Helper_Progress.ShowProgressAsync("GetEntitiesFromRestApiAsync", 900000, false);
                 JArray jArrayEntities = await QueuedTask.Run(async () =>
                 {
-                    m_ConnDatasource.tableName = entityType;
                     return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(m_ConnDatasource);
                 }, m_Helper_Progress.ProgressAssistant);
 
@@ -570,7 +594,7 @@ namespace msGIS.ProApp_FiwareTest
                     await Fusion.m_Messages.AlertAsyncMsg($"Datasource path not found!", dirPath, "Pro Datasource");
                     return;
                 }
-                string filePath = Path.Combine(dirPath, $"{entityType}.{Fusion.m_FileSuffix}");
+                string filePath = Path.Combine(dirPath, $"{m_ConnDatasource.tableName}.{Fusion.m_FileSuffix}");
                 if (File.Exists(filePath))
                 {
                     if (!await Fusion.m_Messages.MsAskAsync($"File already exists!{Environment.NewLine}{filePath}{Environment.NewLine}Overwrite File?", "Entities --> File"))
@@ -594,7 +618,7 @@ namespace msGIS.ProApp_FiwareTest
                 }
 
                 await ShowCountAsync(listFeatures.Count);
-                await Fusion.m_Messages.AlertAsyncMsg($"{entityType} was exported to File.", filePath, "Entities --> File");
+                await Fusion.m_Messages.AlertAsyncMsg($"{m_ConnDatasource.tableName} was exported to File.", filePath, "Entities --> File");
             }
             catch (Exception ex)
             {
@@ -615,11 +639,8 @@ namespace msGIS.ProApp_FiwareTest
             try
             {
                 // 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource Integration for SimplePoint File-Format.
-                if (!HasComboEntityTypeSelected)
-                    throw new Exception("No entity type selected!");
-                string entityType = ComboBox_EntityTypes.SelectedItem.ToString();
-                if (string.IsNullOrEmpty(entityType))
-                    throw new Exception("Empty entity type!");
+                if (string.IsNullOrEmpty(m_ConnDatasource.tableName))
+                    throw new Exception("Empty table name!");
 
                 string dirPath = TextBox_DataPath.Text;
                 if (!Directory.Exists(dirPath))
@@ -643,7 +664,7 @@ namespace msGIS.ProApp_FiwareTest
                         */
 
                         //or just pass in the name of a csv file in the workspace folder
-                        string fileName = $"{entityType}.{Fusion.m_FileSuffix}";
+                        string fileName = $"{m_ConnDatasource.tableName}.{Fusion.m_FileSuffix}";
                         string filePath = Path.Combine(dirPath, fileName);
                         if (!File.Exists(filePath))
                         {
@@ -660,12 +681,79 @@ namespace msGIS.ProApp_FiwareTest
                     }
 
                 });
-
-
             }
             catch (Exception ex)
             {
                 await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "FileToDsfLayerAsync");
+            }
+        }
+
+        private async Task<bool> ExtractConnDsAsync()
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(TextBox_ConnDs.Text))
+                {
+                    await Fusion.m_Messages.AlertAsyncMsg("Empty datasource connection string!", "ExtractConnDsAsync");
+                    return false;
+                }
+
+                Tuple<bool, Fiware_RestApi_NetHttpClient.ConnDatasource> tupleConn = await Fusion.m_Fiware_RestApi_NetHttpClient.ExtractConnDsAsync(TextBox_ConnDs.Text);
+                if ((tupleConn == null) || (!tupleConn.Item1))
+                    return false;
+                m_ConnDatasource = tupleConn.Item2;
+                if (m_ConnDatasource.path == null)
+                    return false;
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "ExtractConnDsAsync");
+                return false;
+            }
+        }
+
+        private async Task<bool> MakeConnDsAsync()
+        {
+            try
+            {
+                // 3.3.09/20240110/msGIS_FIWARE_rt_014: Configurable URI.
+                if (!HasComboEntityTypeSelected)
+                    throw new Exception("No entity type selected!");
+                string entityType = ComboBox_EntityTypes.SelectedItem.ToString();
+                if (string.IsNullOrEmpty(entityType))
+                    throw new Exception("Empty entity type!");
+
+                // Pull existing connection parameters.
+                if (!string.IsNullOrEmpty(TextBox_ConnDs.Text))
+                {
+                    if (!await ExtractConnDsAsync())
+                        return false;
+                }
+
+                // Set table name to entity type and build the connection.
+                m_ConnDatasource.tableName = entityType;
+                string jsonStrConnPath = await Fusion.m_Fiware_RestApi_NetHttpClient.BuildConnDsAsync(m_ConnDatasource);
+                if (string.IsNullOrEmpty(jsonStrConnPath))
+                {
+                    await Fusion.m_Messages.AlertAsyncMsg("Connection build failure!", m_ConnDatasource.path.OriginalString, "MakeConnDsAsync");
+                    return false;
+                }
+
+                // Let the new connection to be adopted by user.
+                TextBox_ConnDs.Text = jsonStrConnPath;
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "MakeConnDsAsync");
+                return false;
+            }
+            finally
+            {
+                TextBox_ConnDs.IsEnabled = !string.IsNullOrEmpty(TextBox_ConnDs.Text);
             }
         }
 
@@ -676,11 +764,10 @@ namespace msGIS.ProApp_FiwareTest
                 // 3.3.05/20231207/msGIS_FIWARE_rt_005: ProPluginDatasource Integration for SimplePoint File-Format.
                 // await Fusion.m_Messages.MsNotImplementedAsync();
 
-                if (!HasComboEntityTypeSelected)
-                    throw new Exception("No entity type selected!");
-                string entityType = ComboBox_EntityTypes.SelectedItem.ToString();
-                if (string.IsNullOrEmpty(entityType))
-                    throw new Exception("Empty entity type!");
+                if (!await ExtractConnDsAsync())
+                    return;
+                if (string.IsNullOrEmpty(m_ConnDatasource.tableName))
+                    throw new Exception("Empty table name!");
 
                 await CleanEntitiesCountAsync(true);
 
@@ -691,7 +778,6 @@ namespace msGIS.ProApp_FiwareTest
                 // types: /ngsi-ld/v1/types
                 // entities: /ngsi-ld/v1/entities?type={entityType}&offset={offset}&limit={limit}
                 // eventsource: /ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3
-                m_ConnDatasource.tableName = entityType;
                 Uri connectionPath = await Fusion.m_Fiware_RestApi_NetHttpClient.PopulateConnectionAsync(m_ConnDatasource);
                 if (connectionPath == null)
                 {
@@ -709,89 +795,89 @@ namespace msGIS.ProApp_FiwareTest
                         if (pluginDatastore != null)
                         {
                             IReadOnlyList<string> tableNames = pluginDatastore.GetTableNames();
-                            if ((tableNames != null) && (tableNames.Count > 0))
+                            if ((tableNames == null) || (tableNames.Count <= 0))
+                            {
+                                await Fusion.m_Messages.AlertAsyncMsg("There are any tables found!", "GetTableNames");
+                                return;
+                            }
+                            if (!tableNames.Contains(m_ConnDatasource.tableName))
                             {
                                 // await ShowCountAsync(tableNames.Count);
-                                bool isDeveloping = false;
-                                if (isDeveloping)
-                                {
-                                    string tables = "";
-                                    foreach (var table_name in tableNames)
-                                    {
-                                        if (!string.IsNullOrEmpty(tables))
-                                            tables += Environment.NewLine;
-                                        tables += table_name;
-                                    }
-                                    await Fusion.m_Messages.AlertAsyncMsg(tables, "GetTableNames");
-                                    await Fusion.m_Messages.MsNotImplementedAsync();
-                                    return;
-                                }
-
+                                string tables = $"-----------------{Environment.NewLine}Available tables:{Environment.NewLine}-----------------";
                                 foreach (var table_name in tableNames)
                                 {
-                                    System.Diagnostics.Debug.Write($"Table: {table_name}\r\n");
-                                    // open each table....use the returned table name
-                                    // or just pass in the name of a table in the workspace folder
-                                    if (table_name != entityType)
-                                        continue;
+                                    if (!string.IsNullOrEmpty(tables))
+                                        tables += Environment.NewLine;
+                                    tables += table_name;
+                                }
+                                await Fusion.m_Messages.AlertAsyncMsg($"{m_ConnDatasource.tableName} not found!", tables, "GetTableNames");
+                                return;
+                            }
 
-                                    // 3.3.07/20231222/msGIS_FIWARE_rt_010: Open Plugin table and read the data.
-                                    using (var table = pluginDatastore.OpenTable(table_name))
+                            foreach (var table_name in tableNames)
+                            {
+                                System.Diagnostics.Debug.Write($"Table: {table_name}\r\n");
+                                // open each table....use the returned table name
+                                // or just pass in the name of a table in the workspace folder
+                                if (table_name != m_ConnDatasource.tableName)
+                                    continue;
+
+                                // 3.3.07/20231222/msGIS_FIWARE_rt_010: Open Plugin table and read the data.
+                                using (var table = pluginDatastore.OpenTable(table_name))
+                                {
+                                    if (table == null)
+                                        throw new Exception("Empty table!");
+                                    if (table.Type != DatasetType.FeatureClass)
+                                        throw new Exception("Table type is not a feature class!");
+
+                                    // get information about the table
+                                    using (var def = table.GetDefinition() as FeatureClassDefinition)
                                     {
-                                        if (table == null)
-                                            throw new Exception("Empty table!");
-                                        if (table.Type != DatasetType.FeatureClass)
-                                            throw new Exception("Table type is not a feature class!");
+                                        if (def == null)
+                                            throw new Exception("Empty table definition!");
+                                        if (def.DatasetType != DatasetType.FeatureClass)
+                                            throw new Exception("Dataset type is not a feature class!");
+                                        string name = def.GetName();
+                                        string aliasName = def.GetAliasName();
+                                    }
 
-                                        // get information about the table
-                                        using (var def = table.GetDefinition() as FeatureClassDefinition)
+                                    // query and return all rows
+                                    // TODO - use a QueryFilter and Whereclause
+                                    //var qf = new QueryFilter()
+                                    //{
+                                    //  WhereClause = "OBJECTID > 0"
+                                    //};
+                                    //var rc = table.Search(qf);
+
+                                    using (var rc = table.Search(null))
+                                    {
+                                        while (rc.MoveNext())
                                         {
-                                            if (def == null)
-                                                throw new Exception("Empty table definition!");
-                                            if (def.DatasetType != DatasetType.FeatureClass)
-                                                throw new Exception("Dataset type is not a feature class!");
-                                            string name = def.GetName();
-                                            string aliasName = def.GetAliasName();
-                                        }
-
-                                        // query and return all rows
-                                        // TODO - use a QueryFilter and Whereclause
-                                        //var qf = new QueryFilter()
-                                        //{
-                                        //  WhereClause = "OBJECTID > 0"
-                                        //};
-                                        //var rc = table.Search(qf);
-
-                                        using (var rc = table.Search(null))
-                                        {
-                                            while (rc.MoveNext())
+                                            using (var feat = rc.Current as Feature)
                                             {
-                                                using (var feat = rc.Current as Feature)
+                                                if (feat != null)
                                                 {
-                                                    if (feat != null)
-                                                    {
-                                                        //Get information from the feature
-                                                        var oid = feat.GetObjectID();
-                                                        var shape = feat.GetShape();
+                                                    //Get information from the feature
+                                                    var oid = feat.GetObjectID();
+                                                    var shape = feat.GetShape();
 
-                                                        //Access all the values
-                                                        var count = feat.GetFields().Count();
-                                                        for (int i = 0; i < count; i++)
-                                                        {
-                                                            var val = feat[i];
-                                                            //TODO use the value(s)
-                                                        }
+                                                    //Access all the values
+                                                    var count = feat.GetFields().Count();
+                                                    for (int i = 0; i < count; i++)
+                                                    {
+                                                        var val = feat[i];
+                                                        //TODO use the value(s)
                                                     }
                                                 }
                                             }
                                         }
-
-                                        long rowsCount = table.GetCount();
-                                        await ShowCountAsync(rowsCount);
-
-                                        // Add as a layer to the active map or scene
-                                        LayerFactory.Instance.CreateLayer<FeatureLayer>(new FeatureLayerCreationParams((FeatureClass)table), MapView.Active.Map);
                                     }
+
+                                    long rowsCount = table.GetCount();
+                                    await ShowCountAsync(rowsCount);
+
+                                    // Add as a layer to the active map or scene
+                                    LayerFactory.Instance.CreateLayer<FeatureLayer>(new FeatureLayerCreationParams((FeatureClass)table), MapView.Active.Map);
                                 }
                             }
                         }
