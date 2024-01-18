@@ -498,7 +498,7 @@ Samples: Content_QuakeItem, Plugin_ProDataReader, Plugin_ProSqlExpress.
 - Dynamically update changes on entities (NGSI data) - not possible in a datasource read-only manner, therefore all data has to be re-read.
 - Manage current loaded data using extent-filter to reduce memory consumption.
 - Use NuGet NGSIBaseModel to convert the Json objects received in the NGSI format to C# models.
-- Convert FIWARE REST - CRUD Datasource (not possible using Pro Plugin Datasource).
+- Convert FIWARE REST - CRUD Datasource (not possible using Pro Plugin Datasource => use built in database and synchronize changes).
 
 
 ---------------------------------------------------------------------------------------------------
