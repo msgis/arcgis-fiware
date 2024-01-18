@@ -480,7 +480,7 @@ ConnectionPath of override PluginDatasourceTemplate.URI.Open may be used for del
 
 ...................................................................................................
 3.3.10/2024mmdd/rt: New Version.
-InstVer=ArcPro_3.2.49743 AddInX_3.3.09 ProPlugin_3.3.09 Common_3.3.33 MSI_
+InstVer=ArcPro_3.2.49743 AddInX_3.3.10 ProPlugin_3.3.10 Common_3.3.33 MSI_
 https://app.asana.com/0/1203876411184345/1205999834711034/
 
 - Configurable URI to get tables?
