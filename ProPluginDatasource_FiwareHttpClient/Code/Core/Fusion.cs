@@ -13,10 +13,14 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
         // 3.3.05/20231128/msGIS_FIWARE_rt_001: Integration ArcGIS PRO.
         private static readonly string m_ModuleName = "Fusion";
 
+        // 3.3.35/20240118/msGIS_ProApp_Common_rt_059: Plugin Version.
+        private static readonly string m_PluginVersion = "3.3.10";              // Adequate entry to Config.xml ESRI.Configuration <Version>.
+
         #region Common
 
         internal static Global m_Global { get; set; }
         internal static Messages m_Messages { get; set; }
+        internal static General m_General { get; set; }
         internal static Helper_Framework m_Helper_Framework { get; set; }
         internal static Fiware_RestApi_NetHttpClient m_Fiware_RestApi_NetHttpClient { get; set; }
 
@@ -37,8 +41,15 @@ namespace msGIS.ProPluginDatasource_FiwareHttpClient
                 {
                     Fusion.m_Global = new Global();
                     Fusion.m_Messages = new Messages(Fusion.m_Global);
+                    Fusion.m_General = new General(Fusion.m_Global, Fusion.m_Messages);
                     Fusion.m_Helper_Framework = new Helper_Framework(Fusion.m_Global, Fusion.m_Messages);
                     Fusion.m_Fiware_RestApi_NetHttpClient = new Fiware_RestApi_NetHttpClient(Fusion.m_Global, Fusion.m_Messages);
+
+                    // 3.3.35/20240118/msGIS_ProApp_Common_rt_059: Plugin Version.
+                    System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                    Fusion.m_Global.AssemblyName = assembly.GetName();
+                    // msGIS.ProPluginDatasource_FiwareHttpClient
+                    await Fusion.m_General.SetPluginInfoAsync(Fusion.m_Global.AssemblyName.Name, m_PluginVersion);
 
                     m_IsInitialized = true;
                 }
