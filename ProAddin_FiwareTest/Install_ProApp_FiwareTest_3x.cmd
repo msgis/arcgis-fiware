@@ -17,6 +17,15 @@ for /f "tokens=1,2 delims=: " %%a in ('powershell.exe -command "& {Get-ItemPrope
 )
 rem echo %ProVer%
 
+rem wmic datafile where name="C:\\Program Files\\ArcGIS\\Pro\\bin\\ArcGISPro.exe" get Version /value
+for /f "tokens=1,2 delims==" %%a in ('wmic datafile where "name='C:\\Program Files\\ArcGIS\\Pro\\bin\\ArcGISPro.exe'" get Version /value') do (
+	rem echo %%a - %%b
+	if "%%a" == "Version" (
+		set "ProVer=%%b"
+	)
+)
+rem echo %ProVer%
+
 Set InstVer=ArcPro_3.2.49743 AddInX_3.3.10 ProPlugin_3.3.10 Common_3.3.35 MSI_
 
 rem -----------------------------------------------------------------------------------------------------
