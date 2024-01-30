@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ArcGIS defaultAssembly="ProAddin_FiwareSummit.dll"
+        defaultNamespace="ProAddin_FiwareSummit"
+        xmlns="http://schemas.esri.com/DADF/Registry"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
+
+  <AddInInfo id="{3558010e-a420-4826-abab-7468797f6aa9}" version="1.0" desktopVersion="3.2.49743">
+    <Name>ProAddin_FiwareSummit</Name>   
+    <Description>ProAddin_FiwareSummit description</Description>
+    <Image>Images\AddinDesktop32.png</Image>
+    <Author>roman</Author>
+    <Company>Acme</Company>
+    <Date>1/30/2024 1:17:00 PM</Date>
+    <Subject>Framework</Subject>
+    <!-- Note subject can be one or more of these topics:
+                    Content, Framework, Editing, Geodatabase, Geometry, Geoprocessing, Layouts, Map Authoring, Map Exploration -->
+  </AddInInfo>
+
+  <modules>
+    <insertModule id="ProAddin_FiwareSummit_Module" className="Module1" autoLoad="false" caption="Module1">
+      <!-- uncomment to have the control hosted on a separate tab-->
+      <tabs>
+        <!--<tab id="ProAddin_FiwareSummit_Tab1" caption="New Tab">
+          <group refID="ProAddin_FiwareSummit_Group1"/>
+        </tab>-->
+      </tabs>
+              
+      <groups>
+        <!-- comment this out if you have no controls on the Addin tab to avoid
+              an empty group-->
+        <group id="ProAddin_FiwareSummit_Group1" caption="Group 1" appearsOnAddInTab="true">
+          <!-- host controls within groups -->
+        </group>
+      </groups>
+      
+      <controls>
+        <!-- add your controls here -->
+      </controls> 
+      
+    </insertModule>
+  </modules>
+</ArcGIS>
