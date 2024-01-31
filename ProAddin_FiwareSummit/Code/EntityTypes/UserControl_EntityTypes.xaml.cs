@@ -29,7 +29,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace msGIS.ProAddin_FiwareSummit
+namespace msGIS.ProApp_FiwareSummit
 {
     /// <summary>
     /// Interaction logic for UserControl_EntityTypes.xaml

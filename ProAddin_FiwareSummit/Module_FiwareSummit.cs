@@ -29,7 +29,7 @@ using System.Windows.Input;
 using System.Xml;
 using System.ComponentModel;
 
-namespace msGIS.ProAddin_FiwareSummit
+namespace msGIS.ProApp_FiwareSummit
 {
     internal class Module_FiwareSummit : Module
     {

@@ -9,8 +9,6 @@ echo ===========================================================================
 
 rem Build specific components if the dependency is set to reference (instead of project).
 Set BuildProApp_Common=0
-Set BuildProPluginDatasource_EntityFile=0
-Set BuildProPluginDatasource_FiwareHttpClient=0
 
 Set MakeInfo="MakeInfo.txt"
 echo on > %MakeInfo%

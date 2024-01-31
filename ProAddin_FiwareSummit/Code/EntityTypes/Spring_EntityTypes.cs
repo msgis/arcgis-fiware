@@ -34,7 +34,7 @@ using System.Windows.Data;
 using System.Globalization;
 using System.Windows.Input;
 
-namespace msGIS.ProAddin_FiwareSummit
+namespace msGIS.ProApp_FiwareSummit
 {
     internal class Spring_EntityTypes
     {

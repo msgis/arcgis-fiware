@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace msGIS.ProAddin_FiwareSummit
+namespace msGIS.ProApp_FiwareSummit
 {
     internal class Button_ProjectInfo : Button
     {

@@ -7,8 +7,8 @@
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <NoWarn>CA1416</NoWarn>
-    <AssemblyName>msGIS.ProAddin_FiwareSummit</AssemblyName>
-    <RootNamespace>msGIS.ProAddin_FiwareSummit</RootNamespace>
+    <AssemblyName>msGIS.ProApp_FiwareSummit</AssemblyName>
+    <RootNamespace>msGIS.ProApp_FiwareSummit</RootNamespace>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>C:\Work\Develop\Win64\ArcGIS Pro\ProApp-Common\msgis.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
