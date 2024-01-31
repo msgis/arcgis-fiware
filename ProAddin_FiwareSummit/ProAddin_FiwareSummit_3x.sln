@@ -3,7 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProAddin_FiwareSummit", "ProAddin_FiwareSummit.csproj", "{0E46A68F-3D88-4EE2-89DA-46C4A4E686EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "msGIS.ProAddin_FiwareSummit_3x", "msGIS.ProAddin_FiwareSummit_3x.csproj", "{0E46A68F-3D88-4EE2-89DA-46C4A4E686EC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3718DB78-BE51-4A50-83FA-3D960A1661E7} = {3718DB78-BE51-4A50-83FA-3D960A1661E7}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "msGIS.ProApp_Common_FIWARE_3x", "..\..\..\ProApp-Common\msGIS.ProApp_Common_FIWARE_3x.csproj", "{3718DB78-BE51-4A50-83FA-3D960A1661E7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +20,10 @@ Global
 		{0E46A68F-3D88-4EE2-89DA-46C4A4E686EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E46A68F-3D88-4EE2-89DA-46C4A4E686EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E46A68F-3D88-4EE2-89DA-46C4A4E686EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3718DB78-BE51-4A50-83FA-3D960A1661E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3718DB78-BE51-4A50-83FA-3D960A1661E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3718DB78-BE51-4A50-83FA-3D960A1661E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3718DB78-BE51-4A50-83FA-3D960A1661E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

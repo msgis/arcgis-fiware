@@ -1,0 +1,42 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="msGIS.ProAddin_FiwareSummit.UserControl_EntityTypes"
+             mc:Ignorable="d"
+             d:DesignHeight="400" d:DesignWidth="240">
+
+    <!--d:DataContext="{Binding Path=msGIS.ProAddin_FiwareSummit.Dockpane_SpringBoard}"-->
+
+    <Grid x:Name="Grid_EntityTypes" IsEnabled="False" Margin="0,12,0,0">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.ColumnSpan="2" Content="Datasource Connection" ToolTip="Datasource Connection e.g. https://fiwaredev.msgis.net" Margin="6,0,6,0" Padding="0,2,0,2" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="TextBox_ConnDs" Grid.Row="1" Grid.ColumnSpan="2" Text="" IsReadOnly="False" Margin="6" VerticalAlignment="Center"/>
+
+        <Label x:Name="Label_Count" Grid.Row="2" Grid.ColumnSpan="2" Content="Count" ToolTip="Entity objects count" Margin="6,0,6,0" Padding="0,2,0,6" VerticalContentAlignment="Center"/>
+
+        <!--<Label Grid.Row="3" Content="Entity type" ToolTip="Fiware entity type (table name)" Margin="6,0,6,0" Padding="0,6,0,6" VerticalAlignment="Center"/>-->
+        <Button x:Name="Button_GetEntities" Grid.Row="3" Content="Entities" ToolTip="Get entities and populate combo box to select desired type for the Datasource Connection" Margin="6" Padding="6,0,6,0"/>
+        <ComboBox x:Name="ComboBox_EntityTypes" Grid.Row="3" Grid.Column="1" Margin="6" VerticalAlignment="Center" MinWidth="80" IsReadOnly="True"/>
+
+        <Button x:Name="Button_EntityToLayer" Grid.Row="4" Grid.ColumnSpan="2" Content="Entity -> existed Layer" ToolTip="Delete all features on existed layer and create features of entity type" Margin="6" Padding="6,0,6,0"/>
+
+        <Label Content="Further development takes place separately!" ToolTip="roman.trojan@msgis.com" Grid.Row="11" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Orange"/>
+
+    </Grid>
+
+</UserControl>

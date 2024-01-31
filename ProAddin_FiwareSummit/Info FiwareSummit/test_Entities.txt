@@ -1,0 +1,17 @@
+https://fiwaredev.msgis.net/ngsi-ld/v1/types
+{"id":"urn:ngsi-ld:EntityTypeList:490ad7f0-9f18-11ee-91d3-0242ac120003","type":"EntityTypeList","typeList":["Hydrant","NgsiProxyConfig","Schwimmbad","Trinkbrunnen"]}
+
+{
+    "id": "urn:ngsi-ld:EntityTypeList:490ad7f0-9f18-11ee-91d3-0242ac120003",
+    "type": "EntityTypeList",
+    "typeList": [
+        "Hydrant",
+        "NgsiProxyConfig",
+        "Schwimmbad",
+        "Trinkbrunnen"
+    ]
+}
+
+
+https://fiwaredev.msgis.net/ngsi-ld/v1/entities?type=Hydrant&offset=0&limit=1
+[{"id":"urn:ngsi-ld:Hydrant:HYDRANTOGD.36612499","type":"Hydrant","OBJECTID":{"type":"Property","value":36612499},"location":{"type":"GeoProperty","value":{"type":"Point","coordinates":[16.45231,48.157012,161.78]}}},{"id":"urn:ngsi-ld:Hydrant:HYDRANTOGD.36612500","type":"Hydrant","OBJECTID":{"type":"Property","value":36612500},"location":{"type":"GeoProperty","value":{"type":"Point","coordinates":[16.369089,48.22773,162.98]}}}]

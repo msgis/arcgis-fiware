@@ -7,15 +7,46 @@
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <NoWarn>CA1416</NoWarn>
+    <AssemblyName>msGIS.ProAddin_FiwareSummit</AssemblyName>
+    <RootNamespace>msGIS.ProAddin_FiwareSummit</RootNamespace>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>C:\Work\Develop\Win64\ArcGIS Pro\ProApp-Common\msgis.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Config.daml" />
-    <Content Include="Images\AddInDesktop16.png" />
-    <Content Include="Images\AddInDesktop32.png" />
-    <Content Include="DarkImages\AddInDesktop16.png" />
-    <Content Include="DarkImages\AddInDesktop32.png" />
+    <Content Include="Images_AddInContent\AddInDesktop32.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Compile Remove="DarkImages\**" />
+    <Compile Remove="Images\**" />
+    <EmbeddedResource Remove="DarkImages\**" />
+    <EmbeddedResource Remove="Images\**" />
+    <None Remove="DarkImages\**" />
+    <None Remove="Images\**" />
+    <Page Remove="DarkImages\**" />
+    <Page Remove="Images\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Images_AddInContent\AddInDesktop32.png" />
+    <None Remove="Images_Resource\ButtonID_ProjectInfo_DS16.png" />
+    <None Remove="Images_Resource\ButtonID_ProjectInfo_DS32.png" />
+    <None Remove="Images_Resource\ButtonID_ProjectInfo_LS16.png" />
+    <None Remove="Images_Resource\ButtonID_ProjectInfo_LS32.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_DC16.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_DC32.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_DS16.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_DS32.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LC16.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LC32.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LS16.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LS32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\ProApp-Common\msGIS.ProApp_Common_FIWARE_3x.csproj" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="ArcGIS.Desktop.Framework">
       <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Framework.dll</HintPath>
@@ -87,6 +118,20 @@
       <CopyLocal>False</CopyLocal>
       <Private>False</Private>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images_Resource\ButtonID_ProjectInfo_DS16.png" />
+    <Resource Include="Images_Resource\ButtonID_ProjectInfo_DS32.png" />
+    <Resource Include="Images_Resource\ButtonID_ProjectInfo_LS16.png" />
+    <Resource Include="Images_Resource\ButtonID_ProjectInfo_LS32.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_DC16.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_DC32.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_DS16.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_DS32.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_LC16.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_LC32.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_LS16.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_LS32.png" />
   </ItemGroup>
   <Import Project="C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets" Condition="Exists('C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets') AND !Exists('Esri.ArcGISPro.Extensions.targets')" />
 </Project>
