@@ -5,13 +5,13 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
 
-  <AddInInfo id="{3558010e-a420-4826-abab-7468797f6aa9}" version="3.4.11" desktopVersion="3.2.49743">
+  <AddInInfo id="{3558010e-a420-4826-abab-7468797f6aa9}" version="3.4.12" desktopVersion="3.2.49743">
     <Name>msGIS.ProApp_FiwareSummit</Name>
     <Description>msGIS.ProApp_FiwareSummit</Description>
     <Image>Images_AddInContent\AddinDesktop32.png</Image>
     <Author>roman.trojan@msgis.com</Author>
     <Company>ms.GIS</Company>
-    <Date>31.01.2024 11:00:00</Date>
+    <Date>01.02.2024 10:30:00</Date>
     <Subject>Framework</Subject>
     <!-- Note subject can be one or more of these topics:
                     Content, Framework, Editing, Geodatabase, Geometry, Geoprocessing, Layouts, Map Authoring, Map Exploration -->

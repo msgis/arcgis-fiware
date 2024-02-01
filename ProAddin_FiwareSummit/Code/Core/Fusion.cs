@@ -51,12 +51,13 @@ namespace msGIS.ProApp_FiwareSummit
 
         #region Def
 
+        // 3.4.12/20240102/msGIS_FiwareSummit_rt_002: APRX SubPhrase "Test" --> "Summit" (2x APRX Summit/Lab).
         internal const string m_ProjectMainPhrase = "Fiware";
-        internal const string m_ProjectSubPhrase = "Test";
+        internal const string m_ProjectSubPhrase = "Summit";
 
         // Settings
         // internal const string m_FileNameSettings = "msGIS_Settings_FIWARE.json";
-        internal static string m_MapTag = "Fiware_Test";
+        internal static string m_MapTag = "Fiware_Summit";
 
         internal const string m_StateID_Main = "msGIS_FiwareSummit_StateID_Main";
         internal const string m_StateID_Menu = "msGIS_FiwareSummit_StateID_Menu";
@@ -74,6 +75,7 @@ namespace msGIS.ProApp_FiwareSummit
         // Get entity type:
         // https://fiwaredev.msgis.net/ngsi-ld/v1/entities?type=Hydrant&offset=0&limit=1
         // [{"id":"urn:ngsi-ld:Hydrant:HYDRANTOGD.36612499","type":"Hydrant","OBJECTID":{"type":"Property","value":36612499},"location":{"type":"GeoProperty","value":{"type":"Point","coordinates":[16.45231,48.157012,161.78]}}}]
+        // Empty default! - user has to know path to the server e.g. "https://fiwaredev.msgis.net"
         internal const int m_Datasource_Version = 3;
         internal const string m_DatasourceTypes = "/ngsi-ld/v1/types";
         internal const string m_DatasourceEntities = "/ngsi-ld/v1/entities?";

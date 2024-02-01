@@ -230,11 +230,17 @@ Configurable URI from the beginning
 Empty default! - user has to know path to the server e.g. "https://fiwaredev.msgis.net";
 
 ...................................................................................................
-3.4.12/2024mmdd/rt: New Version.
+3.4.12/20240201/rt: New Version.
+InstVer=ArcPro_3.2.49743 AddInX_3.4.12 Common_3.3.36 MSI_
+
+3.4.12/20240102/msGIS_FiwareSummit_rt_002: APRX SubPhrase "Test" --> "Summit" (2x APRX Summit/Lab).
+
+...................................................................................................
+3.4.13/2024mmdd/rt: New Version.
 InstVer=ArcPro_3.2.49743 AddInX_3.4.12 Common_3.3.36 MSI_
 
 
 ---------------------------------------------------------------------------------------------------
-rt: Next 3.4.12/2024mmdd/msGIS_FiwareSummit_rt_002: Xxx
+rt: Next 3.4.13/2024mmdd/msGIS_FiwareSummit_rt_003: Xxx
 To build an AddInX look for instructions at common folder.
 ---------------------------------------------------------------------------------------------------
