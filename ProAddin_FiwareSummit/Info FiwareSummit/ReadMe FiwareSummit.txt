@@ -18,15 +18,15 @@ Die Daten werden aus Rest-Api übernommen (als JSON-Objekte).
 ---------------------------------------------------------------------------------------------------
 APRX
 ---------------------------------------------------------------------------------------------------
-APRX muss "Fiware" und "Test" im Dateinamen beinhalten.
-z.B. "Smart City Wien Fiware_Test.aprx"
-Map muss den Tag "Fiware_Test" beinhalten.
+APRX muss "Fiware" und "Summit" im Dateinamen beinhalten.
+z.B. "Smart City Wien Fiware_Summit.aprx"
+Map muss den Tag "Fiware_Summit" beinhalten.
 Map muss einen Layer mit Tag "Entities_Points" und Typ Point beinhalten.
 
 ---------------------------------------------------------------------------------------------------
 esriAddInX
 ---------------------------------------------------------------------------------------------------
-AddInX "msGIS.ProApp_FiwareTest.esriAddinX" installieren.
+AddInX "msGIS.ProApp_FiwareSummit.esriAddinX" installieren.
 (doppelklicken, aus ArcPro, per GUID, mit MSBuild oder Visual Studio)
 Sollte in folgendem Ordner ersichtlich sein:
 C:\Users\[user]\Documents\ArcGIS\AddIns\ArcGISPro
@@ -41,8 +41,11 @@ ArcPro starten.
 Wenn alles korrekt abläuft müsste sich im Ribbon rechts eine Tab "FiwareSummit" zeigen.
 Tab "FiwareSummit" klicken, es müsste sich die Gruppe "FiwareSummit" mit weiteren Controls zeigen.
 Button "Info FiwareSummit" ist nur informativ.
+Der Layer mit Tag "Entities_Points" und Typ Point wird mit vorhandenen Daten geladen.
+
+Fiware Daten im Layer austauschen:
 Button "Entity Types" klicken, es müsste sich rechts eine Dockpane "FiwareSummit-Board" zeigen.
 Empty default! - user has to know path to the server e.g. "https://fiwaredev.msgis.net";
-
 Nun kann per ComboBox "Entity type" ausgewählt werden und die Daten entsprechend Entities in ArcGIS Pro dargestellt werden.
+
 Je nach Version der Entwicklung kann es verschiedene Abweichungen oder Erweiterungen geben.
