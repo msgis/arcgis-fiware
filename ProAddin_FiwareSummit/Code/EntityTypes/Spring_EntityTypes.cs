@@ -625,7 +625,7 @@ namespace msGIS.ProApp_FiwareSummit
                 await m_Helper_Progress.ShowProgressAsync("BuildFeaturesFromJsonEntitiesAsync", (uint)jArrayEntities.Count, true);
                 List<MapPoint> listFeatures = await QueuedTask.Run(async () =>
                 {
-                    return await Fusion.m_Fiware_RestApi_NetHttpClient.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities);
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities, connDatasource.tableName);
                 }, m_Helper_Progress.ProgressAssistant);
                 if (listFeatures == null)
                     return;

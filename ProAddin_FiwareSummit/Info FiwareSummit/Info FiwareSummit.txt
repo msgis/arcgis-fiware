@@ -239,6 +239,8 @@ InstVer=ArcPro_3.2.49743 AddInX_3.4.12 Common_3.3.36 MSI_
 3.4.13/2024mmdd/rt: New Version.
 InstVer=ArcPro_3.2.49743 AddInX_3.4.12 Common_3.3.36 MSI_
 
+3.3.38/20240220/msGIS_ProApp_Common_rt_064: Fiware entities warnings.
+3.3.38/20240220/msGIS_ProApp_Common_rt_065: Check if entity type is valid data table.
 
 ---------------------------------------------------------------------------------------------------
 rt: Next 3.4.13/2024mmdd/msGIS_FiwareSummit_rt_003: Xxx
