@@ -518,6 +518,11 @@ namespace msGIS.ProApp_FiwareSummit
                 // Get entity types.
                 List<string> listEntityTypes = await Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(connDatasource);
 
+                // 3.3.15/20240223/msGIS_FiwareReader_rt_038: Read "NgsiProxyConfig" to get "eventsource" GUID into "ConnDatasource" for each table.
+                // connDatasource.eventsource = "+++++";
+                // Adopt eventsource to the connection.
+                await PrepareConnectionStringAsync(connDatasource);
+
                 // Populate combo wih entity types.
                 await PopulateEntityTypesAsync(listEntityTypes);
             }
