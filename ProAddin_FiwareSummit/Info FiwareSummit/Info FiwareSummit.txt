@@ -37,16 +37,20 @@ Das ist im Prinzip ein nicht Endender HTTP Request welcher die JSON Daten als St
 Diese Schnittstelle muss ich allerdings noch konfigurieren/aufsetzen.
 
 ...................................................................................................
-Die Event Source APIS sind nun auch aktiv. Es gibt eine Schnittstelle für jeden Type:
-Trinkbrunnen: https://fiwaredev.msgis.net/ngsi-proxy/eventsource/de70cc50-f969-11ed-926f-1bdc1977e2d3
-Schwimmbad: https://fiwaredev.msgis.net/ngsi-proxy/eventsource/de731640-f969-11ed-926f-1bdc1977e2d3
-Hydrant: https://fiwaredev.msgis.net/ngsi-proxy/eventsource/de72ef30-f969-11ed-926f-1bdc1977e2d3
+Die Event Source APIS sind nun auch aktiv.
+Es gibt Konfiguration für eine Schnittstelle für jeden Type.
+https://fiwaredev.msgis.net/ngsi-ld/v1/entities?type=NgsiProxyConfig
+[
+    {"id":"urn:ngsi-ld:NgsiProxyConfig:Schwimmbad","type":"NgsiProxyConfig","eventSourceUrl":{"type":"Property","value":"https://fiwaredev.msgis.net/ngsi-proxy/eventsource/baf84980-bacd-11ee-b6ad-ff767c1d4508"}},
+    {"id":"urn:ngsi-ld:NgsiProxyConfig:Hydrant","type":"NgsiProxyConfig","eventSourceUrl":{"type":"Property","value":"https://fiwaredev.msgis.net/ngsi-proxy/eventsource/baf73810-bacd-11ee-b6ad-ff767c1d4508"}},
+    {"id":"urn:ngsi-ld:NgsiProxyConfig:Trinkbrunnen","type":"NgsiProxyConfig","eventSourceUrl":{"type":"Property","value":"https://fiwaredev.msgis.net/ngsi-proxy/eventsource/baf87090-bacd-11ee-b6ad-ff767c1d4508"}}
+]
 
 Die APIs stellen jeweils eine Server-sent Events (auch EventSource genannt) API zur Verfügung, siehe https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events.
 Sobald sich eine Entity ändert, wird eine neue Nachricht über die API gesendet. Eine Nachricht/Message sieht dann so aus: 
-
+https://fiwaredev.msgis.net/ngsi-proxy/eventsource/<GUID>
 {
-  "callback_id": "de7909b0-f969-11ed-926f-1bdc1977e2d3",
+  "callback_id": "<GUID>",
   "payload": "{\"id\":\"urn:ngsi-ld:Notification:08f53bf0-f96a-11ed-b542-0242ac120003\",\"type\":\"Notification\",\"subscriptionId\":\"urn:ngsi-ld:Subscription:de7b7358-f969-11ed-b542-0242ac120003\",\"notifiedAt\":\"2023-05-23T13:02:13.045Z\",\"data\":[{\"id\":\"urn:ngsi-ld:Hydrant:HYDRANTOGD.36612499\",\"type\":\"Hydrant\",\"OBJECTID\":36612499,\"location\":{\"type\":\"Point\",\"coordinates\":[16.45231,48.157012,161.78]}}]}",
   "headers": {
     "host": "ngsiproxy:3000",
@@ -77,7 +81,7 @@ Request auf die EventSource URL und ständig nach Änderungen lauschen.
 zb:
 using (var client = new HttpClient())
 {
-  using (var stream = await client.GetStreamAsync("https://fiwaredev.msgis.net/ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3"))
+  using (var stream = await client.GetStreamAsync("https://fiwaredev.msgis.net/ngsi-proxy/eventsource/<GUID>"))
   {    using (var reader = new StreamReader(stream))
     {
       while (true)
@@ -100,7 +104,7 @@ AF:
 Hier ein Beispiel mit CURL:
 
 zuerst den Request zur EventSource URL (hier für die Hydranten), dieser bleibt offen:
-curl -N "https://fiwaredev.msgis.net/ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3"
+curl -N "https://fiwaredev.msgis.net/ngsi-proxy/eventsource/<GUID>"
 und dann ein Attribut eines Hydranten in einem anderen Command Window oder über Postman ändern:
 curl --location --request PATCH 'https://fiwaredev.msgis.net/ngsi-ld/v1/entities/urn:ngsi-ld:Hydrant:HYDRANTOGD.36612499/attrs/OBJECTID' --header 'Content-Type: application/json' --data '{"value": 36612499,"type": "Property"}'
 In der Ausgabe des ersten Commands sollte dann ein neues Event gesendet werden mit einem "data" Anteil. Dort ist die id des geänderten Objektes (etwas verschachtelt).

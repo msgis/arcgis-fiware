@@ -79,7 +79,7 @@ namespace msGIS.ProApp_FiwareSummit
         internal const int m_Datasource_Version = 3;
         internal const string m_DatasourceTypes = "/ngsi-ld/v1/types";
         internal const string m_DatasourceEntities = "/ngsi-ld/v1/entities?";
-        internal const string m_DatasourceEventsource = "/ngsi-proxy/eventsource/e9e01390-fae3-11ed-926f-1bdc1977e2d3";
+        internal const string m_DatasourceEventsource = "/ngsi-proxy/eventsource/<GUID>";
         internal static SpatialReference m_DatasourceSR = SpatialReferences.WGS84;
         internal const int m_DatasourceLimit = 960;         // Limit > 0 max 2000 e.g. 60 test 960 ok > 1200 error
         internal const int m_DatasourceOffset = 0;          // Start from e.g. 0 max <= limit
