@@ -283,7 +283,7 @@ namespace msGIS.ProApp_FiwareSummit
                 };
 
                 // Let the connection to be adopted by user.
-                await PrepareConnectionStringAsync(connDatasource);
+                connDatasource = await PrepareConnectionStringAsync(connDatasource);
 
                 // Set activated.
                 await Fusion.m_Helper_Framework.SetPlugInStateAsync(Fusion.m_StateID_IsEnableEntityTypes, true);
@@ -313,11 +313,11 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
-        private async Task EnableControlsAsync(bool hasConn, bool hasTable)
+        private async Task EnableControlsAsync(bool hasConn, bool hasTable, bool hasConfig)
         {
             try
             {
-                bool enableCreate = hasConn && hasTable;
+                bool enableCreate = hasConn && hasTable && hasConfig;
                 ComboBox_EntityTypes.IsEnabled = hasConn;
                 Button_GetEntities.IsEnabled = hasConn;
                 Button_EntityToLayer.IsEnabled = enableCreate;
@@ -329,7 +329,7 @@ namespace msGIS.ProApp_FiwareSummit
         }
         private async Task EnableControlsAsync()
         {
-            await EnableControlsAsync(false, false);
+            await EnableControlsAsync(false, false, false);
         }
         private async Task EnableControlsAsync(Fiware_RestApi_NetHttpClient.ConnDatasource connDatasource)
         {
@@ -340,7 +340,8 @@ namespace msGIS.ProApp_FiwareSummit
                 string connPath = await Fusion.m_Fiware_RestApi_NetHttpClient.GetConnectionPathAsync(connDatasource);
                 bool hasConn = (!string.IsNullOrEmpty(connPath));
                 bool hasTable = (!string.IsNullOrEmpty(connDatasource.tableName));
-                await EnableControlsAsync(hasConn, hasTable);
+                bool hasConfig = ((m_JArrayConfig != null) && (m_JArrayConfig.Count > 0));
+                await EnableControlsAsync(hasConn, hasTable, hasConfig);
             }
             catch (Exception ex)
             {
@@ -386,7 +387,12 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
-        private async Task PrepareConnectionStringAsync(Fiware_RestApi_NetHttpClient.ConnDatasource connDatasource)
+        private async Task<Fiware_RestApi_NetHttpClient.ConnDatasource> PrepareConnectionStringAsync(Fiware_RestApi_NetHttpClient.ConnDatasource connDatasource)
+        {
+            string entityType = string.Empty;
+            return await PrepareConnectionStringAsync(connDatasource, entityType);
+        }
+        private async Task<Fiware_RestApi_NetHttpClient.ConnDatasource> PrepareConnectionStringAsync(Fiware_RestApi_NetHttpClient.ConnDatasource connDatasource, string tableName)
         {
             try
             {
@@ -394,17 +400,40 @@ namespace msGIS.ProApp_FiwareSummit
                 await CleanEntitiesCountAsync(false);
                 await EnableControlsAsync();
 
+                // Set table name to entity type and build the connection.
+                connDatasource.tableName = tableName;
+
+                // 3.3.15/20240223/msGIS_FiwareReader_rt_038: Read "NgsiProxyConfig" to get "eventsource" GUID into "ConnDatasource" for each table.
+                if (!string.IsNullOrEmpty(tableName))
+                {
+                    if ((m_JArrayConfig == null) || (m_JArrayConfig.Count <= 0))
+                    {
+                        await Fusion.m_Messages.AlertAsyncMsg("ProxyConfig is not obtained yet!", "Press Entities-Button to retrieve ProxyConfig first.", "PopulateTableNamesAsync");
+                    }
+                    else
+                    {
+                        string eventSource = await Fusion.m_Fiware_RestApi_NetHttpClient.GetEventSourceFromJsonConfigEntriesAsync(m_JArrayConfig, tableName);
+                        if (string.IsNullOrEmpty(eventSource))
+                        {
+                            await Fusion.m_Messages.AlertAsyncMsg($"ProxyConfig could not be obtained for {tableName}!", m_JArrayConfig.ToString(), "PopulateTableNamesAsync");
+                        }
+                        // Adopt eventsource to the connection.
+                        connDatasource.eventsource = eventSource;
+                    }
+                }
+
                 // Let the connection to be adopted by user.
                 string jsonStrConnPath = await Fusion.m_Fiware_RestApi_NetHttpClient.BuildConnDsAsync(connDatasource);
                 TextBox_ConnDs.Text = jsonStrConnPath;
 
                 await EnableControlsAsync(connDatasource);
 
-                return;
+                return connDatasource;
             }
             catch (Exception ex)
             {
                 await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "PrepareConnectionStringAsync");
+                return connDatasource;
             }
         }
 
@@ -447,8 +476,9 @@ namespace msGIS.ProApp_FiwareSummit
                 // Set table name to entity type and build the connection.
                 connDatasource.tableName = entityType;
 
-                // Let the connection to be adopted by user.
-                await PrepareConnectionStringAsync(connDatasource);
+                // Adopt tableName as entityType to the connection.
+                // 3.3.15/20240223/msGIS_FiwareReader_rt_038: Read "NgsiProxyConfig" to get "eventsource" GUID into "ConnDatasource" for each table.
+                connDatasource = await PrepareConnectionStringAsync(connDatasource, entityType);
             }
             catch (Exception ex)
             {
@@ -472,7 +502,7 @@ namespace msGIS.ProApp_FiwareSummit
             }
             catch (Exception ex)
             {
-                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "SetEntityTypeAsync");
+                await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "ChangeConnDsAsync");
             }
         }
 
@@ -494,7 +524,7 @@ namespace msGIS.ProApp_FiwareSummit
                     if (enable)
                     {
                         ComboBox_EntityTypes.IsEnabled = true;
-                        await Fusion.m_Messages.AlertAsyncMsg($"{ComboBox_EntityTypes.Items.Count} entities found.", "Select desired entity type from combo box to modify the Datasource Connection.", "ExtractConnDsAsync");
+                        await Fusion.m_Messages.AlertAsyncMsg($"{ComboBox_EntityTypes.Items.Count} entities found.", "Select desired entity type from combo box to modify the Datasource Connection.", "PopulateEntityTypesAsync");
                     }
                 }
             }
@@ -504,8 +534,10 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
+        private JArray m_JArrayConfig = null;
         private async Task PopulateTableNamesAsync()
         {
+            Helper_Progress m_Helper_Progress = null;
             try
             {
                 Tuple<bool, Fiware_RestApi_NetHttpClient.ConnDatasource> tupleConn = await ExtractConnDsAsync();
@@ -517,11 +549,33 @@ namespace msGIS.ProApp_FiwareSummit
 
                 // Get entity types.
                 List<string> listEntityTypes = await Fusion.m_Fiware_RestApi_NetHttpClient.ReadEntityTypesFromRestApiAsync(connDatasource);
+                if ((listEntityTypes == null) || (listEntityTypes.Count <= 0))
+                {
+                    await Fusion.m_Messages.AlertAsyncMsg("No entity types found!", "PopulateTableNamesAsync");
+                    return;
+                }
 
                 // 3.3.15/20240223/msGIS_FiwareReader_rt_038: Read "NgsiProxyConfig" to get "eventsource" GUID into "ConnDatasource" for each table.
-                // connDatasource.eventsource = "+++++";
-                // Adopt eventsource to the connection.
-                await PrepareConnectionStringAsync(connDatasource);
+                bool isProgressCancelable = false;
+                m_Helper_Progress = new Helper_Progress(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework, isProgressCancelable);
+                await m_Helper_Progress.ShowProgressAsync("GetProxyConfigFromRestApiAsync", 900000, false);
+                m_JArrayConfig = await QueuedTask.Run(async () =>
+                {
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetProxyConfigFromRestApiAsync(connDatasource);
+                }, m_Helper_Progress.ProgressAssistant);
+                if ((m_JArrayConfig == null) || (m_JArrayConfig.Count <= 0))
+                {
+                    await Fusion.m_Messages.AlertAsyncMsg("ProxyConfig could not be retrieved!", "PopulateTableNamesAsync");
+                    return;
+                }
+                if (m_JArrayConfig.Count != listEntityTypes.Count)
+                {
+                    await Fusion.m_Messages.AlertAsyncMsg($"ProxyConfig entries count={m_JArrayConfig.Count} <> entity types count={listEntityTypes.Count}!", "PopulateTableNamesAsync");
+                    return;
+                }
+
+                // Display confirmed=extracted connection.
+                connDatasource = await PrepareConnectionStringAsync(connDatasource);
 
                 // Populate combo wih entity types.
                 await PopulateEntityTypesAsync(listEntityTypes);
@@ -529,6 +583,14 @@ namespace msGIS.ProApp_FiwareSummit
             catch (Exception ex)
             {
                 await Fusion.m_Messages.PushAsyncEx(ex, m_ModuleName, "PopulateTableNamesAsync");
+            }
+            finally
+            {
+                if (m_Helper_Progress != null)
+                {
+                    await m_Helper_Progress.FinishProgressAsync();
+                    m_Helper_Progress = null;
+                }
             }
         }
 
@@ -608,8 +670,12 @@ namespace msGIS.ProApp_FiwareSummit
                 if (connDatasource.path == null)
                     return;
 
-                if (string.IsNullOrEmpty(connDatasource.tableName))
+                string tableName = connDatasource.tableName;
+                if (string.IsNullOrEmpty(tableName))
                     throw new Exception("Empty table name!");
+
+                // 3.3.15/20240223/msGIS_FiwareReader_rt_038: Read "NgsiProxyConfig" to get "eventsource" GUID into "ConnDatasource" for each table.
+                connDatasource = await PrepareConnectionStringAsync(connDatasource, tableName);
 
                 await CleanEntitiesCountAsync(true);
 
@@ -630,14 +696,14 @@ namespace msGIS.ProApp_FiwareSummit
                 await m_Helper_Progress.ShowProgressAsync("BuildFeaturesFromJsonEntitiesAsync", (uint)jArrayEntities.Count, true);
                 List<MapPoint> listFeatures = await QueuedTask.Run(async () =>
                 {
-                    return await Fusion.m_Fiware_RestApi_NetHttpClient.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities, connDatasource.tableName);
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities, tableName);
                 }, m_Helper_Progress.ProgressAssistant);
                 if (listFeatures == null)
                     return;
 
 
                 // Op - Prepare
-                string opName = $"BuildFeaturesFromJsonEntitiesAsync {connDatasource.tableName}";
+                string opName = $"BuildFeaturesFromJsonEntitiesAsync {tableName}";
                 bool selectNewFeatures = false;
                 EditOperation editOperation = await Fusion.m_Helper_Op.PrepareOpAsync(opName, selectNewFeatures);
                 if (editOperation == null)
@@ -668,7 +734,7 @@ namespace msGIS.ProApp_FiwareSummit
                     return;
 
                 await ShowFeaturesCountAsync(listFeatures.Count);
-                await Fusion.m_Messages.AlertAsyncMsg($"{connDatasource.tableName} was exported to Layer.", m_LayerEntitiesPoints.Name, "Entities --> Layer Features");
+                await Fusion.m_Messages.AlertAsyncMsg($"{tableName} was exported to Layer.", m_LayerEntitiesPoints.Name, "Entities --> Layer Features");
             }
             catch (Exception ex)
             {
