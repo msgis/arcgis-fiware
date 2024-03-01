@@ -16,8 +16,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Config.daml" />
-    <Content Include="Images_AddInContent\Fiware_Large_DS.png" />
-    <Content Include="Images_AddInContent\Fiware_Large_LS.png" />
+    <Content Include="Images_AddInContent\FiwareSummit_Large_DS.png" />
+    <Content Include="Images_AddInContent\FiwareSummit_Large_LS.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="DarkImages\**" />
@@ -31,8 +31,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Images_AddInContent\AddInDesktop32.png" />
-    <None Remove="Images_AddInContent\Fiware_Large_DS.png" />
-    <None Remove="Images_AddInContent\Fiware_Large_LS.png" />
+    <None Remove="Images_AddInContent\FiwareSummit_Large_DS.png" />
+    <None Remove="Images_AddInContent\FiwareSummit_Large_LS.png" />
     <None Remove="Images_Resource\ButtonID_ProjectInfo_DS16.png" />
     <None Remove="Images_Resource\ButtonID_ProjectInfo_DS32.png" />
     <None Remove="Images_Resource\ButtonID_ProjectInfo_LS16.png" />
