@@ -247,6 +247,7 @@ Set InstVer=ArcPro_3.2.49743 AddInX_3.4.13 Common_3.3.38 MSI_
 3.3.38/20240220/msGIS_ProApp_Common_rt_065: Check if entity type is valid data table.
 
 3.3.15/20240223/msGIS_FiwareReader_rt_038: Read "NgsiProxyConfig" to get "eventsource" GUID into "ConnDatasource" for each table.
+3.3.15/20240223/msGIS_FiwareReader_rt_039: Dynamically update changes on data table (NGSI data) using EventSource/payload task.
 
 ...................................................................................................
 3.4.14/2024mmdd/rt: New Version.

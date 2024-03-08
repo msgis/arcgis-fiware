@@ -280,6 +280,7 @@ namespace msGIS.ProApp_FiwareSummit
                     limit = Fusion.m_DatasourceLimit,
                     offset = Fusion.m_DatasourceOffset,
                     tableName = "",                                         // Empty default! - table name has to be known or selected after data query!
+                    tableUpdateIdName = "",                                 // Table/Update OID name (SE_SDO_ROWID, OBJECTID, ?)
                 };
 
                 // Let the connection to be adopted by user.
@@ -412,6 +413,12 @@ namespace msGIS.ProApp_FiwareSummit
                     }
                     else
                     {
+                        // 3.3.15/20240223/msGIS_FiwareReader_rt_039: Dynamically update changes on data table (NGSI data) using EventSource/payload task.
+                        bool showMsg = true;
+                        Tuple<bool, string> tuple_Entity = await Fusion.m_Fiware_RestApi_NetHttpClient.GetValidEntityOIdAsync(connDatasource, tableName, showMsg);
+                        if ((tuple_Entity != null) && (tuple_Entity.Item1))
+                            connDatasource.tableUpdateIdName = tuple_Entity.Item2;
+
                         string eventSource = await Fusion.m_Fiware_RestApi_NetHttpClient.GetEventSourceFromJsonConfigEntriesAsync(m_JArrayConfig, tableName);
                         if (string.IsNullOrEmpty(eventSource))
                         {
@@ -673,6 +680,9 @@ namespace msGIS.ProApp_FiwareSummit
                 string tableName = connDatasource.tableName;
                 if (string.IsNullOrEmpty(tableName))
                     throw new Exception("Empty table name!");
+                string tableUpdateIdName = connDatasource.tableUpdateIdName;
+                if (string.IsNullOrEmpty(tableUpdateIdName))
+                    throw new Exception("Empty table updateId!");
 
                 // 3.3.15/20240223/msGIS_FiwareReader_rt_038: Read "NgsiProxyConfig" to get "eventsource" GUID into "ConnDatasource" for each table.
                 connDatasource = await PrepareConnectionStringAsync(connDatasource, tableName);
@@ -696,7 +706,7 @@ namespace msGIS.ProApp_FiwareSummit
                 await m_Helper_Progress.ShowProgressAsync("BuildFeaturesFromJsonEntitiesAsync", (uint)jArrayEntities.Count, true);
                 List<MapPoint> listFeatures = await QueuedTask.Run(async () =>
                 {
-                    return await Fusion.m_Fiware_RestApi_NetHttpClient.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities, tableName);
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities, tableName, tableUpdateIdName);
                 }, m_Helper_Progress.ProgressAssistant);
                 if (listFeatures == null)
                     return;
