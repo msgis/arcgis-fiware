@@ -77,13 +77,14 @@ namespace msGIS.ProApp_FiwareSummit
         // [{"id":"urn:ngsi-ld:Hydrant:HYDRANTOGD.36612499","type":"Hydrant","OBJECTID":{"type":"Property","value":36612499},"location":{"type":"GeoProperty","value":{"type":"Point","coordinates":[16.45231,48.157012,161.78]}}}]
         // Empty default! - user has to know path to the server e.g. "https://fiwaredev.msgis.net"
         internal const int m_Datasource_Version = 3;
+        internal const string m_DatasourcePath = "https://fiwaredev.msgis.net";                 // Example for the test - user can set path to any server! e.g. "https://fiwaredev.msgis.net"
         internal const string m_DatasourceTypes = "/ngsi-ld/v1/types";
         internal const string m_DatasourceEntities = "/ngsi-ld/v1/entities?";
-        internal const string m_DatasourceEventsource = "/ngsi-proxy/eventsource/<GUID>";
+        internal const string m_DatasourceEventsource = "/ngsi-proxy/eventsource/<GUID>";       // Place holder only! - will be exchanged from ProxyConfig.
         internal static SpatialReference m_DatasourceSR = SpatialReferences.WGS84;
-        internal const int m_DatasourceLimit = 960;         // Limit > 0 max 2000 e.g. 60 test 960 ok > 1200 error
-        internal const int m_DatasourceOffset = 0;          // Start from e.g. 0 max <= limit
-
+        internal const int m_DatasourceLimit = 960;                                             // Limit > 0 max 2000 e.g. 60 test 960 ok > 1200 error
+        internal const int m_DatasourceOffset = 0;                                              // Start from e.g. 0 max <= limit
+        internal const string m_DatasourceUpdateOId = "<OID>";                                  // Place holder only! - will be exchanged for Table/Update OID name (SE_SDO_ROWID, OBJECTID, ?)
 
         #endregion Def
 

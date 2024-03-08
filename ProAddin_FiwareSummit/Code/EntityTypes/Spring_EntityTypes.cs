@@ -269,18 +269,19 @@ namespace msGIS.ProApp_FiwareSummit
 
                 // ConnectionPath of override PluginDatasourceTemplate.URI.Open may be used for delivery complex parameters to proceed with tasks on tables and entries.
                 // 3.3.10/20240118/msGIS_FIWARE_rt_015: Restructuring AddInX.
+                Uri uriPath = (string.IsNullOrEmpty(Fusion.m_DatasourcePath)) ? null : new Uri(Fusion.m_DatasourcePath, UriKind.Absolute);
                 Fiware_RestApi_NetHttpClient.ConnDatasource connDatasource = new Fiware_RestApi_NetHttpClient.ConnDatasource
                 {
                     version = Fusion.m_Datasource_Version,
-                    path = null,                                            // Empty default! - user has to know the server e.g. "https://fiwaredev.msgis.net";
+                    path = uriPath,                                         // Example for the test - user can set path to any server! e.g. "https://fiwaredev.msgis.net"
                     types = Fusion.m_DatasourceTypes,
                     entities = Fusion.m_DatasourceEntities,
-                    eventsource = Fusion.m_DatasourceEventsource,
+                    eventsource = Fusion.m_DatasourceEventsource,           // Place holder only! - will be exchanged from ProxyConfig.
                     sr_default = Fusion.m_DatasourceSR,
                     limit = Fusion.m_DatasourceLimit,
                     offset = Fusion.m_DatasourceOffset,
                     tableName = "",                                         // Empty default! - table name has to be known or selected after data query!
-                    tableUpdateIdName = "",                                 // Table/Update OID name (SE_SDO_ROWID, OBJECTID, ?)
+                    tableUpdateIdName = Fusion.m_DatasourceUpdateOId,       // Place holder only! - will be exchanged for Table/Update OID name (SE_SDO_ROWID, OBJECTID, ?)
                 };
 
                 // Let the connection to be adopted by user.
@@ -444,7 +445,7 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
-        private async Task<Tuple<bool, Fiware_RestApi_NetHttpClient.ConnDatasource>> ExtractConnDsAsync()
+        private async Task<Tuple<bool, Fiware_RestApi_NetHttpClient.ConnDatasource>> ExtractConnDsAsync(bool isOnInit)
         {
             try
             {
@@ -454,7 +455,7 @@ namespace msGIS.ProApp_FiwareSummit
                     return null;
                 }
 
-                return await Fusion.m_Fiware_RestApi_NetHttpClient.ExtractConnDsAsync(TextBox_ConnDs.Text);
+                return await Fusion.m_Fiware_RestApi_NetHttpClient.ExtractConnDsAsync(TextBox_ConnDs.Text, isOnInit);
             }
             catch (Exception ex)
             {
@@ -463,7 +464,7 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
-        private async Task SetEntityTypeAsync(string entityType)
+        private async Task SetEntityTypeAsync(string entityType, bool isOnInit)
         {
             try
             {
@@ -473,7 +474,7 @@ namespace msGIS.ProApp_FiwareSummit
                     throw new Exception("Empty entity type!");
 
                 // Pull existing connection parameters.
-                Tuple<bool, Fiware_RestApi_NetHttpClient.ConnDatasource> tupleConn = await ExtractConnDsAsync();
+                Tuple<bool, Fiware_RestApi_NetHttpClient.ConnDatasource> tupleConn = await ExtractConnDsAsync(isOnInit);
                 if ((tupleConn == null) || (!tupleConn.Item1))
                     return;
                 Fiware_RestApi_NetHttpClient.ConnDatasource connDatasource = tupleConn.Item2;
@@ -493,14 +494,14 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
-        private async Task ChangeConnDsAsync()
+        private async Task ChangeConnDsAsync(bool isOnInit)
         {
             try
             {
                 await EnableControlsAsync();
 
                 // Pull existing connection parameters.
-                Tuple<bool, Fiware_RestApi_NetHttpClient.ConnDatasource> tupleConn = await ExtractConnDsAsync();
+                Tuple<bool, Fiware_RestApi_NetHttpClient.ConnDatasource> tupleConn = await ExtractConnDsAsync(isOnInit);
                 if ((tupleConn == null) || (!tupleConn.Item1))
                     return;
                 Fiware_RestApi_NetHttpClient.ConnDatasource connDatasource = tupleConn.Item2;
@@ -542,12 +543,12 @@ namespace msGIS.ProApp_FiwareSummit
         }
 
         private JArray m_JArrayConfig = null;
-        private async Task PopulateTableNamesAsync()
+        private async Task PopulateTableNamesAsync(bool isOnInit)
         {
             Helper_Progress m_Helper_Progress = null;
             try
             {
-                Tuple<bool, Fiware_RestApi_NetHttpClient.ConnDatasource> tupleConn = await ExtractConnDsAsync();
+                Tuple<bool, Fiware_RestApi_NetHttpClient.ConnDatasource> tupleConn = await ExtractConnDsAsync(isOnInit);
                 if ((tupleConn == null) || (!tupleConn.Item1))
                     return;
                 Fiware_RestApi_NetHttpClient.ConnDatasource connDatasource = tupleConn.Item2;
@@ -608,7 +609,10 @@ namespace msGIS.ProApp_FiwareSummit
             try
             {
                 if (m_IsActivated_EntityTypes)
-                    await ChangeConnDsAsync();
+                {
+                    bool isOnInit = false;
+                    await ChangeConnDsAsync(isOnInit);
+                }
             }
             catch (Exception ex)
             {
@@ -641,7 +645,8 @@ namespace msGIS.ProApp_FiwareSummit
                 if (HasComboEntityTypeSelected)
                 {
                     string entityType = ComboBox_EntityTypes.SelectedItem.ToString();
-                    await SetEntityTypeAsync(entityType);
+                    bool isOnInit = false;
+                    await SetEntityTypeAsync(entityType, isOnInit);
                 }
             }
             catch (Exception ex)
@@ -652,12 +657,14 @@ namespace msGIS.ProApp_FiwareSummit
 
         private async void Button_GetEntities_Click(object sender, RoutedEventArgs e)
         {
-            await PopulateTableNamesAsync();
+            bool isOnInit = true;
+            await PopulateTableNamesAsync(isOnInit);
         }
 
         private async void Button_EntityToLayer_Click(object sender, RoutedEventArgs e)
         {
-            await EntityToLayerAsync();
+            bool isOnInit = false;
+            await EntityToLayerAsync(isOnInit);
         }
 
         #endregion Controls
@@ -665,12 +672,12 @@ namespace msGIS.ProApp_FiwareSummit
 
         #region Processing
 
-        private async Task EntityToLayerAsync()
+        private async Task EntityToLayerAsync(bool isOnInit)
         {
             Helper_Progress m_Helper_Progress = null;
             try
             {
-                Tuple<bool, Fiware_RestApi_NetHttpClient.ConnDatasource> tupleConn = await ExtractConnDsAsync();
+                Tuple<bool, Fiware_RestApi_NetHttpClient.ConnDatasource> tupleConn = await ExtractConnDsAsync(isOnInit);
                 if ((tupleConn == null) || (!tupleConn.Item1))
                     return;
                 Fiware_RestApi_NetHttpClient.ConnDatasource connDatasource = tupleConn.Item2;
