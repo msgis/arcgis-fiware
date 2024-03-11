@@ -249,6 +249,8 @@ namespace msGIS.ProApp_FiwareSummit
                     return;
                 if (!await Fusion.m_Helper_Layer.HasLayerFieldAsync(m_LayerEntitiesPoints, Fusion.m_FieldNameEntitiesPoints_SHAPE, FieldType.Geometry))
                     return;
+                if (!await Fusion.m_Helper_Layer.HasLayerFieldAsync(m_LayerEntitiesPoints, Fusion.m_FieldNameEntitiesPoints_NAME, FieldType.String))
+                    return;
 
                 // Sichtbarkeit für die verwendeten Layers setzen.
                 await SetDependentVisibilitiesAsync(m_LayerEntitiesPoints);
@@ -281,7 +283,7 @@ namespace msGIS.ProApp_FiwareSummit
                     limit = Fusion.m_DatasourceLimit,
                     offset = Fusion.m_DatasourceOffset,
                     tableName = "",                                         // Empty default! - table name has to be known or selected after data query!
-                    tableUpdateIdName = Fusion.m_DatasourceUpdateOId,       // Place holder only! - will be exchanged for Table/Update OID name (SE_SDO_ROWID, OBJECTID, ?)
+                    tableOIdName = Fusion.m_DatasourceUpdateOId,       // Place holder only! - will be exchanged for Table/Update OID name (SE_SDO_ROWID, OBJECTID, ?)
                 };
 
                 // Let the connection to be adopted by user.
@@ -418,7 +420,7 @@ namespace msGIS.ProApp_FiwareSummit
                         bool showMsg = true;
                         Tuple<bool, string> tuple_Entity = await Fusion.m_Fiware_RestApi_NetHttpClient.GetValidEntityOIdAsync(connDatasource, tableName, showMsg);
                         if ((tuple_Entity != null) && (tuple_Entity.Item1))
-                            connDatasource.tableUpdateIdName = tuple_Entity.Item2;
+                            connDatasource.tableOIdName = tuple_Entity.Item2;
 
                         string eventSource = await Fusion.m_Fiware_RestApi_NetHttpClient.GetEventSourceFromJsonConfigEntriesAsync(m_JArrayConfig, tableName);
                         if (string.IsNullOrEmpty(eventSource))
@@ -687,8 +689,8 @@ namespace msGIS.ProApp_FiwareSummit
                 string tableName = connDatasource.tableName;
                 if (string.IsNullOrEmpty(tableName))
                     throw new Exception("Empty table name!");
-                string tableUpdateIdName = connDatasource.tableUpdateIdName;
-                if (string.IsNullOrEmpty(tableUpdateIdName))
+                string tableOIdName = connDatasource.tableOIdName;
+                if (string.IsNullOrEmpty(tableOIdName))
                     throw new Exception("Empty table updateId!");
 
                 // 3.3.15/20240223/msGIS_FiwareReader_rt_038: Read "NgsiProxyConfig" to get "eventsource" GUID into "ConnDatasource" for each table.
@@ -711,11 +713,13 @@ namespace msGIS.ProApp_FiwareSummit
 
                 m_Helper_Progress = new Helper_Progress(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework, isProgressCancelable);
                 await m_Helper_Progress.ShowProgressAsync("BuildFeaturesFromJsonEntitiesAsync", (uint)jArrayEntities.Count, true);
-                List<MapPoint> listFeatures = await QueuedTask.Run(async () =>
+                SpatialReference spatialReference_Layer = null;
+                Fiware_RestApi_NetHttpClient.DataEntities dataEntities = await QueuedTask.Run(async () =>
                 {
-                    return await Fusion.m_Fiware_RestApi_NetHttpClient.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities, tableName, tableUpdateIdName);
+                    spatialReference_Layer = m_LayerEntitiesPoints.GetSpatialReference();
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities, tableName, tableOIdName, connDatasource.sr_default);
                 }, m_Helper_Progress.ProgressAssistant);
-                if (listFeatures == null)
+                if (dataEntities.dataTable == null)
                     return;
 
 
@@ -742,15 +746,34 @@ namespace msGIS.ProApp_FiwareSummit
                 editOperation.Delete(m_LayerEntitiesPoints, oids);
 
                 // EntitiesToFeatures
-                foreach (MapPoint mapPoint in listFeatures)
+                foreach (DataRow dataRow in dataEntities.dataTable.Rows)
                 {
-                    editOperation.Create(m_LayerEntitiesPoints, mapPoint);
+                    var buffer = dataRow[Fiware_RestApi_NetHttpClient.m_DataColumn_Geom] as Byte[];
+                    Geometry geometry = MapPointBuilderEx.FromEsriShape(buffer, dataEntities.sr);
+                    if (geometry == null)
+                        continue;
+                    if (spatialReference_Layer != null)
+                    {
+                        if (!dataEntities.sr.Equals(spatialReference_Layer))
+                            geometry = GeometryEngine.Instance.Project(geometry, spatialReference_Layer);
+                    }
+                    if (geometry.GeometryType == GeometryType.Point)
+                    {
+                        MapPoint mapPoint = (MapPoint)geometry;
+
+                        Dictionary<string, object> dicValues = new Dictionary<string, object>();
+                        object value = dataRow[dataEntities.tableOIdName];
+                        dicValues.Add(Fusion.m_FieldNameEntitiesPoints_OBJECTID, value);
+                        dicValues.Add(Fusion.m_FieldNameEntitiesPoints_NAME, value);
+
+                        editOperation.Create(m_LayerEntitiesPoints, mapPoint, dicValues);
+                    }
                 }
 
                 if (!await Fusion.m_Helper_Op.ExecOpAsync(editOperation))
                     return;
 
-                await ShowFeaturesCountAsync(listFeatures.Count);
+                await ShowFeaturesCountAsync(dataEntities.dataTable.Rows.Count);
                 await Fusion.m_Messages.AlertAsyncMsg($"{tableName} was exported to Layer.", m_LayerEntitiesPoints.Name, "Entities --> Layer Features");
             }
             catch (Exception ex)

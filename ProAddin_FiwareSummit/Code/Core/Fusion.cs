@@ -102,8 +102,9 @@ namespace msGIS.ProApp_FiwareSummit
         private static Layer m_LayerEntitiesPoints = null;
         internal static string m_LayerTagEntitiesPoints = "Entities_Points";
         //internal static string m_LayerNameEntitiesPoints = "Entities_Points";
-        internal static string m_FieldNameEntitiesPoints_OBJECTID = "OBJECTID";                      // OID
-        internal static string m_FieldNameEntitiesPoints_SHAPE = "SHAPE";                            // Geometry
+        internal static string m_FieldNameEntitiesPoints_OBJECTID = "OBJECTID";                     // OBJECTID
+        internal static string m_FieldNameEntitiesPoints_SHAPE = "SHAPE";                           // Geometry
+        internal static string m_FieldNameEntitiesPoints_NAME = "NAME";                             // NAME (Entity OId)
 
         #endregion Data
 
