@@ -763,7 +763,7 @@ namespace msGIS.ProApp_FiwareSummit
 
                         Dictionary<string, object> dicValues = new Dictionary<string, object>();
                         object value = dataRow[dataEntities.tableOIdName];
-                        dicValues.Add(Fusion.m_FieldNameEntitiesPoints_OBJECTID, value);
+                        // dicValues.Add(Fusion.m_FieldNameEntitiesPoints_OBJECTID, value);
                         dicValues.Add(Fusion.m_FieldNameEntitiesPoints_NAME, value);
 
                         editOperation.Create(m_LayerEntitiesPoints, mapPoint, dicValues);
