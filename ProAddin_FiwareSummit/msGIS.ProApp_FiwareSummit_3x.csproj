@@ -33,18 +33,18 @@
     <None Remove="Images_AddInContent\AddInDesktop32.png" />
     <None Remove="Images_AddInContent\FiwareSummit_Large_DS.png" />
     <None Remove="Images_AddInContent\FiwareSummit_Large_LS.png" />
-    <None Remove="Images_Resource\ButtonID_ProjectInfo_DS16.png" />
-    <None Remove="Images_Resource\ButtonID_ProjectInfo_DS32.png" />
-    <None Remove="Images_Resource\ButtonID_ProjectInfo_LS16.png" />
-    <None Remove="Images_Resource\ButtonID_ProjectInfo_LS32.png" />
-    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_DC16.png" />
-    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_DC32.png" />
-    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_DS16.png" />
-    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_DS32.png" />
-    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LC16.png" />
-    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LC32.png" />
-    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LS16.png" />
-    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LS32.png" />
+    <None Remove="Images_Resource\ButtonID_ProjectInfo_DS_Small.png" />
+    <None Remove="Images_Resource\ButtonID_ProjectInfo_DS_Large.png" />
+    <None Remove="Images_Resource\ButtonID_ProjectInfo_LS_Small.png" />
+    <None Remove="Images_Resource\ButtonID_ProjectInfo_LS_Large.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_DC_Small.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_DC_Large.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_DS_Small.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_DS_Large.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LC_Small.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LC_Large.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LS_Small.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LS_Large.png" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -125,18 +125,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images_Resource\ButtonID_ProjectInfo_DS16.png" />
-    <Resource Include="Images_Resource\ButtonID_ProjectInfo_DS32.png" />
-    <Resource Include="Images_Resource\ButtonID_ProjectInfo_LS16.png" />
-    <Resource Include="Images_Resource\ButtonID_ProjectInfo_LS32.png" />
-    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_DC16.png" />
-    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_DC32.png" />
-    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_DS16.png" />
-    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_DS32.png" />
-    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_LC16.png" />
-    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_LC32.png" />
-    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_LS16.png" />
-    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_LS32.png" />
+    <Resource Include="Images_Resource\ButtonID_ProjectInfo_DS_Small.png" />
+    <Resource Include="Images_Resource\ButtonID_ProjectInfo_DS_Large.png" />
+    <Resource Include="Images_Resource\ButtonID_ProjectInfo_LS_Small.png" />
+    <Resource Include="Images_Resource\ButtonID_ProjectInfo_LS_Large.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_DC_Small.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_DC_Large.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_DS_Small.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_DS_Large.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_LC_Small.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_LC_Large.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_LS_Small.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_LS_Large.png" />
   </ItemGroup>
   <Import Project="C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets" Condition="Exists('C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets') AND !Exists('Esri.ArcGISPro.Extensions.targets')" />
 </Project>
