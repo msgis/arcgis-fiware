@@ -717,7 +717,7 @@ namespace msGIS.ProApp_FiwareSummit
                 Fiware_RestApi_NetHttpClient.DataEntities dataEntities = await QueuedTask.Run(async () =>
                 {
                     spatialReference_Layer = m_LayerEntitiesPoints.GetSpatialReference();
-                    return await Fusion.m_Fiware_RestApi_NetHttpClient.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities, tableName, tableOIdName, connDatasource.sr_default);
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities, connDatasource);
                 }, m_Helper_Progress.ProgressAssistant);
                 if (dataEntities.dataTable == null)
                     return;
@@ -749,12 +749,12 @@ namespace msGIS.ProApp_FiwareSummit
                 foreach (DataRow dataRow in dataEntities.dataTable.Rows)
                 {
                     var buffer = dataRow[Fiware_RestApi_NetHttpClient.m_DataColumn_Geom] as Byte[];
-                    Geometry geometry = MapPointBuilderEx.FromEsriShape(buffer, dataEntities.sr);
+                    Geometry geometry = MapPointBuilderEx.FromEsriShape(buffer, dataEntities.connDatasource.sr_default);
                     if (geometry == null)
                         continue;
                     if (spatialReference_Layer != null)
                     {
-                        if (!dataEntities.sr.Equals(spatialReference_Layer))
+                        if (!dataEntities.connDatasource.sr_default.Equals(spatialReference_Layer))
                             geometry = GeometryEngine.Instance.Project(geometry, spatialReference_Layer);
                     }
                     if (geometry.GeometryType == GeometryType.Point)
@@ -762,7 +762,7 @@ namespace msGIS.ProApp_FiwareSummit
                         MapPoint mapPoint = (MapPoint)geometry;
 
                         Dictionary<string, object> dicValues = new Dictionary<string, object>();
-                        object value = dataRow[dataEntities.tableOIdName];
+                        object value = dataRow[dataEntities.connDatasource.tableOIdName];
                         // dicValues.Add(Fusion.m_FieldNameEntitiesPoints_OBJECTID, value);
                         dicValues.Add(Fusion.m_FieldNameEntitiesPoints_NAME, value);
 
