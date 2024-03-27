@@ -1,5 +1,5 @@
 ===================================================================================================
-Pro FiwareSummit
+Pro FIWARE Summit
 
 Project:
 https://app.asana.com/0/1204285422260806/1204530723943675/
@@ -9,11 +9,6 @@ Author:
 mailto:roman.trojan@msgis.com
 
 ===================================================================================================
-
----------------------------------------------------------------------------------------------------
-Entity-Types
----------------------------------------------------------------------------------------------------
-Die Daten werden aus Rest-Api übernommen (als JSON-Objekte).
 
 ---------------------------------------------------------------------------------------------------
 APRX
@@ -26,7 +21,7 @@ Map muss einen Layer mit Tag "Entities_Points" und Typ Point beinhalten.
 ---------------------------------------------------------------------------------------------------
 esriAddInX
 ---------------------------------------------------------------------------------------------------
-AddInX "msGIS.ProApp_FiwareSummit.esriAddinX" installieren.
+AddInX "msGIS.ProApp_FiwareReader.esriAddinX" installieren.
 (doppelklicken, aus ArcPro, per GUID, mit MSBuild oder Visual Studio)
 Sollte in folgendem Ordner ersichtlich sein:
 C:\Users\[user]\Documents\ArcGIS\AddIns\ArcGISPro
@@ -38,14 +33,13 @@ ArcPro
 ---------------------------------------------------------------------------------------------------
 ArcPro starten.
 (aprx doppelklicken oder ArcGISPro.exe und aprx auswählen)
-Wenn alles korrekt abläuft müsste sich im Ribbon rechts eine Tab "FiwareSummit" zeigen.
-Tab "FiwareSummit" klicken, es müsste sich die Gruppe "FiwareSummit" mit weiteren Controls zeigen.
-Button "Info FiwareSummit" ist nur informativ.
 Der Layer mit Tag "Entities_Points" und Typ Point wird mit vorhandenen Daten geladen.
+Die Daten werden aus Rest-Api übernommen (JSON-Objekte).
 
-Fiware Daten im Layer austauschen:
-Button "Entity Types" klicken, es müsste sich rechts eine Dockpane "FiwareSummit-Board" zeigen.
-Empty default! - user has to know path to the server e.g. "https://fiwaredev.msgis.net";
-Nun kann per ComboBox "Entity type" ausgewählt werden und die Daten entsprechend Entities in ArcGIS Pro dargestellt werden.
+Fiware Daten können nun im Layer ausgetauscht werden.
+Button "Info FiwareSummit" ist nur informativ.
+Im Tab "FiwareSummit" Button "Entity Types" klicken, es müsste sich rechts eine Dockpane "FiwareSummit-Board" zeigen.
+Server "Path" einstellen ("https://fiwaredev.msgis.net").
+Nun kann per ComboBox "Entity type" ausgewählt werden.
 
 Je nach Version der Entwicklung kann es verschiedene Abweichungen oder Erweiterungen geben.
