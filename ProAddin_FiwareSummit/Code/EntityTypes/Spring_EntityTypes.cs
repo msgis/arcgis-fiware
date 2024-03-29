@@ -418,7 +418,7 @@ namespace msGIS.ProApp_FiwareSummit
                     {
                         // 3.3.15/20240223/msGIS_FiwareReader_rt_039: Dynamically update changes on data table (NGSI data) using EventSource/payload task.
                         bool showMsg = true;
-                        Tuple<bool, string> tuple_Entity = await Fusion.m_Fiware_RestApi_NetHttpClient.GetValidEntityOIdAsync(connDatasource, tableName, showMsg);
+                        Tuple<bool, string> tuple_Entity = await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntityOIdNameAsync(connDatasource, tableName, showMsg);
                         if ((tuple_Entity != null) && (tuple_Entity.Item1))
                             connDatasource.tableOIdName = tuple_Entity.Item2;
 
@@ -698,12 +698,24 @@ namespace msGIS.ProApp_FiwareSummit
 
                 await CleanEntitiesCountAsync(true);
 
+                // 3.3.15/20240328/msGIS_FiwareReader_rt_040: Manage loaded features amount to reduce memory consumption.
+                Envelope initialEnvelopeRequestCoordExtent = null;
+                bool getDataForCurrentMapExtenOnly = false;
+                if (getDataForCurrentMapExtenOnly)
+                {
+                    // MapView mapView = MapView.Active;
+                    MapView mapView = await Fusion.m_General.WaitUntilActivatedMapViewAsync("EntityToLayerAsync");
+                    if (mapView == null)
+                        throw new Exception("MapView is not ready to use (null)!");
+                    initialEnvelopeRequestCoordExtent = mapView.Extent;
+                }
+
                 bool isProgressCancelable = false;
                 m_Helper_Progress = new Helper_Progress(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework, isProgressCancelable);
                 await m_Helper_Progress.ShowProgressAsync("GetEntitiesFromRestApiAsync", 900000, false);
                 JArray jArrayEntities = await QueuedTask.Run(async () =>
                 {
-                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(connDatasource);
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(connDatasource, initialEnvelopeRequestCoordExtent);
                 }, m_Helper_Progress.ProgressAssistant);
 
                 if (jArrayEntities == null)
