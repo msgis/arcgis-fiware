@@ -418,7 +418,7 @@ namespace msGIS.ProApp_FiwareSummit
                     {
                         // 3.3.15/20240223/msGIS_FiwareReader_rt_039: Dynamically update changes on data table (NGSI data) using EventSource/payload task.
                         bool showMsg = true;
-                        Tuple<bool, string> tuple_Entity = await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntityOIdNameAsync(connDatasource, tableName, showMsg);
+                        Tuple<bool, string> tuple_Entity = await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntityOIdNameAsync(connDatasource, showMsg);
                         if ((tuple_Entity != null) && (tuple_Entity.Item1))
                             connDatasource.tableOIdName = tuple_Entity.Item2;
 
