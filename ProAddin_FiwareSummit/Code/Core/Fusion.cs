@@ -19,7 +19,7 @@ namespace msGIS.ProApp_FiwareSummit
         // 3.3.06/20231214/msGIS_FIWARE_rt_006: Rename FiwareSummit to FiwareSummit/EntityFile (Project, Namespace, Module, ID, Plugin).
         // 3.4.11/20240131/msGIS_FiwareSummit_rt_001: Separately Summit/Lab.
         private static readonly string m_ModuleName = "Fusion";
-        public static readonly string m_AppropriateCommonVersion = "3.3.38";
+        public static readonly string m_AppropriateCommonVersion = "3.3.39";
 
         #region Common
 
