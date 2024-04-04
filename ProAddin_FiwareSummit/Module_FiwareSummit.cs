@@ -118,7 +118,7 @@ namespace msGIS.ProApp_FiwareSummit
                 // 3.3.19/20230120/msGIS_ProApp_Common_rt_032: AssemblyName.Version 3x --> AddInInfo.Version.
                 // string caption = $"{Fusion.m_Global.m_AssemblyName.Name} {Fusion.m_Global.m_AssemblyName.Version}";
                 // (Caption to long)    // await Fusion.m_Helper_Framework.SetPlugInCaptionAsync(Fusion.m_GroupID_General, caption);
-                await Fusion.m_General.SetAddInInfoAsync();
+                await Fusion.m_General.SetAddInInfoAsync(Fusion.m_AppropriateCommonVersion);
 
                 Fusion.m_Global.m_StateID_IsInProgress = "msGIS_FiwareSummit_StateID_IsInProgress";
                 Fusion.m_Global.m_IdPrefix = "msGIS_FiwareSummit_";
