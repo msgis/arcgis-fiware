@@ -679,6 +679,11 @@ namespace msGIS.ProApp_FiwareSummit
             Helper_Progress m_Helper_Progress = null;
             try
             {
+                // MapView mapView = MapView.Active;
+                MapView mapView = await Fusion.m_General.WaitUntilActivatedMapViewAsync("EntityToLayerAsync");
+                if (mapView == null)
+                    throw new Exception("MapView is not ready to use (null)!");
+
                 Tuple<bool, Fiware_RestApi_NetHttpClient.ConnDatasource> tupleConn = await ExtractConnDsAsync(isOnInit);
                 if ((tupleConn == null) || (!tupleConn.Item1))
                     return;
@@ -698,24 +703,15 @@ namespace msGIS.ProApp_FiwareSummit
 
                 await CleanEntitiesCountAsync(true);
 
-                // 3.3.15/20240328/msGIS_FiwareReader_rt_040: Manage loaded features amount to reduce memory consumption.
-                Envelope initialEnvelopeRequestCoordExtent = null;
-                bool getDataForCurrentMapExtenOnly = false;
-                if (getDataForCurrentMapExtenOnly)
-                {
-                    // MapView mapView = MapView.Active;
-                    MapView mapView = await Fusion.m_General.WaitUntilActivatedMapViewAsync("EntityToLayerAsync");
-                    if (mapView == null)
-                        throw new Exception("MapView is not ready to use (null)!");
-                    initialEnvelopeRequestCoordExtent = mapView.Extent;
-                }
+                // 3.3.15/20240328/msGIS_FiwareReader_rt_040: Manage loaded features amount to increase performance.
+                Envelope requestedExtent = mapView.Extent;
 
                 bool isProgressCancelable = false;
                 m_Helper_Progress = new Helper_Progress(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework, isProgressCancelable);
                 await m_Helper_Progress.ShowProgressAsync("GetEntitiesFromRestApiAsync", 900000, false);
                 JArray jArrayEntities = await QueuedTask.Run(async () =>
                 {
-                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(connDatasource, initialEnvelopeRequestCoordExtent);
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(connDatasource, requestedExtent);
                 }, m_Helper_Progress.ProgressAssistant);
 
                 if (jArrayEntities == null)
@@ -729,7 +725,7 @@ namespace msGIS.ProApp_FiwareSummit
                 Fiware_RestApi_NetHttpClient.DataEntities dataEntities = await QueuedTask.Run(async () =>
                 {
                     spatialReference_Layer = m_LayerEntitiesPoints.GetSpatialReference();
-                    return await Fusion.m_Fiware_RestApi_NetHttpClient.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities, connDatasource);
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities, connDatasource, requestedExtent);
                 }, m_Helper_Progress.ProgressAssistant);
                 if (dataEntities.dataTable == null)
                     return;

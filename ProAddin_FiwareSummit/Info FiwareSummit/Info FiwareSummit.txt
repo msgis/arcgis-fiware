@@ -253,6 +253,9 @@ Set InstVer=ArcPro_3.2.49743 AddInX_3.4.13 Common_3.3.38 MSI_
 3.4.14/2024mmdd/rt: New Version.
 Set InstVer=ArcPro_3.2.49743 AddInX_3.4.14 Common_3.3.39 MSI_
 
+3.3.15/20240328/msGIS_FiwareReader_rt_040: Manage loaded features amount to increase performance.
+3.3.15/20240404/msGIS_FiwareReader_rt_041: Ensure appropriate plugin version.
+
 
 ---------------------------------------------------------------------------------------------------
 rt: Next 3.4.14/2024mmdd/msGIS_FiwareSummit_rt_003: Xxx
