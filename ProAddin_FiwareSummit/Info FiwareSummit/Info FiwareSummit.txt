@@ -250,14 +250,23 @@ Set InstVer=ArcPro_3.2.49743 AddInX_3.4.13 Common_3.3.38 MSI_
 3.3.15/20240223/msGIS_FiwareReader_rt_039: Dynamically update changes on data table (NGSI data) using EventSource/payload task.
 
 ...................................................................................................
-3.4.14/2024mmdd/rt: New Version.
+3.4.14/20240411/rt: New Version.
 Set InstVer=ArcPro_3.2.49743 AddInX_3.4.14 Common_3.3.39 MSI_
+
+3.3.39/20240226/msGIS_ProApp_Common_rt_067: Plugin Version.
+3.3.39/20240315/msGIS_ProApp_Common_rt_068: Images 16/32 --> Small/Large.
+3.3.39/20240404/msGIS_ProApp_Common_rt_069: Ensure appropriate common version.
 
 3.3.15/20240328/msGIS_FiwareReader_rt_040: Manage loaded features amount to increase performance.
 3.3.15/20240404/msGIS_FiwareReader_rt_041: Ensure appropriate plugin version.
 
+...................................................................................................
+3.4.15/2024mmdd/rt: New Version.
+Set InstVer=ArcPro_3.2.49743 AddInX_3.4.15 Common_3.3.40 MSI_
+
+
 
 ---------------------------------------------------------------------------------------------------
-rt: Next 3.4.14/2024mmdd/msGIS_FiwareSummit_rt_003: Xxx
+rt: Next 3.4.15/2024mmdd/msGIS_FiwareSummit_rt_003: Xxx
 To build an AddInX look for instructions at common folder.
 ---------------------------------------------------------------------------------------------------
