@@ -26,12 +26,14 @@ for /f "tokens=1,2 delims==" %%a in ('wmic datafile where "name='C:\\Program Fil
 )
 rem echo %ProVer%
 
-Set InstVer=ArcPro_3.2.49743 AddInX_3.4.14 Common_3.3.39 MSI_
+Set BetaVer=3.4.14
+Set InstVer=ArcPro_3.2.49743 AddInX_%BetaVer% Common_3.3.39 MSI_
 
 rem -----------------------------------------------------------------------------------------------------
 rem Testing %date% %time% by %username% on %computername%
 rem -----------------------------------------------------------------------------------------------------
-Set PathTest="\\md.local\p$\MS\Testhouse\arcgispro\FiwareSummit-arcgispro\FiwareSummit %InstVer% (%username% %computername% ArcGISPro_%ProVer%)"
+Set PathDevelop=".\FiwareSummit %InstVer% (%username% %computername% ArcGISPro_%ProVer%)"
+Set PathTest="\\md.local\p$\MS\Testhouse\arcgispro\FiwareSummit-arcgispro\FiwareSummit_%BetaVer%"
 if exist %PathTest% (
 	rmdir /S /Q %PathTest%
 )
@@ -42,5 +44,6 @@ if not exist %PathTest% (
 xcopy /I /Y /R ".\Info FiwareSummit\ReadMe FiwareSummit.txt" %PathTest%
 Set PathAddInX=.
 xcopy /I /Y /R %PathAddInX%\bin\Release\net6.0-windows\*.esriAddinX %PathTest%
+xcopy /I /Y /R %PathAddInX%\bin\Release\net6.0-windows\*.esriAddinX %PathDevelop%
 
 :End
