@@ -725,14 +725,16 @@ namespace msGIS.ProApp_FiwareSummit
                 m_Helper_Progress = new Helper_Progress(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework, isProgressCancelable);
                 await m_Helper_Progress.ShowProgressAsync("BuildFeaturesFromJsonEntitiesAsync", (uint)jArrayEntities.Count, true);
                 SpatialReference spatialReference_Layer = null;
-                Fiware_RestApi_NetHttpClient.DataEntities dataEntities = await QueuedTask.Run(async () =>
+                Tuple<bool, Fiware_RestApi_NetHttpClient.DataEntities> tupleDataEntities = await QueuedTask.Run(async () =>
                 {
                     spatialReference_Layer = m_LayerEntitiesPoints.GetSpatialReference();
                     return await Fusion.m_Fiware_RestApi_NetHttpClient.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities, connDatasource, requestedExtent);
                 }, m_Helper_Progress.ProgressAssistant);
+                if ((tupleDataEntities == null) || (!tupleDataEntities.Item1))
+                    return;
+                Fiware_RestApi_NetHttpClient.DataEntities dataEntities = tupleDataEntities.Item2;
                 if (dataEntities.dataTable == null)
                     return;
-
 
                 // Op - Prepare
                 string opName = $"BuildFeaturesFromJsonEntitiesAsync {tableName}";
