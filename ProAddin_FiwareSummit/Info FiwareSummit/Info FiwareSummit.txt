@@ -261,13 +261,17 @@ Set InstVer=ArcPro_3.2.49743 AddInX_3.4.14 Common_3.3.39 MSI_
 3.3.15/20240404/msGIS_FiwareReader_rt_041: Ensure appropriate plugin version.
 
 ...................................................................................................
-3.4.15/2024mmdd/rt: New Version.
+3.4.15/20240506/rt: New Version.
 Set InstVer=ArcPro_3.2.49743 AddInX_3.4.15 Common_3.3.40 MSI_
 
 3.3.16/20240412/msGIS_FiwareReader_rt_043: Get TableUpdateId from Attributes object.
 
+...................................................................................................
+3.4.16/2024mmdd/rt: New Version.
+Set InstVer=ArcPro_3.2.49743 AddInX_3.4.15 Common_3.3.40 MSI_
+
 
 ---------------------------------------------------------------------------------------------------
-rt: Next 3.4.15/2024mmdd/msGIS_FiwareSummit_rt_003: Xxx
+rt: Next 3.4.16/2024mmdd/msGIS_FiwareSummit_rt_003: Xxx
 To build an AddInX look for instructions at common folder.
 ---------------------------------------------------------------------------------------------------

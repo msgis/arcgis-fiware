@@ -26,8 +26,8 @@ for /f "tokens=1,2 delims==" %%a in ('wmic datafile where "name='C:\\Program Fil
 )
 rem echo %ProVer%
 
-Set BetaVer=3.4.14
-Set InstVer=ArcPro_3.2.49743 AddInX_%BetaVer% Common_3.3.39 MSI_
+Set BetaVer=3.4.15
+Set InstVer=ArcPro_3.2.49743 AddInX_%BetaVer% Common_3.3.40 MSI_
 
 rem -----------------------------------------------------------------------------------------------------
 rem Testing %date% %time% by %username% on %computername%
