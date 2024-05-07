@@ -408,10 +408,8 @@ namespace msGIS.ProApp_FiwareSummit
                 // Set table name to entity type and build the connection.
                 connDatasource.tableName = tableName;
 
-                // 3.3.15/20240223/msGIS_FiwareReader_rt_038: Read "NgsiProxyConfig" to get "eventsource" GUID into "ConnDatasource" for each table.
                 if (!string.IsNullOrEmpty(tableName))
                 {
-                    // 3.3.15/20240223/msGIS_FiwareReader_rt_039: Dynamically update changes on data table (NGSI data) using EventSource/payload task.
                     bool showMsg = true;
                     Tuple<bool, Fiware_RestApi_NetHttpClient.DataEntities> tuple_Entity = await Fusion.m_Fiware_RestApi_NetHttpClient.SetConnTableOIdName_AndCheckFeature_FromFirstEntityAsync(connDatasource, showMsg);
                     if ((tuple_Entity != null) && (tuple_Entity.Item1))
@@ -429,6 +427,8 @@ namespace msGIS.ProApp_FiwareSummit
                         }
                         else
                         {
+                            // 3.3.15/20240223/msGIS_FiwareReader_rt_038: Read "NgsiProxyConfig" to get "eventsource" GUID into "ConnDatasource" for each table.
+                            // 3.3.15/20240223/msGIS_FiwareReader_rt_039: Dynamically update changes on data table (NGSI data) using EventSource/payload task.
                             string eventSource = await Fusion.m_Fiware_RestApi_NetHttpClient.GetEventSourceFromJsonConfigEntriesAsync(m_JArrayConfig, tableName);
                             if (string.IsNullOrEmpty(eventSource))
                             {
