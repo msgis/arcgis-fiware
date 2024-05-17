@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows8.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <NoWarn>CA1416</NoWarn>
+    <AssemblyName>msGIS.ProApp_FiwareSummit</AssemblyName>
+    <RootNamespace>msGIS.ProApp_FiwareSummit</RootNamespace>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>C:\Work\Develop\Win64\ArcGIS Pro\ProApp-Common\msgis.snk</AssemblyOriginatorKeyFile>
+    <AssemblyVersion>3.4.14</AssemblyVersion>
+    <FileVersion>3.4.14</FileVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Config.daml" />
+    <Content Include="Images_AddInContent\FiwareSummit_DS_Large.png" />
+    <Content Include="Images_AddInContent\FiwareSummit_LS_Large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="DarkImages\**" />
+    <Compile Remove="Images\**" />
+    <EmbeddedResource Remove="DarkImages\**" />
+    <EmbeddedResource Remove="Images\**" />
+    <None Remove="DarkImages\**" />
+    <None Remove="Images\**" />
+    <Page Remove="DarkImages\**" />
+    <Page Remove="Images\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Images_AddInContent\AddInDesktop32.png" />
+    <None Remove="Images_AddInContent\FiwareSummit_DS_Large.png" />
+    <None Remove="Images_AddInContent\FiwareSummit_LS_Large.png" />
+    <None Remove="Images_Resource\ButtonID_ProjectInfo_DS_Small.png" />
+    <None Remove="Images_Resource\ButtonID_ProjectInfo_DS_Large.png" />
+    <None Remove="Images_Resource\ButtonID_ProjectInfo_LS_Small.png" />
+    <None Remove="Images_Resource\ButtonID_ProjectInfo_LS_Large.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_DC_Small.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_DC_Large.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_DS_Small.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_DS_Large.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LC_Small.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LC_Large.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LS_Small.png" />
+    <None Remove="Images_Resource\ButtonID_TS_EntityTypes_LS_Large.png" />
+    <None Remove="MakeInfo.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\ProApp-Common\msGIS.ProApp_Common_FIWARE_3_3.csproj" />
+    <ProjectReference Include="..\..\fiwareLab-arcgispro\ProAddin_Vault_FIWARE\msGIS.ProApp_Vault_FIWARE_3_3.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ArcGIS.Desktop.Framework">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Framework.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Core">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Core.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Core">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Core\ArcGIS.Desktop.Core.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Mapping">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Mapping\ArcGIS.Desktop.Mapping.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Catalog">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Catalog\ArcGIS.Desktop.Catalog.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Editing">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Editing\ArcGIS.Desktop.Editing.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Extensions">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\DesktopExtensions\ArcGIS.Desktop.Extensions.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.GeoProcessing">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\GeoProcessing\ArcGIS.Desktop.GeoProcessing.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Layouts">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Layout\ArcGIS.Desktop.Layouts.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Shared.Wpf">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Shared.Wpf.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Ribbon.Wpf">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Ribbon.Wpf.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.DataGrid.Contrib.Wpf">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.DataGrid.Contrib.Wpf.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Resources">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Resources.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.ItemIndex">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ESRI.ArcGIS.ItemIndex.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images_Resource\ButtonID_ProjectInfo_DS_Small.png" />
+    <Resource Include="Images_Resource\ButtonID_ProjectInfo_DS_Large.png" />
+    <Resource Include="Images_Resource\ButtonID_ProjectInfo_LS_Small.png" />
+    <Resource Include="Images_Resource\ButtonID_ProjectInfo_LS_Large.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_DC_Small.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_DC_Large.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_DS_Small.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_DS_Large.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_LC_Small.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_LC_Large.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_LS_Small.png" />
+    <Resource Include="Images_Resource\ButtonID_TS_EntityTypes_LS_Large.png" />
+  </ItemGroup>
+  <Import Project="C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets" Condition="Exists('C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets') AND !Exists('Esri.ArcGISPro.Extensions.targets')" />
+</Project>

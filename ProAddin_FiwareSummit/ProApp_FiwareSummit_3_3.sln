@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34902.65
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "msGIS.ProApp_FiwareSummit_3_3", "msGIS.ProApp_FiwareSummit_3_3.csproj", "{58F8550A-3FB5-4AC3-9DD0-ED6D99540763}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "msGIS.ProApp_Vault_FIWARE_3_3", "..\..\fiwareLab-arcgispro\ProAddin_Vault_FIWARE\msGIS.ProApp_Vault_FIWARE_3_3.csproj", "{A949A716-B653-41AA-B855-8E4B525C5CC8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "msGIS.ProApp_Common_FIWARE_3_3", "..\..\..\ProApp-Common\msGIS.ProApp_Common_FIWARE_3_3.csproj", "{B62E06C9-6C71-46D3-8BBE-3FCE76D398F9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{58F8550A-3FB5-4AC3-9DD0-ED6D99540763}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58F8550A-3FB5-4AC3-9DD0-ED6D99540763}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58F8550A-3FB5-4AC3-9DD0-ED6D99540763}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58F8550A-3FB5-4AC3-9DD0-ED6D99540763}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A949A716-B653-41AA-B855-8E4B525C5CC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A949A716-B653-41AA-B855-8E4B525C5CC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A949A716-B653-41AA-B855-8E4B525C5CC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A949A716-B653-41AA-B855-8E4B525C5CC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B62E06C9-6C71-46D3-8BBE-3FCE76D398F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B62E06C9-6C71-46D3-8BBE-3FCE76D398F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B62E06C9-6C71-46D3-8BBE-3FCE76D398F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B62E06C9-6C71-46D3-8BBE-3FCE76D398F9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {67EEA72A-90B6-4807-9F83-FA9E8F71EC3E}
+	EndGlobalSection
+EndGlobal

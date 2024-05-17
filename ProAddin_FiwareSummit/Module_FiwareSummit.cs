@@ -1,4 +1,5 @@
-﻿using msGIS.ProApp_Common_FIWARE_3x;
+﻿using msGIS.ProApp_Common_FIWARE_3_3;
+using msGIS.ProApp_Vault_FIWARE;
 
 using ArcGIS.Core.CIM;
 using ArcGIS.Core.Data;
@@ -104,6 +105,8 @@ namespace msGIS.ProApp_FiwareSummit
                 Fusion.m_Helper_Uni = new Helper_Uni(Fusion.m_Global, Fusion.m_Messages);
                 Fusion.m_Helper_Geom = new Helper_Geom(Fusion.m_Messages);
                 Fusion.m_Helper_Op = new Helper_Op(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework);
+
+                // 3.3.17/20240517/msGIS_FiwareReader_rt_068: ArcGIS Pro 3.3 (.NET 8.0)
                 Fusion.m_Fiware_RestApi_NetHttpClient = new Fiware_RestApi_NetHttpClient(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Uni);
 
                 // ApplicationReadyEvent.Subscribe(OnApplicationReady);
