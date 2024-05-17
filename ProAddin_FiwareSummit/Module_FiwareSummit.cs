@@ -1,4 +1,4 @@
-﻿using msGIS.ProApp_Common_FIWARE_3_3;
+﻿using msGIS.ProApp_Common_FIWARE;
 using msGIS.ProApp_Vault_FIWARE;
 
 using ArcGIS.Core.CIM;

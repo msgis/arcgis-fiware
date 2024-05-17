@@ -10,6 +10,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "msGIS.ProApp_FiwareSummit_3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "msGIS.ProApp_Common_FIWARE_3x", "..\..\..\ProApp-Common\msGIS.ProApp_Common_FIWARE_3x.csproj", "{3718DB78-BE51-4A50-83FA-3D960A1661E7}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "msGIS.ProApp_Vault_FIWARE_3x", "..\..\fiwareLab-arcgispro\ProAddin_Vault_FIWARE\msGIS.ProApp_Vault_FIWARE_3x.csproj", "{3A9952F3-BB8A-455C-843D-3B158627F1A8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,10 @@ Global
 		{3718DB78-BE51-4A50-83FA-3D960A1661E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3718DB78-BE51-4A50-83FA-3D960A1661E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3718DB78-BE51-4A50-83FA-3D960A1661E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A9952F3-BB8A-455C-843D-3B158627F1A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A9952F3-BB8A-455C-843D-3B158627F1A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A9952F3-BB8A-455C-843D-3B158627F1A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A9952F3-BB8A-455C-843D-3B158627F1A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
