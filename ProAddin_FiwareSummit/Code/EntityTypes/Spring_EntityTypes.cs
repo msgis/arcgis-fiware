@@ -420,7 +420,7 @@ namespace msGIS.ProApp_FiwareSummit
                     }
 
                     // 3.3.16/20240419/msGIS_FiwareReader_rt_053: Deactivate update concept using "NgsiProxyConfig" to get "eventsource".
-                    if (Fusion.m_Fiware_RestApi_NetHttpClient.m_IsActivatedUpdateOnEventsource)
+                    if (Fusion.m_Fiware_RestApi_NetHttpClient.m_IsActivatedUpdateOnEventSource)
                     {
                         if ((m_JArrayConfig == null) || (m_JArrayConfig.Count <= 0))
                         {
@@ -578,7 +578,7 @@ namespace msGIS.ProApp_FiwareSummit
                 }
 
                 // 3.3.16/20240419/msGIS_FiwareReader_rt_053: Deactivate update concept using "NgsiProxyConfig" to get "eventsource".
-                if (Fusion.m_Fiware_RestApi_NetHttpClient.m_IsActivatedUpdateOnEventsource)
+                if (Fusion.m_Fiware_RestApi_NetHttpClient.m_IsActivatedUpdateOnEventSource)
                 {
                     // 3.3.15/20240223/msGIS_FiwareReader_rt_038: Read "NgsiProxyConfig" to get "eventsource" GUID into "ConnDatasource" for each table.
                     bool isProgressCancelable = false;
