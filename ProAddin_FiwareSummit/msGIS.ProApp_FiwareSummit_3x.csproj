@@ -11,8 +11,8 @@
     <RootNamespace>msGIS.ProApp_FiwareSummit</RootNamespace>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>C:\Work\Develop\Win64\ArcGIS Pro\ProApp-Common\msgis.snk</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>3.4.14</AssemblyVersion>
-    <FileVersion>3.4.14</FileVersion>
+    <AssemblyVersion>3.4.16</AssemblyVersion>
+    <FileVersion>3.4.16</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Config.daml" />
