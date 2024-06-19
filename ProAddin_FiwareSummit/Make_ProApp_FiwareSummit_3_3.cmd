@@ -44,15 +44,15 @@ set MyDir=%CD%
 cd %MyDir%
 
 rem -----------------------------------------------------------------------------------------------------
-REM ProApp_Common_FIWARE_3_3
+REM ProApp_Base_FIWARE_3_3
 rem -----------------------------------------------------------------------------------------------------
-cd ..\..\..\ProApp-Common
+cd ..\ProAddin_Base_FIWARE
 call :Delete_ObjBin
 git pull
 if "%BuildProApp_Common%" == 1 (
-	MsBuild.exe msGIS.ProApp_Common_FIWARE_3_3.csproj -t:Clean -p:Configuration=Release >> %MakeInfo%
-	MSBuild.exe ProApp_Common_FIWARE_3_3.sln -m -t:restore -property:Configuration=Release >> %MakeInfo%
-	MSBuild.exe ProApp_Common_FIWARE_3_3.sln -m -t:rebuild -property:Configuration=Release >> %MakeInfo%
+	MsBuild.exe msGIS.ProApp_Base_FIWARE_3_3.csproj -t:Clean -p:Configuration=Release >> %MakeInfo%
+	MSBuild.exe ProApp_Base_FIWARE_3_3.sln -m -t:restore -property:Configuration=Release >> %MakeInfo%
+	MSBuild.exe ProApp_Base_FIWARE_3_3.sln -m -t:rebuild -property:Configuration=Release >> %MakeInfo%
 )
 cd %MyDir%
 

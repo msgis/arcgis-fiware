@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "msGIS.ProApp_FiwareSummit_3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "msGIS.ProApp_Vault_FIWARE_3_3", "..\..\fiwareLab-arcgispro\ProAddin_Vault_FIWARE\msGIS.ProApp_Vault_FIWARE_3_3.csproj", "{A949A716-B653-41AA-B855-8E4B525C5CC8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "msGIS.ProApp_Common_FIWARE_3_3", "..\..\..\ProApp-Common\msGIS.ProApp_Common_FIWARE_3_3.csproj", "{B62E06C9-6C71-46D3-8BBE-3FCE76D398F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "msGIS.ProApp_Base_FIWARE_3_3", "..\..\fiwareLab-arcgispro\ProAddin_Base_FIWARE\msGIS.ProApp_Base_FIWARE_3_3.csproj", "{B62E06C9-6C71-46D3-8BBE-3FCE76D398F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

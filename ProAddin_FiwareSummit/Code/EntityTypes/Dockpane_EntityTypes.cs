@@ -1,4 +1,4 @@
-﻿using msGIS.ProApp_Common_FIWARE;
+﻿using msGIS.ProApp_Base_FIWARE;
 using msGIS.ProApp_Vault_FIWARE;
 
 using ArcGIS.Desktop.Framework.Contracts;

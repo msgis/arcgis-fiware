@@ -11,8 +11,8 @@
     <RootNamespace>msGIS.ProApp_FiwareSummit</RootNamespace>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>C:\Work\Develop\Win64\ArcGIS Pro\ProApp-Common\msgis.snk</AssemblyOriginatorKeyFile>
-    <AssemblyVersion>3.4.14</AssemblyVersion>
-    <FileVersion>3.4.14</FileVersion>
+    <AssemblyVersion>3.4.16</AssemblyVersion>
+    <FileVersion>3.4.16</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Config.daml" />
@@ -51,7 +51,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\ProApp-Common\msGIS.ProApp_Common_FIWARE_3_3.csproj" />
+    <ProjectReference Include="..\..\fiwareLab-arcgispro\ProAddin_Base_FIWARE\msGIS.ProApp_Base_FIWARE_3_3.csproj" />
     <ProjectReference Include="..\..\fiwareLab-arcgispro\ProAddin_Vault_FIWARE\msGIS.ProApp_Vault_FIWARE_3_3.csproj" />
   </ItemGroup>
   <ItemGroup>

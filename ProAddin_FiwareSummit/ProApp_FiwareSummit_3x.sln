@@ -8,7 +8,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "msGIS.ProApp_FiwareSummit_3
 		{3718DB78-BE51-4A50-83FA-3D960A1661E7} = {3718DB78-BE51-4A50-83FA-3D960A1661E7}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "msGIS.ProApp_Common_FIWARE_3x", "..\..\..\ProApp-Common\msGIS.ProApp_Common_FIWARE_3x.csproj", "{3718DB78-BE51-4A50-83FA-3D960A1661E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "msGIS.ProApp_Base_FIWARE_3x", "..\..\fiwareLab-arcgispro\ProAddin_Base_FIWARE\msGIS.ProApp_Base_FIWARE_3x.csproj", "{3718DB78-BE51-4A50-83FA-3D960A1661E7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "msGIS.ProApp_Vault_FIWARE_3x", "..\..\fiwareLab-arcgispro\ProAddin_Vault_FIWARE\msGIS.ProApp_Vault_FIWARE_3x.csproj", "{3A9952F3-BB8A-455C-843D-3B158627F1A8}"
 EndProject

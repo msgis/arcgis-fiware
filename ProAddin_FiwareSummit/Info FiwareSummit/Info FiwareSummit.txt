@@ -267,11 +267,19 @@ Set InstVer=ArcPro_3.2.49743 AddInX_3.4.15 Common_3.3.40 MSI_
 3.3.16/20240412/msGIS_FiwareReader_rt_043: Get TableUpdateId from Attributes object.
 
 ...................................................................................................
-3.4.16/2024mmdd/rt: New Version.
-Set InstVer=ArcPro_3.2.49743 AddInX_3.4.15 Common_3.3.40 MSI_
+3.4.16/20240619/rt: New Version.
+Set InstVer=ArcPro_3.2.49743 AddInX_3.4.16 Common_3.3.41 MSI_
+
+3.3.17/20240517/msGIS_FiwareReader_rt_068: ArcGIS Pro 3.3 (.NET 8.0)
+3.3.41/20240517/msGIS_ProApp_Common_rt_070: FIWARE moved.
+3.3.41/20240619/msGIS_ProApp_Base_rt_071: ProApp_Common_FIWARE --> ProApp_Base_FIWARE.
+
+...................................................................................................
+3.4.17/2024mmdd/rt: New Version.
+Set InstVer=ArcPro_3.2.49743 AddInX_3.4.17 Common_3.3.41 MSI_
 
 
 ---------------------------------------------------------------------------------------------------
-rt: Next 3.4.16/2024mmdd/msGIS_FiwareSummit_rt_003: Xxx
+rt: Next 3.4.17/2024mmdd/msGIS_FiwareSummit_rt_003: Xxx
 To build an AddInX look for instructions at common folder.
 ---------------------------------------------------------------------------------------------------

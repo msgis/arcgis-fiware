@@ -50,7 +50,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\ProApp-Common\msGIS.ProApp_Common_FIWARE_3x.csproj" />
+    <ProjectReference Include="..\..\fiwareLab-arcgispro\ProAddin_Base_FIWARE\msGIS.ProApp_Base_FIWARE_3x.csproj" />
     <ProjectReference Include="..\..\fiwareLab-arcgispro\ProAddin_Vault_FIWARE\msGIS.ProApp_Vault_FIWARE_3x.csproj" />
   </ItemGroup>
   <ItemGroup>
