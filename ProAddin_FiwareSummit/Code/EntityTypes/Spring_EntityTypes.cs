@@ -751,7 +751,8 @@ namespace msGIS.ProApp_FiwareSummit
                 Tuple<bool, Fiware_RestApi_NetHttpClient.DataEntities> tupleDataEntities = await QueuedTask.Run(async () =>
                 {
                     spatialReference_Layer = m_LayerEntitiesPoints.GetSpatialReference();
-                    return await Fusion.m_Fiware_RestApi_NetHttpClient.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities, connDatasource, envelopeRequestedMapExtent);
+                    DataTable dataTable = null;
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities, connDatasource, envelopeRequestedMapExtent, dataTable);
                 }, m_Helper_Progress.ProgressAssistant);
                 if ((tupleDataEntities == null) || (!tupleDataEntities.Item1))
                     return;
