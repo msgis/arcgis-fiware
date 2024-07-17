@@ -752,7 +752,8 @@ namespace msGIS.ProApp_FiwareSummit
                 {
                     spatialReference_Layer = m_LayerEntitiesPoints.GetSpatialReference();
                     DataTable dataTable = null;
-                    return await Fusion.m_Fiware_RestApi_NetHttpClient.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities, connDatasource, envelopeRequestedMapExtent, dataTable);
+                    GeometryType geometryTypeTable = GeometryType.Unknown;
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.BuildFeaturesFromJsonEntitiesAsync(jArrayEntities, connDatasource, envelopeRequestedMapExtent, dataTable, geometryTypeTable);
                 }, m_Helper_Progress.ProgressAssistant);
                 if ((tupleDataEntities == null) || (!tupleDataEntities.Item1))
                     return;
