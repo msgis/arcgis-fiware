@@ -27,6 +27,7 @@ namespace msGIS.ProApp_FiwareSummit
         internal static Global m_Global { get; set; }
         internal static Messages m_Messages { get; set; }
         internal static General m_General { get; set; }
+        internal static Helper_Encryption m_Helper_Encryption { get; set; }
         internal static Helper_FindFeature m_Helper_FindFeature { get; set; }
         internal static Helper_Framework m_Helper_Framework { get; set; }
         internal static Helper_Image m_Helper_Image { get; set; }

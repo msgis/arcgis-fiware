@@ -95,6 +95,7 @@ namespace msGIS.ProApp_FiwareSummit
                 Fusion.m_Global = new Global();
                 Fusion.m_Messages = new Messages(Fusion.m_Global);
                 Fusion.m_General = new General(Fusion.m_Global, Fusion.m_Messages);
+                Fusion.m_Helper_Encryption = new Helper_Encryption(Fusion.m_Messages);
                 Fusion.m_Helper_FindFeature = new Helper_FindFeature(Fusion.m_Global, Fusion.m_Messages);
                 Fusion.m_Helper_Framework = new Helper_Framework(Fusion.m_Global, Fusion.m_Messages);
                 Fusion.m_Helper_Image = new Helper_Image(Fusion.m_Global, Fusion.m_Messages);
@@ -107,7 +108,7 @@ namespace msGIS.ProApp_FiwareSummit
                 Fusion.m_Helper_Op = new Helper_Op(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework);
 
                 // 3.3.17/20240517/msGIS_FiwareReader_rt_068: ArcGIS Pro 3.3 (.NET 8.0)
-                Fusion.m_Fiware_RestApi_NetHttpClient = new Fiware_RestApi_NetHttpClient(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Uni);
+                Fusion.m_Fiware_RestApi_NetHttpClient = new Fiware_RestApi_NetHttpClient(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Encryption, Fusion.m_Helper_Uni);
 
                 // ApplicationReadyEvent.Subscribe(OnApplicationReady);
                 // ApplicationClosingEvent.Subscribe(OnApplicationClosing);
