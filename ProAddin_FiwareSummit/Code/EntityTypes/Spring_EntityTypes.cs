@@ -456,7 +456,7 @@ namespace msGIS.ProApp_FiwareSummit
             }
         }
 
-        private async Task<Tuple<bool, Fiware_RestApi_NetHttpClient.ConnDatasource>> ExtractConnDsAsync(bool isOnInit)
+        private async Task<Tuple<bool, string, Fiware_RestApi_NetHttpClient.ConnDatasource>> ExtractConnDsAsync(bool isOnInit)
         {
             try
             {
@@ -485,10 +485,10 @@ namespace msGIS.ProApp_FiwareSummit
                     throw new Exception("Empty entity type!");
 
                 // Pull existing connection parameters.
-                Tuple<bool, Fiware_RestApi_NetHttpClient.ConnDatasource> tupleConn = await ExtractConnDsAsync(isOnInit);
+                Tuple<bool, string, Fiware_RestApi_NetHttpClient.ConnDatasource> tupleConn = await ExtractConnDsAsync(isOnInit);
                 if ((tupleConn == null) || (!tupleConn.Item1))
                     return;
-                Fiware_RestApi_NetHttpClient.ConnDatasource connDatasource = tupleConn.Item2;
+                Fiware_RestApi_NetHttpClient.ConnDatasource connDatasource = tupleConn.Item3;
                 if (connDatasource.path == null)
                     return;
 
@@ -512,10 +512,10 @@ namespace msGIS.ProApp_FiwareSummit
                 await EnableControlsAsync();
 
                 // Pull existing connection parameters.
-                Tuple<bool, Fiware_RestApi_NetHttpClient.ConnDatasource> tupleConn = await ExtractConnDsAsync(isOnInit);
+                Tuple<bool, string, Fiware_RestApi_NetHttpClient.ConnDatasource> tupleConn = await ExtractConnDsAsync(isOnInit);
                 if ((tupleConn == null) || (!tupleConn.Item1))
                     return;
-                Fiware_RestApi_NetHttpClient.ConnDatasource connDatasource = tupleConn.Item2;
+                Fiware_RestApi_NetHttpClient.ConnDatasource connDatasource = tupleConn.Item3;
 
                 await EnableControlsAsync(connDatasource);
             }
@@ -562,10 +562,10 @@ namespace msGIS.ProApp_FiwareSummit
             Helper_Progress m_Helper_Progress = null;
             try
             {
-                Tuple<bool, Fiware_RestApi_NetHttpClient.ConnDatasource> tupleConn = await ExtractConnDsAsync(isOnInit);
+                Tuple<bool, string, Fiware_RestApi_NetHttpClient.ConnDatasource> tupleConn = await ExtractConnDsAsync(isOnInit);
                 if ((tupleConn == null) || (!tupleConn.Item1))
                     return;
-                Fiware_RestApi_NetHttpClient.ConnDatasource connDatasource = tupleConn.Item2;
+                Fiware_RestApi_NetHttpClient.ConnDatasource connDatasource = tupleConn.Item3;
                 if (connDatasource.path == null)
                     return;
 
@@ -702,10 +702,10 @@ namespace msGIS.ProApp_FiwareSummit
                 if (mapView == null)
                     throw new Exception("MapView is not ready to use (null)!");
 
-                Tuple<bool, Fiware_RestApi_NetHttpClient.ConnDatasource> tupleConn = await ExtractConnDsAsync(isOnInit);
+                Tuple<bool, string, Fiware_RestApi_NetHttpClient.ConnDatasource> tupleConn = await ExtractConnDsAsync(isOnInit);
                 if ((tupleConn == null) || (!tupleConn.Item1))
                     return;
-                Fiware_RestApi_NetHttpClient.ConnDatasource connDatasource = tupleConn.Item2;
+                Fiware_RestApi_NetHttpClient.ConnDatasource connDatasource = tupleConn.Item3;
                 if (connDatasource.path == null)
                     return;
 
