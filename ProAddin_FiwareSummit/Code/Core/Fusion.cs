@@ -20,7 +20,7 @@ namespace msGIS.ProApp_FiwareSummit
         // 3.3.06/20231214/msGIS_FIWARE_rt_006: Rename FiwareSummit to FiwareSummit/EntityFile (Project, Namespace, Module, ID, Plugin).
         // 3.4.11/20240131/msGIS_FiwareSummit_rt_001: Separately Summit/Lab.
         private static readonly string m_ModuleName = "Fusion";
-        public static readonly string m_AppropriateBaseVersion = "3.3.41";
+        public static readonly string m_AppropriateBaseVersion = "3.3.42";
 
         #region Common
 
@@ -79,7 +79,7 @@ namespace msGIS.ProApp_FiwareSummit
         // https://fiwaredev.msgis.net/ngsi-ld/v1/entities?type=Hydrant&offset=0&limit=1
         // [{"id":"urn:ngsi-ld:Hydrant:HYDRANTOGD.36612499","type":"Hydrant","OBJECTID":{"type":"Property","value":36612499},"location":{"type":"GeoProperty","value":{"type":"Point","coordinates":[16.45231,48.157012,161.78]}}}]
         // Empty default! - user has to know path to the server e.g. "https://fiwaredev.msgis.net"
-        internal const int m_Datasource_Version = 3;
+        internal const int m_Datasource_Version = 4;
         internal const string m_DatasourcePath = "https://fiwaredev.msgis.net";                 // Example for the test - user can set path to any server! e.g. "https://fiwaredev.msgis.net"
         internal const string m_DatasourceTypes = "/ngsi-ld/v1/types";
         internal const string m_DatasourceEntities = "/ngsi-ld/v1/entities?";

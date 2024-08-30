@@ -26,14 +26,17 @@ for /f "tokens=1,2 delims==" %%a in ('wmic datafile where "name='C:\\Program Fil
 )
 rem echo %ProVer%
 
-Set BetaVer=3.4.16
-Set InstVer=ArcPro_3.2.49743 AddInX_%BetaVer% Common_3.3.41 MSI_
+Set desktopVersion=3.2.49743
+Set BaseVer=3.3.42
+Set AddInxVer=3.4.17
+Set MsiVer=(none)
+Set InstVer=ArcPro_%desktopVersion% AddInX_%AddInxVer% ProPlugin_%AddInxVer% Base_%BaseVer% MSI_%MsiVer%
 
 rem -----------------------------------------------------------------------------------------------------
 rem Testing %date% %time% by %username% on %computername%
 rem -----------------------------------------------------------------------------------------------------
 Set PathDevelop=".\FiwareSummit %InstVer% (%username% %computername% ArcGISPro_%ProVer%)"
-Set PathTest="\\md.local\p$\MS\Testhouse\arcgispro\FiwareSummit-arcgispro\FiwareSummit_%BetaVer%"
+Set PathTest="\\md.local\p$\MS\Testhouse\arcgispro\FiwareSummit-arcgispro\FiwareSummit_%AddInxVer%"
 if exist %PathTest% (
 	rmdir /S /Q %PathTest%
 )

@@ -275,11 +275,17 @@ Set InstVer=ArcPro_3.2.49743 AddInX_3.4.16 Common_3.3.41 MSI_
 3.3.41/20240619/msGIS_ProApp_Base_rt_071: ProApp_Common_FIWARE --> ProApp_Base_FIWARE.
 
 ...................................................................................................
-3.4.17/2024mmdd/rt: New Version.
-Set InstVer=ArcPro_3.2.49743 AddInX_3.4.17 Common_3.3.41 MSI_
+3.4.17/20240830/rt: New Version (Desktop=3.2.49743 Base=3.3.42 AddInX/ProPlugin=3.4.17 MSI=).
+
+3.3.18/20240827/msGIS_FiwareReader_rt_094: Data authentication encrypted password.
+3.3.18/20240828/msGIS_FiwareReader_rt_095: Authentication based on requestToken.
+3.3.18/20240829/msGIS_FiwareReader_rt_097: Cancel GetEntitiesFromRestApi on ESC.
+
+...................................................................................................
+3.4.18/2024mmdd/rt: New Version (Desktop=3.2.49743 Base=3.3.42 AddInX/ProPlugin=3.4.18 MSI=).
 
 
 ---------------------------------------------------------------------------------------------------
-rt: Next 3.4.17/2024mmdd/msGIS_FiwareSummit_rt_003: Xxx
+rt: Next 3.4.18/2024mmdd/msGIS_FiwareSummit_rt_003: Xxx
 To build an AddInX look for instructions at common folder.
 ---------------------------------------------------------------------------------------------------

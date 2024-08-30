@@ -284,10 +284,13 @@ namespace msGIS.ProApp_FiwareSummit
                     limit = Fusion.m_DatasourceLimit,
                     offset = Fusion.m_DatasourceOffset,
                     tableName = "",                                         // Empty default! - table name has to be known or selected after data query!
-                    tableOIdName = Fusion.m_DatasourceUpdateOId,       // Place holder only! - will be exchanged for Table/Update OID name (SE_SDO_ROWID, OBJECTID, ?)
+                    tableOIdName = Fusion.m_DatasourceUpdateOId,            // Place holder only! - will be exchanged for Table/Update OID name (SE_SDO_ROWID, OBJECTID, ?)
+                    user = "",
+                    password = "",
                 };
 
                 // Let the connection to be adopted by user.
+                // 3.3.18/20240827/msGIS_FiwareReader_rt_094: Data authentication encrypted password.
                 connDatasource = await PrepareConnectionStringAsync(connDatasource);
 
                 // Set activated.
@@ -442,7 +445,9 @@ namespace msGIS.ProApp_FiwareSummit
                 }
 
                 // Let the connection to be adopted by user.
-                string jsonStrConnPath = await Fusion.m_Fiware_RestApi_NetHttpClient.BuildConnDsAsync(connDatasource);
+                // 3.3.18/20240827/msGIS_FiwareReader_rt_094: Data authentication encrypted password.
+                bool checkCredentials = false;
+                string jsonStrConnPath = await Fusion.m_Fiware_RestApi_NetHttpClient.BuildConnDsAsync(connDatasource, checkCredentials);
                 TextBox_ConnDs.Text = jsonStrConnPath;
 
                 await EnableControlsAsync(connDatasource);
@@ -735,9 +740,11 @@ namespace msGIS.ProApp_FiwareSummit
                 bool isProgressCancelable = false;
                 m_Helper_Progress = new Helper_Progress(Fusion.m_Global, Fusion.m_Messages, Fusion.m_Helper_Framework, isProgressCancelable);
                 await m_Helper_Progress.ShowProgressAsync("GetEntitiesFromRestApiAsync", 900000, false);
+                Helper_KeyboardHook helper_KeyboardHook = null;
+                bool checkCredentials = false;
                 JArray jArrayEntities = await QueuedTask.Run(async () =>
                 {
-                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(connDatasource, envelopeRequestedMapExtent);
+                    return await Fusion.m_Fiware_RestApi_NetHttpClient.GetEntitiesFromRestApiAsync(connDatasource, checkCredentials, envelopeRequestedMapExtent, helper_KeyboardHook);
                 }, m_Helper_Progress.ProgressAssistant);
 
                 if (jArrayEntities == null)
