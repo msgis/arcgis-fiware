@@ -30,13 +30,22 @@ Set desktopVersion=3.2.49743
 Set BaseVer=3.3.42
 Set AddInxVer=3.4.17
 Set MsiVer=(none)
-Set InstVer=ArcPro_%desktopVersion% AddInX_%AddInxVer% ProPlugin_%AddInxVer% Base_%BaseVer% MSI_%MsiVer%
+Set InstVer=%AddInxVer% ArcPro_%desktopVersion% Base_%BaseVer% MSI_%MsiVer% (%username% %computername% ArcGISPro_%ProVer%)
 
 rem -----------------------------------------------------------------------------------------------------
 rem Testing %date% %time% by %username% on %computername%
 rem -----------------------------------------------------------------------------------------------------
-Set PathDevelop=".\FiwareSummit %InstVer% (%username% %computername% ArcGISPro_%ProVer%)"
-Set PathTest="\\md.local\p$\MS\Testhouse\arcgispro\FiwareSummit-arcgispro\FiwareSummit_%AddInxVer%"
+Set FileNameInfo=ReadMe FiwareSummit
+Set PathFileInfo=.\Info FiwareSummit\%FileNameInfo%.txt
+Set TargetPath=FiwareSummit_%AddInxVer%
+Set PathDevelop=.\%TargetPath%
+Set PathTest=\\md.local\p$\MS\Testhouse\arcgispro\FIWARE\FiwareSummit-arcgispro\%TargetPath%
+if exist %PathDevelop% (
+	rmdir /S /Q %PathDevelop%
+)
+if not exist %PathDevelop% (
+	mkdir %PathDevelop%
+)
 if exist %PathTest% (
 	rmdir /S /Q %PathTest%
 )
@@ -44,9 +53,9 @@ if not exist %PathTest% (
 	mkdir %PathTest%
 )
 
-xcopy /I /Y /R ".\Info FiwareSummit\ReadMe FiwareSummit.txt" %PathTest%
-Set PathAddInX=.
-xcopy /I /Y /R %PathAddInX%\bin\Release\net6.0-windows\*.esriAddinX %PathTest%
-xcopy /I /Y /R %PathAddInX%\bin\Release\net6.0-windows\*.esriAddinX %PathDevelop%
+copy /Y "%PathFileInfo%" %PathTest%\"%FileNameInfo% %InstVer%".txt
+copy /Y "%PathFileInfo%" %PathDevelop%\"%FileNameInfo% %InstVer%".txt
+xcopy /I /Y /R .\bin\Release\net6.0-windows\*.esriAddinX %PathTest%
+xcopy /I /Y /R .\bin\Release\net6.0-windows\*.esriAddinX %PathDevelop%
 
 :End
