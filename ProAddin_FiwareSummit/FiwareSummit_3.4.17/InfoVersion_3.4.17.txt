@@ -1,0 +1,9 @@
+Setup=3.4.17
+Desktop_3.2.49743
+ArcGISPro_3.3.1.52636
+Base_3.3.42
+MSI_(none)
+User=roman
+Computer=NB536-11
+Date=05/09/2024
+Time= 7:52:15,80

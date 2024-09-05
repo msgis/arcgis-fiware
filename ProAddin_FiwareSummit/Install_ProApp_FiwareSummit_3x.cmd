@@ -30,10 +30,11 @@ Set desktopVersion=3.2.49743
 Set BaseVer=3.3.42
 Set AddInxVer=3.4.17
 Set MsiVer=(none)
-Set InstVer=%AddInxVer% ArcPro_%desktopVersion% Base_%BaseVer% MSI_%MsiVer% (%username% %computername% ArcGISPro_%ProVer%)
 
 rem -----------------------------------------------------------------------------------------------------
-rem Testing %date% %time% by %username% on %computername%
+echo Versioning %AddInxVer% by %username% on %computername%
+echo %date% %time%
+rem 3.3.19/20240904/msGIS_FiwareReader_rt_100: Reduce install path length.
 rem -----------------------------------------------------------------------------------------------------
 Set FileNameInfo=ReadMe FiwareSummit
 Set PathFileInfo=.\Info FiwareSummit\%FileNameInfo%.txt
@@ -53,9 +54,21 @@ if not exist %PathTest% (
 	mkdir %PathTest%
 )
 
-copy /Y "%PathFileInfo%" %PathTest%\"%FileNameInfo% %InstVer%".txt
-copy /Y "%PathFileInfo%" %PathDevelop%\"%FileNameInfo% %InstVer%".txt
-xcopy /I /Y /R .\bin\Release\net6.0-windows\*.esriAddinX %PathTest%
+Set PathFileVersion=%PathDevelop%\InfoVersion_%AddInxVer%.txt
+echo Setup=%AddInxVer%>> %PathFileVersion%
+echo Desktop_%desktopVersion%>> %PathFileVersion%
+echo ArcGISPro_%ProVer%>> %PathFileVersion%
+echo Base_%BaseVer%>> %PathFileVersion%
+echo MSI_%MsiVer%>> %PathFileVersion%
+echo User=%username%>> %PathFileVersion%
+echo Computer=%computername%>> %PathFileVersion%
+echo Date=%date%>> %PathFileVersion%
+echo Time=%time%>> %PathFileVersion%
+xcopy /I /Y /R "%PathFileVersion%" %PathTest%
+
+copy /Y "%PathFileInfo%" %PathDevelop%\"%FileNameInfo%".txt
+copy /Y "%PathFileInfo%" %PathTest%\"%FileNameInfo%".txt
 xcopy /I /Y /R .\bin\Release\net6.0-windows\*.esriAddinX %PathDevelop%
+xcopy /I /Y /R .\bin\Release\net6.0-windows\*.esriAddinX %PathTest%
 
 :End
