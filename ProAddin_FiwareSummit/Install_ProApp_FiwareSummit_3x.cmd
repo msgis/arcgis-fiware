@@ -27,8 +27,8 @@ for /f "tokens=1,2 delims==" %%a in ('wmic datafile where "name='C:\\Program Fil
 rem echo %ProVer%
 
 Set desktopVersion=3.2.49743
-Set BaseVer=3.3.42
-Set AddInxVer=3.4.17
+Set BaseVer=3.3.43
+Set AddInxVer=3.4.18
 Set MsiVer=(none)
 
 rem -----------------------------------------------------------------------------------------------------
@@ -54,7 +54,8 @@ if not exist %PathTest% (
 	mkdir %PathTest%
 )
 
-Set PathFileVersion=%PathDevelop%\InfoVersion_%AddInxVer%.txt
+Set FileVersion=InfoVersion_%AddInxVer%.txt
+Set PathFileVersion=%PathDevelop%\%FileVersion%
 echo Setup=%AddInxVer%>> %PathFileVersion%
 echo Desktop_%desktopVersion%>> %PathFileVersion%
 echo ArcGISPro_%ProVer%>> %PathFileVersion%
@@ -64,7 +65,7 @@ echo User=%username%>> %PathFileVersion%
 echo Computer=%computername%>> %PathFileVersion%
 echo Date=%date%>> %PathFileVersion%
 echo Time=%time%>> %PathFileVersion%
-xcopy /I /Y /R "%PathFileVersion%" %PathTest%
+copy /Y "%PathFileVersion%" %PathTest%\"%FileVersion%"
 
 copy /Y "%PathFileInfo%" %PathDevelop%\"%FileNameInfo%".txt
 copy /Y "%PathFileInfo%" %PathTest%\"%FileNameInfo%".txt

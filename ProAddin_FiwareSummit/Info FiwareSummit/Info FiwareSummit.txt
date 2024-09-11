@@ -282,10 +282,16 @@ Set InstVer=ArcPro_3.2.49743 AddInX_3.4.16 Common_3.3.41 MSI_
 3.3.18/20240829/msGIS_FiwareReader_rt_097: Cancel GetEntitiesFromRestApi on ESC.
 
 ...................................................................................................
-3.4.18/2024mmdd/rt: New Version (Desktop=3.2.49743 Base=3.3.42 AddInX/ProPlugin=3.4.18 MSI=).
+3.4.18/20240911/rt: New Version (Desktop=3.2.49743 Base=3.3.43 AddInX/ProPlugin=3.4.18 MSI=).
+
+3.3.19/20240902/msGIS_FiwareReader_rt_098: Progress frame with Fiware Background (display on client HTTP requests).
+3.3.19/20240904/msGIS_FiwareReader_rt_100: Reduce install path length.
+
+...................................................................................................
+3.4.19/2024mmdd/rt: New Version (Desktop=3.2.49743 Base=3.3.43 AddInX/ProPlugin=3.4.19 MSI=).
 
 
 ---------------------------------------------------------------------------------------------------
-rt: Next 3.4.18/2024mmdd/msGIS_FiwareSummit_rt_003: Xxx
+rt: Next 3.4.19/2024mmdd/msGIS_FiwareSummit_rt_003: Xxx
 To build an AddInX look for instructions at common folder.
 ---------------------------------------------------------------------------------------------------
