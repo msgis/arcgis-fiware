@@ -1,7 +1,7 @@
 
 echo off
 echo =====================================================================================================
-echo Make ProApp_FiwareSummit_3x
+echo Make ProApp_FiwareSummit_3_2
 echo
 echo Authors:
 echo roman.trojan@msgis.com 20231001-
@@ -13,7 +13,7 @@ Set BuildProApp_Common=0
 Set MakeInfo="MakeInfo.txt"
 echo on > %MakeInfo%
 echo ----------------------------------------------------------------------------------------------------->> %MakeInfo%
-echo Start make ProApp_FiwareSummit_3x on %date% %time% by %username% on %computername%>> %MakeInfo%
+echo Start make ProApp_FiwareSummit_3_2 on %date% %time% by %username% on %computername%>> %MakeInfo%
 echo ----------------------------------------------------------------------------------------------------->> %MakeInfo%
 goto :Main
 
@@ -44,25 +44,25 @@ set MyDir=%CD%
 cd %MyDir%
 
 rem -----------------------------------------------------------------------------------------------------
-REM ProApp_Base_FIWARE_3x
+REM ProApp_Base_FIWARE_3_2
 rem -----------------------------------------------------------------------------------------------------
 cd ..\ProAddin_Base_FIWARE
 call :Delete_ObjBin
 git pull
 if "%BuildProApp_Common%" == 1 (
-	MsBuild.exe msGIS.ProApp_Base_FIWARE_3x.csproj -t:Clean -p:Configuration=Release >> %MakeInfo%
-	MSBuild.exe ProApp_Base_FIWARE_3x.sln -m -t:restore -property:Configuration=Release >> %MakeInfo%
-	MSBuild.exe ProApp_Base_FIWARE_3x.sln -m -t:rebuild -property:Configuration=Release >> %MakeInfo%
+	MsBuild.exe msGIS.ProApp_Base_FIWARE_3_2.csproj -t:Clean -p:Configuration=Release >> %MakeInfo%
+	MSBuild.exe ProApp_Base_FIWARE_3_2.sln -m -t:restore -property:Configuration=Release >> %MakeInfo%
+	MSBuild.exe ProApp_Base_FIWARE_3_2.sln -m -t:rebuild -property:Configuration=Release >> %MakeInfo%
 )
 cd %MyDir%
 
 rem -----------------------------------------------------------------------------------------------------
-REM ProApp_FiwareSummit_3x
+REM ProApp_FiwareSummit_3_2
 rem -----------------------------------------------------------------------------------------------------
-MsBuild.exe msGIS.ProApp_FiwareSummit_3x.csproj -t:Clean >> %MakeInfo%
-rem devenv.exe ProApp_FiwareSummit_3x.sln /rebuild Release /out %MakeInfo%
-MSBuild.exe ProApp_FiwareSummit_3x.sln -m -t:restore -property:Configuration=Release >> %MakeInfo%
-MSBuild.exe ProApp_FiwareSummit_3x.sln -m -t:rebuild -property:Configuration=Release >> %MakeInfo%
+MsBuild.exe msGIS.ProApp_FiwareSummit_3_2.csproj -t:Clean >> %MakeInfo%
+rem devenv.exe ProApp_FiwareSummit_3_2.sln /rebuild Release /out %MakeInfo%
+MSBuild.exe ProApp_FiwareSummit_3_2.sln -m -t:restore -property:Configuration=Release >> %MakeInfo%
+MSBuild.exe ProApp_FiwareSummit_3_2.sln -m -t:rebuild -property:Configuration=Release >> %MakeInfo%
 
 rem -----------------------------------------------------------------------------------------------------
 rem Manage for setup

@@ -1,7 +1,7 @@
 
 echo off
 echo =====================================================================================================
-echo Build ProApp_FiwareSummit_3x
+echo Build ProApp_FiwareSummit_3_2
 echo
 echo Authors:
 echo roman.trojan@msgis.com 20231103-
@@ -11,7 +11,7 @@ rem ----------------------------------------------------------------------------
 rem Build
 rem -----------------------------------------------------------------------------------------------------
 echo on
-Call Make_ProApp_FiwareSummit_3x.cmd
-Call Install_ProApp_FiwareSummit_3x.cmd
+Call Make_ProApp_FiwareSummit_3_2.cmd
+Call Install_ProApp_FiwareSummit_3_2.cmd
 
 :End

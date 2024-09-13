@@ -1,7 +1,7 @@
 
 echo off
 echo =====================================================================================================
-echo Install ProApp_FiwareSummit_3x
+echo Install ProApp_FiwareSummit_3_2
 echo
 echo Authors:
 echo roman.trojan@msgis.com 20231001-
@@ -38,7 +38,7 @@ rem 3.3.19/20240904/msGIS_FiwareReader_rt_100: Reduce install path length.
 rem -----------------------------------------------------------------------------------------------------
 Set FileNameInfo=ReadMe FiwareSummit
 Set PathFileInfo=.\Info FiwareSummit\%FileNameInfo%.txt
-Set TargetPath=FiwareSummit_%AddInxVer%
+Set TargetPath=FiwareSummit_%AddInxVer%-ArcGISPro_%ProVer%
 Set PathDevelop=.\%TargetPath%
 Set PathTest=\\md.local\p$\MS\Testhouse\arcgispro\FIWARE\FiwareSummit-arcgispro\%TargetPath%
 if exist %PathDevelop% (
